@@ -1,6 +1,6 @@
 {
   "AddonUUID": "9bc8af38-dd67-4d33-beb0-7d6b39a6e98d",
-  "AddonVersion": "0.0.4",
+  "AddonVersion": "0.0.7",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -13,10 +13,16 @@
   ],
   "PublishConfig": {
     "ClientStack": "ng14",
+    "Editors": [
+      {
+        "ParentPackageName": "BrandedApp",
+        "PackageName": "application_header",
+        "Description": "Application Header"
+      }
+    ],
     "Dependencies": {
-      "cpi_node_scripts": "0.0.76",
+      "cpi_node_scripts": "0.0.87",
       "assets": "0.8.5",
-      "cpi-node-scripts": "0.0.87",
       "pfs": "1.0.2",
       "pages": "0.8.13"
     },

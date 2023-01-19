@@ -48,8 +48,10 @@ export class AppModule implements DoBootstrap {
     }
 
     ngDoBootstrap() {
-        this.pepAddonService.defineCustomElement(`applicationheader-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);
-        this.pepAddonService.defineCustomElement(`applicationheader-editor-element-${config.AddonUUID}`, ApplicationHeaderEditorComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);
+
+        //this.pepAddonService.defineCustomElement(`applicationheader-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);
+        //this.pepAddonService.defineCustomElement(`applicationheader-editor-element-${config.AddonUUID}`, ApplicationHeaderEditorComponent, this.injector);
     }
 }
 

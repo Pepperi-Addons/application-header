@@ -1,12 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-
+import { GeneralModule } from '../components/general/general.module';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
-
 import { PepAddonService } from '@pepperi-addons/ngx-lib';
-
 import { ApplicationHeaderComponent } from './index';
+
+import { MatTabsModule } from '@angular/material/tabs';
+
+import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
+import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
+import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
+
+
 
 import { config } from '../app.config';
 
@@ -29,7 +35,15 @@ export const routes: Routes = [
                 deps: [PepAddonService]
             }, isolate: false
         }),
-        RouterModule.forChild(routes)
+        
+        RouterModule.forChild(routes),
+        MatTabsModule,
+        PepPageLayoutModule,
+        PepTopBarModule,
+        PepMenuModule,
+        GeneralModule
+
+        
     ],
     exports: [ApplicationHeaderComponent],
     providers: [

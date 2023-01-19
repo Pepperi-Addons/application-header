@@ -22,7 +22,13 @@ export class RelationsService {
     private async upsertRelation(relation): Promise<any> {
         return await this.papiClient.post('/addons/data/relations', relation);
     }
-
+/*
+ RelationName: "SettingsBlock",
+            GroupName: 'BrandedApp',
+            SlugName: 'themes',
+            Name: "Themes",
+            Description: 'Themes editor',
+*/
     private getCommonRelationProperties(
         relationName: 'SettingsBlock' | 'PageBlock' | 'AddonBlock', 
         blockRelationName: string,
@@ -43,10 +49,11 @@ export class RelationsService {
             ElementName: `${blockName.toLocaleLowerCase()}-element-${this.client.AddonUUID}`,
         };
     }
-
+    // await this.upsertSettingsRelation('SettingsBlock', 'BrandedApp', 'ApplicationHeader', 'Header customization');
     private async upsertSettingsRelation(blockRelationSlugName: string, blockRelationGroupName: string, blockRelationName: string, blockRelationDescription: string) {
         const blockName = 'Settings';
-
+        
+        
         const blockRelation: Relation = this.getCommonRelationProperties(
             'SettingsBlock',
             blockRelationName,
@@ -79,17 +86,18 @@ export class RelationsService {
     }
 
     async upsertRelations() {
-        // For settings block use this.
-        // const blockRelationSlugName = 'CHANGE_TO_SETTINGS_SLUG_NAME';
-        // const blockRelationGroupName = 'CHANGE_TO_SETTINGS_GROUP_NAME';
-        // const blockRelationName = 'CHANGE_TO_SETTINGS_RELATION_NAME';
-        // const blockRelationDescription = 'CHANGE_TO_SETTINGS_DESCRIPTION';
-        // await this.upsertSettingsRelation(blockRelationSlugName, blockRelationGroupName, blockRelationName, blockRelationDescription);
+        //For settings block use this.
+        const blockRelationSlugName = 'application_header';
+        const blockRelationGroupName = 'BrandedApp';
+        const blockRelationName = 'ApplicationHeader';
+        const blockRelationDescription = 'Header customization';
+
+        await this.upsertSettingsRelation(blockRelationSlugName, blockRelationGroupName, blockRelationName, blockRelationDescription);
 
         // For page block use this.
         // // TODO: change to block name (this is the unique relation name and the description that will be on the block).
-        const blockRelationName = 'ApplicationHeader';
-        await this.upsertBlockRelation(blockRelationName, true);
+        //const blockRelationName = 'ApplicationHeader';
+        //await this.upsertBlockRelation(blockRelationName, true);
 
         // For addon block use this.
         // // TODO: change to block name (this is the unique relation name and the description that will be on the block).

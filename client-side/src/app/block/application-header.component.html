@@ -1,1 +1,41 @@
-Block works...
+<pep-page-layout>
+    <ng-container pep-top-area>
+        <pep-top-bar [title]="'HEADER_TITLE' | translate">
+            <ng-container header-end-content>
+                <div class="menu pep-spacing-element pull-right flip">
+                    <pep-menu [items]="[]"></pep-menu>
+                </div>
+                <button class="mat-button pep-button strong md pep-spacing-element pull-right flip">
+                    {{ 'ACTION.PUBLISH' | translate }}
+                </button>
+                <button class="mat-button pep-button weak md pep-spacing-element pull-right flip">
+                    {{ 'ACTION.CANCEL' | translate }}
+                </button>
+            </ng-container>
+        </pep-top-bar>
+    </ng-container>
+    <ng-container pep-main-area>
+        <mat-tab-group (selectedTabChange)="tabClick($event)">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span class="body-md">{{ 'TABS.GENERAL' | translate }}</span>
+                </ng-template>
+                <general-tab></general-tab>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span class="body-md">{{ 'TABS.TAB2' | translate }}</span>
+                </ng-template>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span class="body-md">{{ 'TABS.TAB3' | translate }}</span>
+                </ng-template>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span class="body-md">{{ 'TABS.TAB4' | translate }}</span>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </ng-container>

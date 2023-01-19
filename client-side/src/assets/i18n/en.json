@@ -1,3 +1,16 @@
 {
-    "Block_Title": "Block title"
+    "HEADER_TITLE": "Application header",
+
+    "TABS": {
+        "GENERAL": "General",
+        "TAB2": "Tab 2",
+        "TAB3": "Tab 3",
+        "TAB4": "Tab 4"
+    },
+    "ACTION": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel",
+        "PUBLISH": "Publish"
+    }
 }
+
