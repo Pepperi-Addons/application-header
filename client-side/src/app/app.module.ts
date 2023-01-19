@@ -9,8 +9,8 @@ import { AppRoutingModule } from './app.routes';
 
 import { SettingsComponent, SettingsModule } from './settings';
 
-// import { BlockModule, BlockComponent } from './block';
-// import { BlockEditorModule, BlockEditorComponent } from './block-editor';
+import { ApplicationHeaderModule, ApplicationHeaderComponent } from './block';
+import { ApplicationHeaderEditorModule, ApplicationHeaderEditorComponent } from './block-editor';
 
 import { config } from './app.config';
 
@@ -20,8 +20,8 @@ import { config } from './app.config';
     ],
     imports: [
         BrowserModule,
-        // BlockModule,
-        // BlockEditorModule,
+        ApplicationHeaderModule,
+        ApplicationHeaderEditorModule,
         SettingsModule,
         TranslateModule.forRoot({
             loader: {
@@ -48,10 +48,8 @@ export class AppModule implements DoBootstrap {
     }
 
     ngDoBootstrap() {
-        this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, SettingsComponent, this.injector);
-
-        // this.pepAddonService.defineCustomElement(`block-element-${config.AddonUUID}`, BlockComponent, this.injector);
-        // this.pepAddonService.defineCustomElement(`block-editor-element-${config.AddonUUID}`, BlockEditorComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`applicationheader-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`applicationheader-editor-element-${config.AddonUUID}`, ApplicationHeaderEditorComponent, this.injector);
     }
 }
 

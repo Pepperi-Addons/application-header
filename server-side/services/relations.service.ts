@@ -60,7 +60,7 @@ export class RelationsService {
     }
 
     private async upsertBlockRelation(blockRelationName: string, isPageBlock: boolean): Promise<any> {
-        const blockName = 'Block';
+        const blockName = 'ApplicationHeader';
 
         const blockRelation: Relation = this.getCommonRelationProperties(
             isPageBlock ? 'PageBlock' : 'AddonBlock',
@@ -88,8 +88,8 @@ export class RelationsService {
 
         // For page block use this.
         // // TODO: change to block name (this is the unique relation name and the description that will be on the block).
-        // const blockRelationName = 'CHANGE_TO_BLOCK_RELATION_NAME';
-        // await this.upsertBlockRelation(blockRelationName, true);
+        const blockRelationName = 'ApplicationHeader';
+        await this.upsertBlockRelation(blockRelationName, true);
 
         // For addon block use this.
         // // TODO: change to block name (this is the unique relation name and the description that will be on the block).

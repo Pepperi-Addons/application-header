@@ -73,8 +73,8 @@
                 "serve": {
                     "builder": "ngx-build-plus:dev-server",
                     "options": {
-						"port": 4400,
-						"publicHost": "http://localhost:4400",
+						"port": 4404,
+						"publicHost": "http://localhost:4404",
 						"extraWebpackConfig": "webpack.config.js"
 					},
                     "configurations": {

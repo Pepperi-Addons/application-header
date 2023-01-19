@@ -1,2 +1,2 @@
-export * from './block.component';
-export * from './block.module';
+export * from './application-header.component';
+export * from './application-header.module';

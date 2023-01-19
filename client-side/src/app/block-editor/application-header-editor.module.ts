@@ -1,24 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
 
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 
 import { PepAddonService } from '@pepperi-addons/ngx-lib';
 
-import { BlockComponent } from './index';
+import { ApplicationHeaderEditorComponent } from './index';
 
 import { config } from '../app.config';
 
-export const routes: Routes = [
-    {
-        path: '',
-        component: BlockComponent
-    }
-];
-
 @NgModule({
-    declarations: [BlockComponent],
+    declarations: [ApplicationHeaderEditorComponent],
     imports: [
         CommonModule,
         TranslateModule.forChild({
@@ -29,15 +21,14 @@ export const routes: Routes = [
                 deps: [PepAddonService]
             }, isolate: false
         }),
-        RouterModule.forChild(routes)
     ],
-    exports: [BlockComponent],
+    exports: [ApplicationHeaderEditorComponent],
     providers: [
         TranslateStore,
         // Add here all used services.
     ]
 })
-export class BlockModule {
+export class ApplicationHeaderEditorModule {
     constructor(
         translate: TranslateService,
         private pepAddonService: PepAddonService

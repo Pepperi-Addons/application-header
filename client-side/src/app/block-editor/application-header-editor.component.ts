@@ -2,11 +2,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
-    selector: 'page-block',
-    templateUrl: './block.component.html',
-    styleUrls: ['./block.component.scss']
+    selector: 'page-block-editor',
+    templateUrl: './application-header-editor.component.html',
+    styleUrls: ['./application-header-editor.component.scss']
 })
-export class BlockComponent implements OnInit {
+export class ApplicationHeaderEditorComponent implements OnInit {
     @Input() hostObject: any;
 
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
@@ -18,6 +18,5 @@ export class BlockComponent implements OnInit {
     }
 
     ngOnChanges(e: any): void {
-
     }
 }
