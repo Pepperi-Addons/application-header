@@ -11,10 +11,28 @@
     .header-preview{
         height: 4rem;
         width: inherit;
-        border: 1px solid #fcfcfc;
+        border: 1px solid #fff;
+        display: flex;
+        align-items: center;
+
+        .logOImage{
+            img{
+                height: 2rem;
+            }
+            
+        }
     }
+
+    
 }
 
 mat-tab-group{
     max-width: 896px;
+
+    ::ng-deep .mat-tab-header{
+        position: sticky;
+        top: 120px;
+        background: #fff;
+        z-index: 2;
+    }
 }

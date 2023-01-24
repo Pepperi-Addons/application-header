@@ -15,10 +15,16 @@
         </pep-top-bar>
     </ng-container>
     <ng-container pep-main-area>
-        <div class="header-preview-cont">
+        <div class="header-preview-cont pep-border-bottom">
             <div class="header-preview"
             [ngStyle]="{'background-color': headerData?.design?.customBackgroundColor || ''}"
-            ></div>
+            >
+            <div class="pep-spacing-element pull-left flip logOImage">
+                <a href="javascript:;">
+                    <img alt="" [src]="'https://www.pepperi.com/wp-content/uploads/2021/01/brand-logo-full@2x.png'"/>
+                </a>
+            </div>
+        </div>
         </div>
         <mat-tab-group>
             <mat-tab label="{{'TABS.GENERAL' | translate}}">
