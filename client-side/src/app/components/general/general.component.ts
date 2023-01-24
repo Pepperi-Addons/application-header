@@ -9,11 +9,18 @@ import { Component, OnInit, Injectable, Input, Output, EventEmitter, Optional, I
 @Injectable()
 export class GeneralComponent implements OnInit {
     
+    @Input() general;
+
+    
     constructor() {
        
     }
     
     ngOnInit(): void {
  
+    }
+
+    onHeaderKeyChange(event: any, key: string): void {
+
     }
 }

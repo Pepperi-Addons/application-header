@@ -2,12 +2,12 @@
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
 
-
-.page-description{
+.expansion-content{
     max-width: 28rem;
-}
 
-.page-body{
-    margin-top: ngx-variables.$spacing-lg;
-    max-width: 20rem;
+    .colors-cont{
+        display: grid;
+        gap: ngx-variables.$spacing-lg;
+        grid-template-columns: 1fr 1fr;
+    }
 }

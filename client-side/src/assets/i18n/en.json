@@ -3,14 +3,33 @@
 
     "TABS": {
         "GENERAL": "General",
-        "TAB2": "Tab 2",
-        "TAB3": "Tab 3",
-        "TAB4": "Tab 4"
+        "DESIGN": "Design",
+        "LINKS": "Links",
+        "BUTTONS": "Buttons"
     },
     "ACTION": {
         "SAVE": "Save",
         "CANCEL": "Cancel",
         "PUBLISH": "Publish"
+    },
+    "GENERAL":{
+        "DESCRIPTION": "Customize your app’s header, web and native by choosing from a variety of design options. With the custom header, you can quickly adjust the size, position, and color of the header, giving your app a unique look and feel.",
+        "HEADER_NAME": "Header Name",
+        "HEADER_DESCRIPTION": "Description"
+    },
+    "DESIGN":{
+        "HEADER_COLOR": {
+           "TITLE" : "Header color",
+           "DESCRIPTION": "You can change the quantity selector styling to that allow customers to add several products to their cart at once.",
+           "THEME_COLOR": "Theme color",
+           "THEME_COLOR_DESCRIPTION": "Select main theme color",
+           "USE_CUSTOM_COLOR": "Use custom colors",
+           "CUSTOM_BACKGROUND_COLOR": "Custom background color",
+           "CUSTOM_TEXT_COLOR": "Custom text color"
+        },
+        "DIMENSIONS": "Dimensions (web only)",
+        "SHADOW": "Shadow (web only)",
+        "BOTTOM_BORDER": "Bottom border (web only)" 
     }
 }
 

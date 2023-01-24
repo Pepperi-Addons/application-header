@@ -15,27 +15,23 @@
         </pep-top-bar>
     </ng-container>
     <ng-container pep-main-area>
-        <mat-tab-group (selectedTabChange)="tabClick($event)">
-            <mat-tab>
-                <ng-template mat-tab-label>
-                    <span class="body-md">{{ 'TABS.GENERAL' | translate }}</span>
-                </ng-template>
-                <general-tab></general-tab>
+        <div class="header-preview-cont">
+            <div class="header-preview"
+            [ngStyle]="{'background-color': headerData?.design?.customBackgroundColor || ''}"
+            ></div>
+        </div>
+        <mat-tab-group>
+            <mat-tab label="{{'TABS.GENERAL' | translate}}">
+                    <general-tab [general]="headerData?.general"></general-tab>
             </mat-tab>
-            <mat-tab>
-                <ng-template mat-tab-label>
-                    <span class="body-md">{{ 'TABS.TAB2' | translate }}</span>
-                </ng-template>
+            <mat-tab label="{{'TABS.DESIGN' | translate}}">
+                    <design-tab [design]="headerData?.design" (designTabChanges)="onDesignChanged($event)"></design-tab>
             </mat-tab>
-            <mat-tab>
-                <ng-template mat-tab-label>
-                    <span class="body-md">{{ 'TABS.TAB3' | translate }}</span>
-                </ng-template>
+            <mat-tab label="{{'TABS.LINKS' | translate}}">
+                
             </mat-tab>
-            <mat-tab>
-                <ng-template mat-tab-label>
-                    <span class="body-md">{{ 'TABS.TAB4' | translate }}</span>
-                </ng-template>
+            <mat-tab label="{{'TABS.BUTTONS' | translate}}">
+                
             </mat-tab>
         </mat-tab-group>
     </ng-container>

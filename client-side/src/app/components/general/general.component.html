@@ -1,1 +1,13 @@
-<div>General works</div>
+<p class="page-description body-md" [innerHTML]="'GENERAL.DESCRIPTION' | translate"></p>
+
+<div class="page-body">
+
+  <pep-textbox [value]="general?.name" [label]="'GENERAL.HEADER_NAME' | translate" [mandatory]="true" 
+               [disabled]="false" [showTitle]="true">
+  </pep-textbox>
+
+  <pep-textarea  [value]="general?.description" [label]="'GENERAL.HEADER_DESCRIPTION' | translate"
+          [rowSpan]="2" (valueChange)="onHeaderKeyChange($event, 'header-description')">
+  </pep-textarea>
+
+</div>

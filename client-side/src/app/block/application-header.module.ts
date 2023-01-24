@@ -1,13 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { GeneralModule } from '../components/general/general.module';
+import { DesignModule } from '../components/design/design.module';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { PepAddonService } from '@pepperi-addons/ngx-lib';
-import { ApplicationHeaderComponent } from './index';
 
 import { MatTabsModule } from '@angular/material/tabs';
-
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ApplicationHeaderComponent } from './index';
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
@@ -15,6 +20,7 @@ import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 
 
 import { config } from '../app.config';
+
 
 export const routes: Routes = [
     {
@@ -26,6 +32,8 @@ export const routes: Routes = [
 @NgModule({
     declarations: [ApplicationHeaderComponent],
     imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
         CommonModule,
         TranslateModule.forChild({
             loader: {
@@ -38,10 +46,12 @@ export const routes: Routes = [
         
         RouterModule.forChild(routes),
         MatTabsModule,
+        MatExpansionModule,
         PepPageLayoutModule,
         PepTopBarModule,
         PepMenuModule,
-        GeneralModule
+        GeneralModule,
+        DesignModule
 
         
     ],
