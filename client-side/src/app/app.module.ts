@@ -7,8 +7,8 @@ import { PepAddonService } from '@pepperi-addons/ngx-lib';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routes';
 
-import { SettingsComponent, SettingsModule } from './settings';
-
+import { SettingsComponent, SettingsModule } from './components/settings';
+import { HeadersManagerModule } from './components/headers-manager/headers-manager.module';
 import { ApplicationHeaderModule, ApplicationHeaderComponent } from './block';
 import { ApplicationHeaderEditorModule, ApplicationHeaderEditorComponent } from './block-editor';
 
@@ -20,6 +20,7 @@ import { config } from './app.config';
     ],
     imports: [
         BrowserModule,
+        HeadersManagerModule,
         ApplicationHeaderModule,
         ApplicationHeaderEditorModule,
         SettingsModule,
@@ -48,7 +49,8 @@ export class AppModule implements DoBootstrap {
     }
 
     ngDoBootstrap() {
-        this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, SettingsComponent, this.injector);
+        //this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);
 
         //this.pepAddonService.defineCustomElement(`applicationheader-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);
         //this.pepAddonService.defineCustomElement(`applicationheader-editor-element-${config.AddonUUID}`, ApplicationHeaderEditorComponent, this.injector);

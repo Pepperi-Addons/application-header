@@ -8,12 +8,12 @@ const routes: Routes = [
         // component: SettingsComponent,
         children: [
             {
-                path: ':form_key',
-                loadChildren: () => import('./editor-form/editor-form.module').then(m => m.EditorFormModule)
+                path: ':header_template_key',
+                loadChildren: () => import('../../block/application-header.module').then(m => m.ApplicationHeaderModule)
             },
             {
                 path: '**',
-                loadChildren: () => import('./editor-list/editor-list.module').then(m => m.EditorListModule),
+                loadChildren: () => import('../headers-manager/headers-manager.module').then(m => m.HeadersManagerModule),
             }
         ]
     }

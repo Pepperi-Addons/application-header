@@ -1,18 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
-
-import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
-
 import { SettingsRoutingModule } from './settings.routes';
 import { SettingsComponent } from './settings.component';
+import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
+import { PepAddonService, PepNgxLibModule } from '@pepperi-addons/ngx-lib';
 
-import { EditorFormModule } from './editor-form/editor-form.module';
-import { EditorListModule } from './editor-list/editor-list.module';
+//import { SurveysService } from '../../services/surveys.service';
+import { NavigationService } from '../../services/navigation.service';
 
-import { config } from '../app.config';
-
+import { config } from '../addon.config';
+//import { ValidationService } from 'src/app/services/validation.service';
 @NgModule({
     declarations: [
         SettingsComponent
@@ -20,21 +17,22 @@ import { config } from '../app.config';
     imports: [
         CommonModule,
         PepNgxLibModule,
-        EditorListModule,
-        EditorFormModule,
         TranslateModule.forChild({
             loader: {
                 provide: TranslateLoader,
                 useFactory: (addonService: PepAddonService) => 
-                    PepAddonService.createMultiTranslateLoader(config.AddonUUID , addonService, ['ngx-lib', 'ngx-composite-lib']),
+                    PepAddonService.createMultiTranslateLoader(config.AddonUUID, addonService, ['ngx-lib', 'ngx-composite-lib']),
                 deps: [PepAddonService]
-            }
+            }, isolate: false
         }),
         SettingsRoutingModule,
     ],
     providers: [
         TranslateStore,
         // When loading this module from route we need to add this here (because only this module is loading).
+        //SurveysService,
+        //ValidationService,
+        NavigationService,
     ]
 })
 export class SettingsModule {

@@ -1,0 +1,48 @@
+<pep-page-layout class="headers-container" [addPadding]="true">
+    <ng-container pep-top-area>
+        <pep-top-bar [title]="('HEADER_TITLE' | translate)">
+            <!-- <div header-start-content>
+            </div> -->
+            <div header-end-content>
+            </div>
+        </pep-top-bar>
+    </ng-container>
+
+    <ng-container pep-main-area>
+        <mat-tab-group>
+            <mat-tab label="{{'HEADERS_MANAGER.TABS.HEADERS' | translate}}">
+                  <ng-container *ngTemplateOutlet="headersList"></ng-container>
+            </mat-tab>
+            <mat-tab label="{{'HEADERS_MANAGER.TABS.MAPPING' | translate}}">
+                2
+        </mat-tab>
+        </mat-tab-group>
+        
+    </ng-container>
+</pep-page-layout>
+
+<ng-template #headersList>
+    <div class="add-on-width">
+        <span class="headerExplanation body-md">{{ 'HEADERS_MANAGER.MAIN_EXPLANATION' | translate }}</span>
+        <pep-generic-list [dataSource]="dataSource" [actions]="actions" [inline]="false" [showTopBar]="true"
+                          [showSearch]="true" [supportSorting]="true" [uuidMapping]="'Key'" [emptyState]="{show: true}"
+                          [title]="'HEADERS_MANAGER.LIST_HEADER' | translate" 
+                          (fieldClick)="onHeaderClicked($event)">
+                <ng-container right-buttons>
+                    <pep-button class="pep-spacing-element" [value]="'HEADERS_MANAGER.ADD_HEADER' | translate" [sizeType]="'sm'"
+                        [styleType]="'strong'" (buttonClick)="onAddHeaderClicked()">
+                    </pep-button>
+                    <!-- <pep-button class="pep-spacing-element" [value]="'HEADERS_MANAGER.MANAGE_EVENTS' | translate" [sizeType]="'sm'"
+                        [styleType]="'strong'" (buttonClick)="onAddHeaderScriptClicked()">
+                    </pep-button> -->
+                </ng-container>
+        </pep-generic-list>
+    </div>
+</ng-template>
+
+<ng-template #topBarEnd>
+    <!-- <pep-menu class="pep-spacing-element" [items]="[{key: 'import', text: 'ACTIONS.IMPORT' | translate }]" [sizeType]="'sm'" (menuItemClick)="onMenuItemClicked($event)">
+    </pep-menu> -->
+    <pep-button class="pep-spacing-element" [value]="'HEADER_MANAGER.A_HEADER' | translate" [sizeType]="'sm'" [styleType]="'strong'" >
+    </pep-button>
+</ng-template>

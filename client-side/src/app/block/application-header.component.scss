@@ -1,3 +1,7 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
+// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
+// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
+
 .header-preview-cont{
     height: 7.5rem;
     width: 100%;
@@ -11,6 +15,7 @@
     .header-preview{
         height: 4rem;
         width: inherit;
+        padding-inline: ngx-variables.$spacing-xl;
         border: 1px solid #fff;
         display: flex;
         align-items: center;

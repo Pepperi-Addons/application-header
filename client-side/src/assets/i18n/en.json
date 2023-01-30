@@ -1,5 +1,16 @@
 {
-    "HEADER_TITLE": "Application header",
+    "HEADER_TITLE": "Application Header Configuration",
+
+    "HEADERS_MANAGER": {
+        "MAIN_EXPLANATION": "Create custom headers for the Webapp and for the Native apps with our drag & drop builder that gives you total control of each detail of your page. You can configur a costume header for each role. You can read more about the App Header Configuration options and features in our docs in this link.",
+        "LIST_HEADER": "Headers",
+        "ADD_HEADER": "Add an Header",
+
+        "TABS": {
+            "HEADERS": "Headers",
+            "MAPPING": "Mapping"
+        }
+    },
 
     "TABS": {
         "GENERAL": "General",
@@ -7,16 +18,19 @@
         "LINKS": "Links",
         "BUTTONS": "Buttons"
     },
+
     "ACTION": {
         "SAVE": "Save",
         "CANCEL": "Cancel",
         "PUBLISH": "Publish"
     },
+
     "GENERAL":{
         "DESCRIPTION": "Customize your app’s header, web and native by choosing from a variety of design options. With the custom header, you can quickly adjust the size, position, and color of the header, giving your app a unique look and feel.",
         "HEADER_NAME": "Header Name",
         "HEADER_DESCRIPTION": "Description"
     },
+
     "DESIGN":{
         "HEADER_COLOR": {
            "TITLE" : "Header color",
@@ -29,7 +43,20 @@
         },
         "DIMENSIONS": "Dimensions (web only)",
         "SHADOW": "Shadow (web only)",
-        "BOTTOM_BORDER": "Bottom border (web only)" 
+        "BOTTOM_BORDER": "Bottom border (web only)" ,
+        "THEME_COLOR": {
+            "PRIMARY": "Primary",
+            "PRIMARY_WEAK": "Primary, weak",
+            "SECONDARY": "Secondary",
+            "SECONDARY_WEAK": "Secondary, weak",
+            "SYSTEM": "System",
+            "SYSTEM_WEAK": "System, weak",
+            "SYSTEM_INVERT": "System, invert"
+        },
+        "FONTS_COLOR": {
+            "SYSTEM": "System color",
+            "SYSTEM_INVERT": "Invert system color"
+        }
     }
 }
 

@@ -1,0 +1,22 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables';
+
+
+:host {
+    height: 100%;
+}
+
+::ng-deep .list-empty-state{
+    min-height: 15rem;
+}
+
+.headerExplanation{
+        max-width: 34rem;
+        display: block;
+}
+
+.add-on-width {
+    max-width: 65rem;
+    display: flex;
+    height: inherit;
+    flex-direction: column;
+}

@@ -2,7 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GeneralComponent } from '../components/general/general.component';
 import { DesignComponent } from '../components/design/design.component';
-import { HeaderData } from './application-header.model';
+import { HeaderData } from '../components/application-header.model';
 
 @Component({
     selector: 'page-block',
@@ -26,7 +26,7 @@ export class ApplicationHeaderComponent implements OnInit {
     onDesignChanged(event: any){
        this.headerData.design = event;
     }
-    
+
     ngOnChanges(e: any): void {
 
     }

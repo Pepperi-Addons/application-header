@@ -3,56 +3,63 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { PepNgxLibModule } from '@pepperi-addons/ngx-lib';
+import { PepGenericListModule } from '@pepperi-addons/ngx-composite-lib/generic-list';
+import { MatTabsModule } from '@angular/material/tabs';
+import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
+import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
 import { PepSizeDetectorModule } from '@pepperi-addons/ngx-lib/size-detector';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
-import { PepIconRegistry, PepIconModule, pepIconSystemClose } from '@pepperi-addons/ngx-lib/icon';
+import { PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus } from '@pepperi-addons/ngx-lib/icon';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
-import { PepDialogModule } from '@pepperi-addons/ngx-lib/dialog';
-import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
+import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
+import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 
-import { PepGenericListModule } from '@pepperi-addons/ngx-composite-lib/generic-list';
 
-import { EditorFormComponent } from './editor-form.component';
+import { HeadersManagerComponent } from './headers-manager.component';
 
 const pepIcons = [
     pepIconSystemClose,
+    pepIconArrowLeftAlt,
+    pepIconNumberPlus
 ];
 
 export const routes: Routes = [
     {
         path: '',
-        component: EditorFormComponent
+        component: HeadersManagerComponent
     }
 ];
 
 @NgModule({
     declarations: [
-        EditorFormComponent,
+        HeadersManagerComponent,
     ],
     imports: [
         CommonModule,
         HttpClientModule,
+        MatIconModule,        
         PepNgxLibModule,
-        PepTopBarModule,
-        PepPageLayoutModule,
-        PepSizeDetectorModule,
-        PepIconModule,
-        PepMenuModule,
-        PepButtonModule,
-        PepDialogModule,
-        PepTextboxModule,
         PepGenericListModule,
+        PepSizeDetectorModule,
+        PepTopBarModule,
+        PepSideBarModule,
+        PepPageLayoutModule,
+        PepButtonModule,
+        PepTextboxModule,
+        PepTextareaModule,
+        PepSelectModule, 
+        MatTabsModule,       
         TranslateModule.forChild(),
         RouterModule.forChild(routes)
     ],
-    exports:[EditorFormComponent]
+    exports:[HeadersManagerComponent]
 })
-export class EditorFormModule {
+export class HeadersManagerModule {
     constructor(
         private pepIconRegistry: PepIconRegistry
     ) {
