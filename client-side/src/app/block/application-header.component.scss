@@ -2,42 +2,47 @@
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
 
-.header-preview-cont{
-    height: 7.5rem;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background-color: #fff;
-    display: flex;
-    align-items: center;
+// .header-preview-cont{
+//     height: 7.5rem;
+//     width: 100%;
+//     position: sticky;
+//     top: 0;
+//     z-index: 2;
+//     background-color: #fff;
+//     display: flex;
+//     align-items: center;
 
-    .header-preview{
-        height: 4rem;
-        width: inherit;
-        padding-inline: ngx-variables.$spacing-xl;
-        border: 1px solid #fff;
-        display: flex;
-        align-items: center;
+//     .header-preview{
+//         height: 4rem;
+//         width: inherit;
+//         padding-inline: ngx-variables.$spacing-xl;
+//         border: 1px solid #fff;
+//         display: flex;
+//         align-items: center;
 
-        .logOImage{
-            img{
-                height: 2rem;
-            }
+//         .logOImage{
+//             img{
+//                 height: 2rem;
+//             }
             
-        }
-    }
+//         }
+//     }
 
     
-}
+// }
 
 mat-tab-group{
     max-width: 896px;
-
-    ::ng-deep .mat-tab-header{
-        position: sticky;
-        top: 120px;
-        background: #fff;
-        z-index: 2;
+    
+    ::ng-deep {
+        .mat-tab-header{
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 2;
+        }
+        .mat-tab-body-content{
+            padding: unset !important;
+        }
     }
 }

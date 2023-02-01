@@ -6,7 +6,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { GeneralModule } from '../components/general/general.module';
-import { DesignModule } from '../components/design/design.module';
+import { MenuModule } from '../components/menu/menu.module';
+import { ButtonsModule } from "../components/buttons/buttons.module";
+//import { DesignModule } from '../components/design/design.module';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { PepAddonService } from '@pepperi-addons/ngx-lib';
 
@@ -51,7 +53,9 @@ export const routes: Routes = [
         PepTopBarModule,
         PepMenuModule,
         GeneralModule,
-        DesignModule
+        MenuModule,
+        ButtonsModule
+        //DesignModule
 
         
     ],

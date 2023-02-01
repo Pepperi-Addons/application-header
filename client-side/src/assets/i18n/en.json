@@ -15,7 +15,7 @@
     "TABS": {
         "GENERAL": "General",
         "DESIGN": "Design",
-        "LINKS": "Links",
+        "MENU": "Menu",
         "BUTTONS": "Buttons"
     },
 
@@ -29,6 +29,17 @@
         "DESCRIPTION": "Customize your app’s header, web and native by choosing from a variety of design options. With the custom header, you can quickly adjust the size, position, and color of the header, giving your app a unique look and feel.",
         "HEADER_NAME": "Header Name",
         "HEADER_DESCRIPTION": "Description"
+    },
+
+    "MENU": {
+       "DESCRIPTION": "Short text about links ligroups and the design options like that the menu item can be a link or a group, and that the group can hold links or other groups, and lastly that we allow for three level deep group hierarchy", 
+        "TITLE": "Structure"
+    },
+
+    "BUTTONS": {
+       "DESCRIPTION": "Short text about button configuration", 
+        "TITLE": "Buttons",
+        "AVAILABLE_BUTTONS": "Avilable buttons"
     },
 
     "DESIGN":{

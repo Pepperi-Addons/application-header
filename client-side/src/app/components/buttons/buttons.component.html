@@ -1,0 +1,12 @@
+<p class="page-description body-md" [innerHTML]="'BUTTONS.DESCRIPTION' | translate"></p>
+
+<!-- <div class="page-body">
+  <div class="pep-border-bottom dragable-cont">
+    <label class="title-md" [innerHTML]="'BUTTONS.AVAILABLE_BUTTONS' | translate"></label>
+  </div>
+  <div class="pep-border-bottom dropable-cont">
+    <label class="title-md" [innerHTML]="'BUTTONS.TITLE' | translate"></label>
+  </div>
+</div> -->
+<pep-data-view-builder builderTitle="{{'BUTTONS.TITLE' | translate}}" builderTitleHint=""
+[availableFields]="availableFields" [dataView]="dataView" (dataViewChange)="onDataViewChange($event)"></pep-data-view-builder>

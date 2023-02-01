@@ -1,0 +1,24 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
+// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
+// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
+
+
+.page-description{
+    max-width: 28rem;
+}
+
+// .page-body{
+//     margin-top: ngx-variables.$spacing-lg;
+//     display: flex;
+//     flex-direction: row;
+//     width: 100%;
+//     gap: 1rem;
+
+//     .dragable-cont{
+//         min-width: 15rem;
+//     }
+
+//     .dropable-cont{
+//         width: inherit;
+//     }
+// }
