@@ -5,7 +5,7 @@ import { ButtonsComponent } from './buttons.component';
 import { PepDataViewBuilderModule } from '@pepperi-addons/ngx-composite-lib/data-view-builder';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
-
+import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 @NgModule({
     declarations: [
         ButtonsComponent
@@ -16,7 +16,8 @@ import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 
         PepDataViewBuilderModule,
         PepTextboxModule,
-        PepTextareaModule
+        PepTextareaModule,
+        PepButtonModule
     ],
     exports: [ButtonsComponent]
 })

@@ -19,36 +19,44 @@ export class ButtonsComponent implements OnInit {
     
     ngOnInit(): void {
         this.dataView = {
-            "InternalID": 5731318,
             "Type": "Menu",
             "Title": "",
             "Hidden": false,
-            "CreationDateTime": "2022-04-10T14:19:03Z",
-            "ModificationDateTime": "2022-04-28T09:29:01Z",
             "Context": {
-                "Name": "Slugs",
-                "ScreenSize": "Tablet",
+                "Name": "Menu Buttons",
                 "Profile": {
                     "InternalID": 72197,
                     "Name": "Admin"
                 }
             },
             "Fields": [
-                
+                 {
+                     "FieldID": "OCInnerActionAnnouncent",
+                     "Title": "Announcent"
+                 }
+                // {
+                //     "FieldID": "OCInnerActionHelp",
+                //     "Title": "Help"
+                // },{
+                //     "FieldID": "OCInnerActionUser",
+                //     "Title": "User"
+                // },{
+                //     "FieldID": "OCInnerActionSettings",
+                //     "Title": "Settings"
+                // }
             ]
         }
 
         this.availableFields = [
-            { title: 'Notification', data: { key: 'notification' } },
-            { title: 'Button 2', data: { key: 'btn2' } }
+            { title: 'Notification', data: { key: 'notification' } }
         ]
     }
 
     onDataViewChange(event){
-
+        debugger;
     }
 
     onHeaderKeyChange(event: any, key: string): void {
-
+        debugger;
     }
 }

@@ -9,4 +9,16 @@
   </div>
 </div> -->
 <pep-data-view-builder builderTitle="{{'BUTTONS.TITLE' | translate}}" builderTitleHint=""
-[availableFields]="availableFields" [dataView]="dataView" (dataViewChange)="onDataViewChange($event)"></pep-data-view-builder>
+    [availableFields]="availableFields" [dataView]="dataView" (dataViewChange)="onDataViewChange($event)">
+</pep-data-view-builder>
+<div class="disabled-btn-cont">
+    <div class="mapped-field-container disabled-btn">
+        <pep-textbox [value]="'1'" [label]="'GENERAL.HEADER_NAME' | translate" [disabled]="true" [showTitle]="'true'">
+        </pep-textbox>
+        <pep-textbox [value]="'2'" [label]="'GENERAL.HEADER_NAME' | translate" [disabled]="true" [showTitle]="'true'">
+        </pep-textbox>
+        <pep-button class="pep-spacing-element" styleType="weak" styleStateType="system" sizeType="md" 
+        iconName="view_table" iconPosition="center">
+      </pep-button>
+    </div>
+</div>

@@ -2,9 +2,32 @@
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
 
-
+:host{
+    display: flex;
+    height: fit-content;
+    flex-direction: column;
+}
 .page-description{
     max-width: 28rem;
+}
+
+.disabled-btn-cont{
+    display: flex;
+    justify-content: end;
+
+    .disabled-btn{
+        display: grid;
+        grid-template-columns: 1fr 1fr min-content;
+        gap: 0.5rem;
+        border: 1px solid hsl(var(--pep-color-regular-h, 0), var(--pep-color-regular-s, 0%), calc(var(--pep-color-regular-l, 10%) + 30%));
+        border-radius: 0.25rem;
+        padding-inline: 1rem;
+        width: calc(100% - 240px);
+        max-width: 600px;
+        margin-inline: 1.25rem;
+        align-items: center;
+        padding-top: 0.25rem;
+    }
 }
 
 // .page-body{
