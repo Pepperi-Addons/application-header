@@ -3,11 +3,11 @@
 <div class="page-body">
 
   <pep-textbox [value]="general?.name" [label]="'GENERAL.HEADER_NAME' | translate" [mandatory]="true" 
-               [disabled]="false" [showTitle]="true">
+               [disabled]="false" [showTitle]="true" (valueChange)="onHeaderKeyChange('name', $event)">
   </pep-textbox>
 
   <pep-textarea  [value]="general?.description" [label]="'GENERAL.HEADER_DESCRIPTION' | translate"
-          [rowSpan]="2" (valueChange)="onHeaderKeyChange($event, 'header-description')">
+          [rowSpan]="2" (valueChange)="onHeaderKeyChange('description', $event)">
   </pep-textarea>
 
 </div>

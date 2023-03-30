@@ -4,11 +4,30 @@
     "HEADERS_MANAGER": {
         "MAIN_EXPLANATION": "Create custom headers for the Webapp and for the Native apps with our drag & drop builder that gives you total control of each detail of your page. You can configur a costume header for each role. You can read more about the App Header Configuration options and features in our docs in this link.",
         "LIST_HEADER": "Headers",
-        "ADD_HEADER": "Add an Header",
-
+        "ADD_HEADER": "Add a new Header",
+        "DELETE_HEADER":{
+            "TITLE": "Delete header",
+            "MSG": "Are you sure you want to delete this header? "
+        },
         "TABS": {
             "HEADERS": "Headers",
             "MAPPING": "Mapping"
+        },
+
+        "GRID_HEADER": {
+            "NAME": "Name",
+            "NAME_NO_SET": "No name set",
+            "DESCRIPTION": "Description",
+            "DRAFT": "Draft",
+            "PUBLISHED": "Published"
+        },
+
+        "ACTION":{
+            "EDIT": "Edit",
+            "DUPLICATE": "Duplicate",
+            "EXPORT": "Export",
+            "IMPORT": "Import",
+            "DELETE": "Delete"
         }
     },
 
@@ -33,41 +52,23 @@
 
     "MENU": {
        "DESCRIPTION": "Short text about links ligroups and the design options like that the menu item can be a link or a group, and that the group can hold links or other groups, and lastly that we allow for three level deep group hierarchy", 
-        "TITLE": "Structure"
+        "TITLE": "Structure",
+        "ITEM":{
+            "NAME_LABEL": "Display name"
+        },
+        "ACTION":{
+            "CHOOSE_SCRIPT": "Choose script",
+            "ADD_MENU_ITEM": "Add an item",
+            "ADD_SUB_MENU_ITEM": "Add a sub item"
+        }
     },
 
     "BUTTONS": {
        "DESCRIPTION": "Short text about button configuration", 
         "TITLE": "Buttons",
-        "AVAILABLE_BUTTONS": "Avilable buttons"
-    },
-
-    "DESIGN":{
-        "HEADER_COLOR": {
-           "TITLE" : "Header color",
-           "DESCRIPTION": "You can change the quantity selector styling to that allow customers to add several products to their cart at once.",
-           "THEME_COLOR": "Theme color",
-           "THEME_COLOR_DESCRIPTION": "Select main theme color",
-           "USE_CUSTOM_COLOR": "Use custom colors",
-           "CUSTOM_BACKGROUND_COLOR": "Custom background color",
-           "CUSTOM_TEXT_COLOR": "Custom text color"
-        },
-        "DIMENSIONS": "Dimensions (web only)",
-        "SHADOW": "Shadow (web only)",
-        "BOTTOM_BORDER": "Bottom border (web only)" ,
-        "THEME_COLOR": {
-            "PRIMARY": "Primary",
-            "PRIMARY_WEAK": "Primary, weak",
-            "SECONDARY": "Secondary",
-            "SECONDARY_WEAK": "Secondary, weak",
-            "SYSTEM": "System",
-            "SYSTEM_WEAK": "System, weak",
-            "SYSTEM_INVERT": "System, invert"
-        },
-        "FONTS_COLOR": {
-            "SYSTEM": "System color",
-            "SYSTEM_INVERT": "Invert system color"
-        }
+        "AVAILABLE_BUTTONS": "Avilable buttons",
+        "BUTTON_KEY": "Button key",
+        "BUTTON_NAME": "Button name"
     }
 }
 

@@ -14,6 +14,8 @@ import { RelationsService } from './services/relations.service';
 export async function install(client: Client, request: Request): Promise<any> {
     try {
         const service = new RelationsService(client);
+
+        const TablesSchemes = await service.createTablesSchemes();
         await service.upsertRelations();
     } catch (err) {
         throw new Error(`Failed to create relations. error - ${err}`);

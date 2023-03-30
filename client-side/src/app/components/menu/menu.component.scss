@@ -1,7 +1,7 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
-// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
-// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
-
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
+@use '@pepperi-addons/ngx-composite-lib/src/core/style/components/data-view-builder';
 
 .page-description{
     max-width: 28rem;
@@ -10,4 +10,22 @@
 .page-body{
     margin-top: ngx-variables.$spacing-lg;
     max-width: 52rem;
+    .body-header{
+        margin-bottom: ngx-variables.$spacing-lg;
+    }
+    .add-separator-container {
+        @include data-view-builder.mapped-field-item-container();
+        height: ngx-variables.$content-margin;
+        gap: ngx-variables.$spacing-sm;
+        max-width: inherit;
+
+        .add-separator {
+            position: relative;
+            display: none;
+        }
+
+        &:hover .add-separator {
+            display: block;
+        }
+    }
 }

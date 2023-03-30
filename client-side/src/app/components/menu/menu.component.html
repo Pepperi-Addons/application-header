@@ -3,8 +3,21 @@
 <div class="page-body">
   <div class="body-header pep-border-bottom">
     <label class="title-md" [innerHTML]="'MENU.TITLE' | translate"></label>
+    <pep-button styleType="strong" sizeType="xs" iconName="number_plus" class="pep-button strong xs pep-spacing-element pull-right flip" 
+            [value]="'MENU.ACTION.ADD_MENU_ITEM' | translate" (buttonClick)="addMenuItem()"></pep-button>
   </div>
-  
-
-
+  <div  cdkDropList [cdkDropListData]="menuItems" (cdkDropListDropped)="onDropField($event)">
+    <ng-container *ngFor="let menuField of menuItems; let i = index" >
+          <menu-item [menuItem]="menuField" [deleteable]="(menuItems?.length > 1 && menuField?.ID !== 0) || (menuItems?.length == 1 && menuField?.ID === 0)" 
+            (onDeleteMenuItem)="deleteMenuItem($event)" (onMenuItemChange)="menuItemChange($event)" cdkDrag (cdkDragStarted)="onDragStart($event)" 
+            (cdkDragEnded)="onDragEnd($event)">
+          </menu-item>
+      <div *ngIf="!isGrabbing" class="add-separator-container">
+          <pep-button class="add-separator" styleType="regular" sizeType="sm" iconName="number_plus" 
+              [value]="'MENU.ACTION.ADD_MENU_ITEM' | translate" (buttonClick)="addMenuItem(menuField)"></pep-button>
+          <pep-button *ngIf="menuField?.HierarchyLevel < 2" class="add-separator" styleType="regular" sizeType="sm" iconName="number_plus" 
+              [value]="'MENU.ACTION.ADD_SUB_MENU_ITEM' | translate" (buttonClick)="addSubMenuItem(menuField)"></pep-button>
+      </div>
+  </ng-container>
+  </div>
 </div>

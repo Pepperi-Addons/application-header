@@ -1,24 +1,16 @@
 <p class="page-description body-md" [innerHTML]="'BUTTONS.DESCRIPTION' | translate"></p>
 
-<!-- <div class="page-body">
-  <div class="pep-border-bottom dragable-cont">
-    <label class="title-md" [innerHTML]="'BUTTONS.AVAILABLE_BUTTONS' | translate"></label>
-  </div>
-  <div class="pep-border-bottom dropable-cont">
-    <label class="title-md" [innerHTML]="'BUTTONS.TITLE' | translate"></label>
-  </div>
-</div> -->
 <pep-data-view-builder builderTitle="{{'BUTTONS.TITLE' | translate}}" builderTitleHint=""
-    [availableFields]="availableFields" [dataView]="dataView" (dataViewChange)="onDataViewChange($event)">
+    [availableFields]="availableFields" [dataView]="dataView" (dataViewChange)="onDataViewChange($event)" [showAddSeparator]="false" [itemKeyLabel]="'BUTTONS.BUTTON_KEY' | translate" 
+    [itemTitleLabel]="'BUTTONS.BUTTON_NAME' | translate">
 </pep-data-view-builder>
-<div class="disabled-btn-cont">
+
+<!--  build the hard coded button ( only on the ui )-->
+<div *ngFor="let btn of systemButtons" class="disabled-btn-cont">
     <div class="mapped-field-container disabled-btn">
-        <pep-textbox [value]="'1'" [label]="'GENERAL.HEADER_NAME' | translate" [disabled]="true" [showTitle]="'true'">
+        <pep-textbox [value]="btn.key" [label]="'BUTTONS.BUTTON_KEY' | translate" [disabled]="true" [showTitle]="'true'">
         </pep-textbox>
-        <pep-textbox [value]="'2'" [label]="'GENERAL.HEADER_NAME' | translate" [disabled]="true" [showTitle]="'true'">
+        <pep-textbox [value]="btn.name" [label]="'BUTTONS.BUTTON_NAME' | translate" [disabled]="true" [showTitle]="'true'">
         </pep-textbox>
-        <pep-button class="pep-spacing-element" styleType="weak" styleStateType="system" sizeType="md" 
-        iconName="view_table" iconPosition="center">
-      </pep-button>
     </div>
 </div>

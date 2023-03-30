@@ -1,0 +1,93 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
+@use '@pepperi-addons/ngx-composite-lib/src/core/style/components/data-view-builder';
+
+
+.drop-field-here-area {
+    min-height: 5rem;
+
+    @include data-view-builder.mapped-field-item-container();
+    @include ngx-mixins.state-weak-default();
+    @include ngx-mixins.inline(ngx-functions.get-pep-color(color-system-primary, color-flat-r-20), 1px, dashed);
+
+    &.cdk-drop-list-dragging {
+        @include ngx-mixins.focus();
+        
+        &:hover {
+            @include ngx-mixins.state-regular-hover(true);
+            @include ngx-mixins.focus();
+        }
+
+        // Hide the placeholder when 
+        ::ng-deep.placeholder-item {
+            display: none;
+        }
+    }
+}
+
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    // &:not(.no-row-gap) {
+    //     row-gap: ngx-variables.$content-margin;
+    // }
+
+    &.cdk-drop-list-dragging {
+        ::ng-deep.placeholder-item {
+            @include data-view-builder.mapped-field-item-container();
+            @include ngx-mixins.state-regular-default(true);
+            @include ngx-mixins.focus();
+            height: ngx-variables.$draggable-item-height;
+        }
+    }
+
+    // The mapped-field-container style declared in style.scss because when dragging in list the item added to the end of the dom and we cannot style it here (component context).
+    .mapped-field-container { 
+        cursor: grab;
+        @include data-view-builder.mapped-field-container();
+
+        max-width: 52rem;
+
+        &.hierarchyLevel_0{
+            width: 100%;
+        }
+
+        &.hierarchyLevel_1{
+            width: 80%;
+        }
+
+        &.hierarchyLevel_2{
+            width: 60%;
+        }
+
+        .fields-wrapper{
+            grid-template-columns: 1fr 1fr auto auto;
+        }
+        &.cdk-drag-placeholder {
+            // opacity: 0;
+            // @include ngx-mixins.state-regular-default(true);
+            @include ngx-mixins.focus();
+
+            .fields-wrapper,
+            .separator-wrapper {
+                opacity: 0;
+            }
+        }
+    }
+
+    // .add-separator-container {
+    //     @include data-view-builder.mapped-field-item-container();
+    //     height: ngx-variables.$content-margin;
+
+    //     .add-separator {
+    //         position: relative;
+    //         display: none;
+    //     }
+
+    //     &:hover .add-separator {
+    //         display: block;
+    //     }
+    // }
+}

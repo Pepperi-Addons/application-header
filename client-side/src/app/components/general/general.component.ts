@@ -1,4 +1,5 @@
 import { Component, OnInit, Injectable, Input, Output, EventEmitter, Optional, Inject } from '@angular/core';
+import { GeneralData } from '../application-header.model';
 
 @Component({
     selector: 'general-tab',
@@ -9,8 +10,8 @@ import { Component, OnInit, Injectable, Input, Output, EventEmitter, Optional, I
 @Injectable()
 export class GeneralComponent implements OnInit {
     
-    @Input() general;
-
+    @Input() general: GeneralData = new GeneralData();
+    @Output() generalDataChanged : EventEmitter<GeneralData> = new EventEmitter();
     
     constructor() {
        
@@ -20,7 +21,8 @@ export class GeneralComponent implements OnInit {
  
     }
 
-    onHeaderKeyChange(event: any, key: string): void {
-
+    onHeaderKeyChange(key: string, event: any): void {
+        this.general[key] = event;
+        this.generalDataChanged.emit(this.general);
     }
 }

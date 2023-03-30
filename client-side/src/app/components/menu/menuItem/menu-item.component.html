@@ -1,0 +1,14 @@
+<div class="mapped-field-container" [ngClass]="[menuItem.Title == undefined ? 'separator-container' : '' ,'hierarchyLevel_'+ menuItem?.HierarchyLevel]">
+<div class="fields-wrapper">
+    <pep-textbox [label]="'MENU.ITEM.NAME_LABEL' | translate" [value]="menuItem?.Title" (valueChange)="menuItemChange($event,menuItem)" [maxFieldCharacters]="menuItemLabelMaxCharacters">
+    </pep-textbox>
+    <div>
+      <label class="body-xs normal ellipsis">Action</label>
+    <pep-button class="script-button" [title]="'Action'" [value]="menuItem?.Script ? menuItem?.Script?.runScriptData?.ScriptKey : ('MENU.ACTION.CHOOSE_SCRIPT' | translate)" (buttonClick)="openScriptPickerDialog();"></pep-button>
+      </div>
+    <pep-group-buttons-settings [groupType]="'custom'" [btnsArray]="leftRightArrows" [title]="' '" [subHeader]="null"
+        pepResetConfigurationField="'group-buttons-test'" [dir]="'ltr'">
+  </pep-group-buttons-settings>
+    <pep-button class="center-button" [disabled]="!deleteable" iconName="system_bin" [title]="'Delete'" (buttonClick)="deleteMenuItem($event, menuItem)"></pep-button>
+</div>
+</div>

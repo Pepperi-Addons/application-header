@@ -9,7 +9,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class ApplicationHeaderEditorComponent implements OnInit {
     @Input() hostObject: any;
 
-    @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
+  
 
     constructor(private translate: TranslateService) {
     }
@@ -19,4 +19,6 @@ export class ApplicationHeaderEditorComponent implements OnInit {
 
     ngOnChanges(e: any): void {
     }
+
+
 }

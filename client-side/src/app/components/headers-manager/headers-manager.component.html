@@ -14,7 +14,7 @@
                   <ng-container *ngTemplateOutlet="headersList"></ng-container>
             </mat-tab>
             <mat-tab label="{{'HEADERS_MANAGER.TABS.MAPPING' | translate}}">
-                2
+                <ng-container *ngTemplateOutlet="mappingTemp"></ng-container>
         </mat-tab>
         </mat-tab-group>
         
@@ -24,25 +24,32 @@
 <ng-template #headersList>
     <div class="add-on-width">
         <span class="headerExplanation body-md">{{ 'HEADERS_MANAGER.MAIN_EXPLANATION' | translate }}</span>
-        <pep-generic-list [dataSource]="dataSource" [actions]="actions" [inline]="false" [showTopBar]="true"
+        <pep-generic-list [dataSource]="dataSource" [selectionType]="'single'" [actions]="actions" [inline]="false" [showTopBar]="true"
                           [showSearch]="true" [supportSorting]="true" [uuidMapping]="'Key'" [emptyState]="{show: true}"
                           [title]="'HEADERS_MANAGER.LIST_HEADER' | translate" 
                           (fieldClick)="onHeaderClicked($event)">
                 <ng-container right-buttons>
+                    <pep-menu class="pep-spacing-element" [items]="[{key: 'import', text: 'HEADERS_MANAGER.ACTION.IMPORT' | translate }]" [sizeType]="'sm'" (menuItemClick)="onMenuItemClicked($event)">
+                    </pep-menu>
                     <pep-button class="pep-spacing-element" [value]="'HEADERS_MANAGER.ADD_HEADER' | translate" [sizeType]="'sm'"
-                        [styleType]="'strong'" (buttonClick)="onAddHeaderClicked()">
+                        [styleType]="'strong'" (buttonClick)="onHeaderClicked($event)">
                     </pep-button>
-                    <!-- <pep-button class="pep-spacing-element" [value]="'HEADERS_MANAGER.MANAGE_EVENTS' | translate" [sizeType]="'sm'"
-                        [styleType]="'strong'" (buttonClick)="onAddHeaderScriptClicked()">
-                    </pep-button> -->
                 </ng-container>
         </pep-generic-list>
     </div>
 </ng-template>
 
+<ng-template #mappingTemp>
+    <pep-profile-data-views-list [profileDataViewsList]="profileDataViewsList"
+                    [availableProfiles]="availableProfiles"
+                    [defaultProfileId]="defaultProfileId" (dataViewEditClick)="onDataViewEditClicked($event)"
+                    (dataViewDeleteClick)="onDataViewDeleteClicked($event)" (saveNewProfileClick)="onSaveNewProfileClicked($event)">
+    </pep-profile-data-views-list> 
+</ng-template>
+
 <ng-template #topBarEnd>
-    <!-- <pep-menu class="pep-spacing-element" [items]="[{key: 'import', text: 'ACTIONS.IMPORT' | translate }]" [sizeType]="'sm'" (menuItemClick)="onMenuItemClicked($event)">
-    </pep-menu> -->
+    <pep-menu class="pep-spacing-element" [items]="[{key: 'import', text: 'HEADERS_MANAGER.ACTION.IMPORT' | translate }]" [sizeType]="'sm'" (menuItemClick)="onMenuItemClicked($event)">
+    </pep-menu>
     <pep-button class="pep-spacing-element" [value]="'HEADER_MANAGER.A_HEADER' | translate" [sizeType]="'sm'" [styleType]="'strong'" >
     </pep-button>
 </ng-template>

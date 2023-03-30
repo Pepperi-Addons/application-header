@@ -20,3 +20,24 @@
     height: inherit;
     flex-direction: column;
 }
+
+mat-tab-group{
+    max-width: 896px;
+    height: 100%;
+    
+    ::ng-deep {
+        .mat-tab-header{
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 2;
+        }
+        .mat-tab-body-wrapper{
+            height: 100%;
+        
+            .mat-tab-body-content{
+                padding: unset !important;
+            }
+        }
+    }
+}

@@ -16,9 +16,10 @@ import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
 import { PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus } from '@pepperi-addons/ngx-lib/icon';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
+import { PepProfileDataViewsListModule } from '@pepperi-addons/ngx-lib/profile-data-views-list';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
-
+import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 
 import { HeadersManagerComponent } from './headers-manager.component';
 
@@ -51,8 +52,10 @@ export const routes: Routes = [
         PepPageLayoutModule,
         PepButtonModule,
         PepTextboxModule,
+        PepProfileDataViewsListModule,
         PepTextareaModule,
         PepSelectModule, 
+        PepMenuModule,
         MatTabsModule,       
         TranslateModule.forChild(),
         RouterModule.forChild(routes)

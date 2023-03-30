@@ -62,7 +62,7 @@ export class NavigationService {
         });
     }
 
-    navigateToHeader(headerTemplateKey: string): Promise<boolean> {
+    navigateToHeader(headerTemplateKey: string = '-1'): Promise<boolean> {
         const route: ActivatedRoute = this.getCurrentRoute(this.route);
         
         return this.router.navigate([`${headerTemplateKey}`], {
@@ -70,7 +70,7 @@ export class NavigationService {
             queryParamsHandling: 'merge'
         });
     }
-
+    
     getQueryParamsAsObject(): any {
         const queryParamsAsObject = this.paramsToObject(new URLSearchParams(location.search));
         return queryParamsAsObject;

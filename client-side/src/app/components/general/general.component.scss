@@ -1,4 +1,4 @@
-@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as variables;
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
 
@@ -8,6 +8,7 @@
 }
 
 .page-body{
-    margin-top: ngx-variables.$spacing-lg;
+    padding-inline-start: variables.$spacing-sm;
+    margin-top: variables.$spacing-lg;
     max-width: 20rem;
 }

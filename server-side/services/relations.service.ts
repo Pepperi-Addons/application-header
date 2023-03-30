@@ -1,10 +1,12 @@
-import { PapiClient, InstalledAddon, Relation } from '@pepperi-addons/papi-sdk'
+import { PapiClient, InstalledAddon, Relation, AddonDataScheme } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 
 export class RelationsService {
 
-    papiClient: PapiClient
-    bundleFileName = '';
+    private papiClient: PapiClient;
+    private TABLE_NAME = 'AppHeaders';
+    private TABLE_NAME_DRAFTS =  this.TABLE_NAME + 'Drafts';
+    private bundleFileName = '';
 
     constructor(private client: Client) {
         this.papiClient = new PapiClient({
@@ -49,59 +51,202 @@ export class RelationsService {
             ElementName: `${blockName.toLocaleLowerCase()}-element-${this.client.AddonUUID}`,
         };
     }
-    // await this.upsertSettingsRelation('SettingsBlock', 'BrandedApp', 'ApplicationHeader', 'Header customization');
-    private async upsertSettingsRelation(blockRelationSlugName: string, blockRelationGroupName: string, blockRelationName: string, blockRelationDescription: string) {
-        const blockName = 'Settings';
+    async createTablesSchemes(): Promise<AddonDataScheme[]> {
+        const promises: AddonDataScheme[] = [];
+        try {
+
+            const DIMXSchema = {
+                    Blocks: {
+                        Type: "Array",
+                        Items: {
+                            Type: "Object",
+                            Fields: {
+                                Configuration: {
+                                    Type: "ContainedDynamicResource"
+                                }
+                            }
+                        }
+                    },
+            };
+
+            // Create headers table
+            const createHeadersTable = await this.papiClient.addons.data.schemes.post({
+                Name: this.TABLE_NAME,
+                Type: 'data',
+                SyncData: {
+                    Sync: true
+                }
+            });
+
+            // Create headers draft table
+            const createHeadersDraftTable = await this.papiClient.addons.data.schemes.post({
+                Name: this.TABLE_NAME_DRAFTS,
+                Type: 'data',
+                Fields: DIMXSchema as any // Declare the schema for the import & export.
+            });
         
-        
-        const blockRelation: Relation = this.getCommonRelationProperties(
-            'SettingsBlock',
-            blockRelationName,
-            blockRelationDescription,
-            blockName);
-
-        blockRelation['SlugName'] = blockRelationSlugName;
-        blockRelation['GroupName'] = blockRelationGroupName;
-        
-        return await this.upsertRelation(blockRelation);
-    }
-
-    private async upsertBlockRelation(blockRelationName: string, isPageBlock: boolean): Promise<any> {
-        const blockName = 'ApplicationHeader';
-
-        const blockRelation: Relation = this.getCommonRelationProperties(
-            isPageBlock ? 'PageBlock' : 'AddonBlock',
-            blockRelationName,
-            `${blockRelationName} block`,
-            blockName);
-
-        // For Page block we need to declare the editor data.
-        if (isPageBlock) {
-            blockRelation['EditorComponentName'] = `${blockName}EditorComponent`; // This is should be the block editor component name (from the client-side)
-            blockRelation['EditorModuleName'] = `${blockName}EditorModule`; // This is should be the block editor module name (from the client-side)}
-            blockRelation['EditorElementName'] = `${blockName.toLocaleLowerCase()}-editor-element-${this.client.AddonUUID}`;
+            promises.push(createHeadersTable);
+            promises.push(createHeadersDraftTable);
+            //promises.push(createPagesVariablesTable);
+            return Promise.all(promises);
+                
+            } catch (err) {
+                throw new Error(`Failed to create Headers ADAL Tables. error - ${err}`);
+            }
         }
-        
-        return await this.upsertRelation(blockRelation);
-    }
 
     async upsertRelations() {
-        //For settings block use this.
-        const blockRelationSlugName = 'application_header';
-        const blockRelationGroupName = 'BrandedApp';
-        const blockRelationName = 'ApplicationHeader';
-        const blockRelationDescription = 'Header customization';
-
-        await this.upsertSettingsRelation(blockRelationSlugName, blockRelationGroupName, blockRelationName, blockRelationDescription);
-
-        // For page block use this.
-        // // TODO: change to block name (this is the unique relation name and the description that will be on the block).
-        //const blockRelationName = 'ApplicationHeader';
-        //await this.upsertBlockRelation(blockRelationName, true);
-
-        // For addon block use this.
-        // // TODO: change to block name (this is the unique relation name and the description that will be on the block).
-        // const blockRelationName = 'CHANGE_TO_BLOCK_RELATION_NAME';
-        // await this.upsertBlockRelation(blockRelationName, false);
+        await this.upsertImportRelation();
+        await this.upsertExportRelation();
+        await this.upsertAddonBlockRelation();
+        await this.upsertSettingsRelation();
     }
+
+    private upsertAddonBlockRelation() {
+        const name = 'Application Header';
+        const blockName = 'ApplicationHeader';
+
+        const addonBlockRelation: Relation = {
+            RelationName: "AddonBlock",
+            Name: name,
+            Description: `${name} addon`,
+            Type: "NgComponent",
+            SubType: "NG14",
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: this.bundleFileName,
+            ComponentName: `${blockName}Component`,
+            ModuleName: `${blockName}Module`,
+            ElementsModule: 'WebComponents',
+            ElementName: `pages-element-${this.client.AddonUUID}`,
+        }; 
+        
+        this.upsertRelation(addonBlockRelation);
+    }
+
+    private upsertSettingsRelation() {
+        const settingsName = 'Settings';
+        const name = 'Application Header';
+
+        const settingsBlockRelation: Relation = {
+            RelationName: "ApplicationHeader",
+            GroupName: 'Pages',
+            SlugName: 'application_header',
+            Name: name,
+            Description: 'Header customization',
+            Type: "NgComponent",
+            SubType: "NG14",
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: this.bundleFileName,
+            ComponentName: `${settingsName}Component`,
+            ModuleName: `${settingsName}Module`,
+            ElementsModule: 'WebComponents',
+            ElementName: `settings-element-${this.client.AddonUUID}`,
+        }; 
+        
+        this.upsertRelation(settingsBlockRelation);
+    }
+
+       /***********************************************************************************************/
+    //                              Import & Export functions
+    /************************************************************************************************/
+    
+    private upsertImportRelation(): void {
+        const importRelation: Relation = {
+            RelationName: 'DataImportResource',
+            Name: this.TABLE_NAME_DRAFTS,
+            Description: 'Application header import',
+            Type: 'AddonAPI',
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: '/api/header_import',
+            MappingRelativeURL: ''// '/internal_api/draft_pages_import_mapping', // '/api/pages_import_mapping',
+        };                
+
+        this.upsertRelation(importRelation);
+    }
+
+    private upsertExportRelation(): void {
+        const exportRelation: Relation = {
+            RelationName: 'DataExportResource',
+            Name: this.TABLE_NAME_DRAFTS,
+            Description: 'Application header export',
+            Type: 'AddonAPI',
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: '/api/header_export'
+        };                
+
+        this.upsertRelation(exportRelation);
+    }
+
+    private async getDIMXResult(body: any, isImport: boolean): Promise<any> {
+        // Validate the pages.
+        if (body.DIMXObjects?.length > 0) {
+            console.log('@@@@@@@@ getDIMXResult - enter ', JSON.stringify(body));
+            console.log('@@@@@@@@ getDIMXResult - isImport = ', isImport);
+
+            for (let index = 0; index < body.DIMXObjects.length; index++) {
+                const dimxObject = body.DIMXObjects[index];
+                try {
+                    // const page = await this.validateAndOverridePageAccordingInterface(dimxObject['Object'], isImport);
+                    
+                    // // For import always generate new Key and set the Hidden to false.
+                    // if (isImport) {
+                    //     page.Key = page.Key && page.Key.length > 0 ? page.Key : uuidv4();
+                    //     page.Hidden = false;
+                    // }
+                    // dimxObject['Object'] = page;
+                } catch (err) {
+                    // Set the error on the page.
+                    dimxObject['Status'] = 'Error';
+                    dimxObject['Details'] = err;
+                }
+            }
+
+            console.log('@@@@@@@@ getDIMXResult - exit ', JSON.stringify(body));
+        }
+        
+        return body;
+    }
+
+    async importPages(body: any, draft = true): Promise<any> {
+        console.log('@@@@@@@@ importPages - before getDIMXResult');
+
+        const res = await this.getDIMXResult(body, true);
+        
+        console.log('@@@@@@@@ importPages - after getDIMXResult');
+
+        return res;
+    }
+
+    // NOTE: This function is not used TBD.
+    // async importMappingPages(body: any, draft = true): Promise<any> {
+    //     const res = {};
+        
+    //     // Change the page key to a new one.
+    //     if (body.Objects?.length > 0) {
+    //         body.Objects.forEach((page: Page) => {
+    //             if (page.Key) {
+    //                 res[page.Key] = {
+    //                     Action: 'Replace',
+    //                     NewKey: uuidv4()
+    //                 };
+    //             }
+    //         });
+    //     }
+
+    //     return res;
+    // }
+    
+    async exportPages(body: any, draft = true): Promise<any> {
+        const res = await this.getDIMXResult(body, false);
+        return res;
+    }
+
+    // async importPageFile(body: RecursiveImportInput) {
+    //     return await this.papiClient.addons.data.import.file.recursive.uuid(this.addonUUID).table(DRAFT_PAGES_TABLE_NAME).upsert(body);
+    // }
+
+    // async exportPageFile(body: RecursiveExportInput) {
+    //     return await this.papiClient.addons.data.export.file.recursive.uuid(this.addonUUID).table(DRAFT_PAGES_TABLE_NAME).get(body);
+    // }
+
 }

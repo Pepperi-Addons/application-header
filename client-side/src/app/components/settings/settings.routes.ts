@@ -8,7 +8,7 @@ const routes: Routes = [
         // component: SettingsComponent,
         children: [
             {
-                path: ':header_template_key',
+                path: ':header_key',
                 loadChildren: () => import('../../block/application-header.module').then(m => m.ApplicationHeaderModule)
             },
             {

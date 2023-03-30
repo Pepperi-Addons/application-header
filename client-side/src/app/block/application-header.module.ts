@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
 
 import { GeneralModule } from '../components/general/general.module';
 import { MenuModule } from '../components/menu/menu.module';
@@ -18,6 +18,7 @@ import { ApplicationHeaderComponent } from './index';
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
+import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 
 
 
@@ -34,8 +35,6 @@ export const routes: Routes = [
 @NgModule({
     declarations: [ApplicationHeaderComponent],
     imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
         CommonModule,
         TranslateModule.forChild({
             loader: {
@@ -52,6 +51,7 @@ export const routes: Routes = [
         PepPageLayoutModule,
         PepTopBarModule,
         PepMenuModule,
+        PepButtonModule,
         GeneralModule,
         MenuModule,
         ButtonsModule

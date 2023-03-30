@@ -1,4 +1,4 @@
-@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as ngx-variables;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as variables;
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
 
@@ -14,34 +14,21 @@
 .disabled-btn-cont{
     display: flex;
     justify-content: end;
+    margin-bottom: variables.$spacing-md;
 
     .disabled-btn{
         display: grid;
-        grid-template-columns: 1fr 1fr min-content;
+        grid-template-columns: 1fr 1fr;
         gap: 0.5rem;
         border: 1px solid hsl(var(--pep-color-regular-h, 0), var(--pep-color-regular-s, 0%), calc(var(--pep-color-regular-l, 10%) + 30%));
-        border-radius: 0.25rem;
-        padding-inline: 1rem;
+        border-radius: variables.$border-radius-md;
+        padding-inline: variables.$spacing-lg;
         width: calc(100% - 240px);
         max-width: 600px;
         margin-inline: 1.25rem;
         align-items: center;
-        padding-top: 0.25rem;
+        padding-top: variables.$spacing-sm;
+        background: rgb(247, 247, 247);
+        opacity: 0.75;
     }
 }
-
-// .page-body{
-//     margin-top: ngx-variables.$spacing-lg;
-//     display: flex;
-//     flex-direction: row;
-//     width: 100%;
-//     gap: 1rem;
-
-//     .dragable-cont{
-//         min-width: 15rem;
-//     }
-
-//     .dropable-cont{
-//         width: inherit;
-//     }
-// }
