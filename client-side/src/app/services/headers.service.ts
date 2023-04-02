@@ -1,28 +1,81 @@
 import { Injectable, ɵɵresolveBody } from "@angular/core";
 import { Params } from "@angular/router";
+import jwt from 'jwt-decode';
 import { TranslateService } from "@ngx-translate/core";
-import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
+import { PepGuid, PepHttpService, PepSessionService, PepUtilitiesService } from "@pepperi-addons/ngx-lib";
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { TABLE_NAME, TABLE_NAME_DRAFTS, HeaderTemplateRowProjection } from '../components/application-header.model';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { MatDialogRef } from "@angular/material/dialog";
-    
+import { config } from '../app.config';
 import * as _ from 'lodash';
 import { PepSelectionData } from "@pepperi-addons/ngx-lib/list";
+import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
+import { MenuDataView, PapiClient } from "@pepperi-addons/papi-sdk";
+
+interface IHeaderProj {
+    key: string, 
+    name: string
+}
 @Injectable({
     providedIn: 'root',
 })
 export class AppHeadersService {
     
+    private addonUUID;
+    private papiBaseURL = ''
+    private accessToken = '';
+    private parsedToken: any
+
+    private _profiles: Array<IPepProfile> = [];
+    private _profilesSubject = new BehaviorSubject<ReadonlyArray<IPepProfile>>(this._profiles);
+    get profilesChange$(): Observable<ReadonlyArray<IPepProfile>> {
+        return this._profilesSubject.asObservable();
+    }
+
+    private _headers: Array<IHeaderProj> = null;
+    private _headersSubject = new BehaviorSubject<ReadonlyArray<IHeaderProj>>(this._headers);
+    get headersChange$(): Observable<ReadonlyArray<IHeaderProj>> {
+        return this._headersSubject.asObservable();
+    }
+
+    // This subjects is for load the data views into map for better performance.
+    private _dataViewsMap = new Map<string, MenuDataView>();
+    get dataViewsMap(): ReadonlyMap<string, MenuDataView> {
+        return this._dataViewsMap;
+    }
+    private _dataViewsMapSubject = new BehaviorSubject<ReadonlyMap<string, MenuDataView>>(this.dataViewsMap);
+    get dataViewsMapChange$(): Observable<ReadonlyMap<string, MenuDataView>> {
+        return this._dataViewsMapSubject.asObservable();
+    }
+    private _defaultProfileId: string = '';
+    get defaultProfileId(): string {
+        return this._defaultProfileId;
+    }
+
+    get papiClient(): PapiClient {
+        return new PapiClient({
+            baseURL: this.papiBaseURL,
+            token: this.sessionService.getIdpToken(),
+            addonUUID: this.addonUUID,
+            suppressLogging:true
+        })
+    }
 
     constructor(
         private translate: TranslateService,
+        public utilitiesService: PepUtilitiesService,
         private sessionService: PepSessionService,
         private httpService: PepHttpService,
         private navigationService: NavigationService,
         private dialog: PepDialogService,
     ) {
+        this.addonUUID = config.AddonUUID;
+        const accessToken = this.sessionService.getIdpToken();
+        this.parsedToken = jwt(accessToken);
+        this.papiBaseURL = this.parsedToken["pepperi.baseurl"];
+        this.loadHeadersDataViewsData();
     }    
 
    
@@ -80,5 +133,67 @@ export class AppHeadersService {
         // Get the surveys from the server.
         const baseUrl = this.getBaseUrl(addonUUID);
         return this.httpService.getHttpCall(`${baseUrl}/get_headers_list?resourceName=${this.getCurrentResourceName()}&${options}`);
+    }
+
+
+     /**************************** MAPPING TAB *****************************/
+
+     loadHeadersDataViewsData() {
+        this.clearMappingData();
+
+        const baseUrl = this.getBaseUrl(this.addonUUID);
+        this.httpService.getHttpCall(`${baseUrl}/get_headers_data_views_data`).toPromise().then(res => {
+            this._headers = res.pages;
+            this.notifyHeadersChange();
+
+            this._profiles = res.profiles;
+            const repProfile = this._profiles.find(profile => profile.name?.toLowerCase() === 'rep');
+            this._defaultProfileId = repProfile?.id || '';
+            this.notifyProfilesChange();
+
+            if (res.dataViews.length > 0) {
+                res.dataViews.forEach(dataView => {
+                    this.upsertDataViewToMap(dataView);
+                });
+                this.notifyHeadersDataViewsMapChange();
+            } else {
+                const profileId: number = this.utilitiesService.coerceNumberProperty(this._defaultProfileId);
+                //this.createNewSlugsDataView(profileId);
+            }
+        });
+    }
+
+    private clearMappingData() {
+        this._profiles = [];
+        this._headers = [];
+        this._dataViewsMap.clear();
+    }
+
+    private notifyHeadersDataViewsMapChange() {
+        this._dataViewsMapSubject.next(this.dataViewsMap);
+    }
+    
+    private notifyHeadersChange() {
+        this._headersSubject.next(this._headers);
+    }
+    
+    private notifyProfilesChange() {
+        this._profilesSubject.next(this._profiles);
+    }
+
+  
+    
+
+
+
+    private upsertDataViewToMap(dataView: MenuDataView) {
+        const id = dataView.InternalID?.toString();
+        if (id && id.length > 0) {
+            this._dataViewsMap.set(id, dataView as MenuDataView);
+        }
+    }
+
+    private upsertSlugDataView(dataView: MenuDataView) {
+        return this.httpService.postPapiApiCall('/meta_data/data_views', dataView).toPromise();
     }
 }

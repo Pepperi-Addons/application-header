@@ -118,9 +118,10 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
     }
 
     onDIMXProcessDone(event:any) {
-
-       // this.pagesDataSource = this.setDataSource();
-        //console.log(`DIMXProcessDone: ${JSON.stringify(event)}`);
+        const process = event?.ProcessedFiles[0] || undefined;
+        if(process.Action.toLowerCase() === 'import' && process.Status.toLowerCase() === 'done'){
+            this.dataSource = this.setDataSource();
+        }
     }
 
     setDataSource() {
@@ -244,16 +245,16 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
         });
     }
 
-    onMenuItemClicked(event: IPepMenuItemClickEvent = null) {
+    async onMenuItemClicked(event: IPepMenuItemClickEvent = null) {
         const menuItem = event.source;
         switch(menuItem.key) {
             case this.IMPORT_KEY: {
-                this.dimxService.import();
-                break;
+             this.dimxService.import();
+             break;
             }
         }
     }
-    
+
     onDataViewEditClicked(event: IPepProfileDataViewClickEvent): void {
         // console.log(`edit on ${event.dataViewId} was clicked`);
         this.navigateToManageHeadersDataView(event.dataViewId);
@@ -288,11 +289,10 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
     }
 
     private navigateToManageHeadersDataView(dataViewId: string) {
-        this.router.navigate([dataViewId], {
+        debugger;
+        this.router.navigate([`tabs/${dataViewId}`], {
             relativeTo: this.activatedRoute,
-            queryParams: {
-                'tabIndex': null
-            },
+           
             queryParamsHandling: 'merge'
         });
     }

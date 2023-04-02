@@ -1,6 +1,7 @@
 import { PapiClient, InstalledAddon, FindOptions, Page, DataView, Relation } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { v4 as uuid } from 'uuid';
+
 import { resolve } from 'dns';
 
 const TABLE_NAME_DRAFTS = 'AppHeadersDrafts';
@@ -183,22 +184,12 @@ export class HeaderService {
     }
 
     private async getDIMXResult(body: any, isImport: boolean): Promise<any> {
-        // Validate the pages.
         if (body.DIMXObjects?.length > 0) {
-           
-            for (let index = 0; index < body.DIMXObjects.length; index++) {
-                const dimxObject = body.DIMXObjects[index];
-                try {
-                    if(!isImport){
-                        dimxObject['Key'] = null;
-                        delete dimxObject['Key'];
+                    if(isImport){
+                        const dimxObject = body.DIMXObjects[0];
+                        dimxObject.Object['name'] = `Imported ${dimxObject.Object['name']}`;
+                        dimxObject.Object['Key'] = uuid();
                     }    
-                } catch (err) {
-                    // Set the error on the page.
-                    dimxObject['Status'] = 'Error';
-                    dimxObject['Details'] = err;
-                }
-            }
         }
         
         return body;
@@ -217,15 +208,8 @@ export class HeaderService {
         };
     }
 
+   /**********   MAPPING TAB *******************/
 
-    private getHeadersDataViews(): Promise<DataView[]> {
-        const res = this.papiClient.metaData.dataViews.find({
-            where: `Context.Name='Headers'`
-        });
-
-        return res;
-    }
-    
     async getHeadersDataViewsData() {
         const dataPromises: Promise<any>[] = [];
 
@@ -253,7 +237,16 @@ export class HeaderService {
         }
     }
 
-    async getMappedSlugs() {
+    private getHeadersDataViews(): Promise<DataView[]> {
+        const res = this.papiClient.metaData.dataViews.find({
+            //where: `Context.Name='Headers'`
+            where: `Context.Name='Slugs'`
+        });
+
+        return res;
+    }
+
+    async getMappedHeaders() {
         const mappedSlugs: any[] = [];
         const dataViews = await this.getHeadersDataViews();
 

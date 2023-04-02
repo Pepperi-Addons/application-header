@@ -56,12 +56,7 @@ export async function deleteHeader(client: Client, request: Request) {
 export async function header_import(client:Client, request: Request): Promise<any> {
     try {
         const service = new AppHeadesService(client);
-        console.log('@@@@@@@@ draft_pages_import - before importPages ', JSON.stringify(request.body));
-        const res = await service.importHeader(request.body);
-        console.log('@@@@@@@@ draft_header_import - after importPages ', JSON.stringify(res));
-
-        return res;
-        
+        return await service.importHeader(request.body);  
     } catch(err) {
         throw err;
     }
@@ -73,5 +68,23 @@ export async function header_export(client:Client, request: Request): Promise<an
         return await service.exportHeader(request.body);
     } catch(err) {
         throw err;
+    }
+}
+
+export async function get_headers_data_views_data(client: Client, request: Request): Promise<any> {
+    try {
+        const service = new AppHeadesService(client);
+        return service.getHeadersDataViewsData();
+    } catch(err) {
+        throw new Error(`Failed to get headers data views data. error - ${err}`);
+    }
+}
+
+export async function get_mapped_headers(client: Client, request: Request): Promise<any> {
+    try {
+        const service = new AppHeadesService(client);
+        return service.getMappedHeaders();
+    } catch(err) {
+        throw new Error(`Failed to get mapped headers. error - ${err}`);
     }
 }

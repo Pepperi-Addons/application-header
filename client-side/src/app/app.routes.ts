@@ -2,6 +2,7 @@ import { Component, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ApplicationHeaderComponent } from './block';
 import { HeadersManagerComponent } from '../app/components/headers-manager/headers-manager.component';
+import { GeneralComponent } from '../app/components/general/general.component';
 
 // const routes: Routes = [
 //     {
@@ -27,6 +28,10 @@ const routes: Routes = [
             {
                 path: 'application_header/:header_uuid',
                 component: ApplicationHeaderComponent
+            },
+            {
+                path: 'application_header/tabs/:tabIndex',
+                component: GeneralComponent
             }
         ]
     },

@@ -65,7 +65,7 @@ export class NavigationService {
     navigateToHeader(headerTemplateKey: string = '-1'): Promise<boolean> {
         const route: ActivatedRoute = this.getCurrentRoute(this.route);
         
-        return this.router.navigate([`${headerTemplateKey}`], {
+        return this.router.navigate([`${headerTemplateKey}`],{
             relativeTo: route,
             queryParamsHandling: 'merge'
         });

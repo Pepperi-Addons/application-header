@@ -177,45 +177,45 @@ export class RelationsService {
         this.upsertRelation(exportRelation);
     }
 
-    private async getDIMXResult(body: any, isImport: boolean): Promise<any> {
-        // Validate the pages.
-        if (body.DIMXObjects?.length > 0) {
-            console.log('@@@@@@@@ getDIMXResult - enter ', JSON.stringify(body));
-            console.log('@@@@@@@@ getDIMXResult - isImport = ', isImport);
+    // private async getDIMXResult(body: any, isImport: boolean): Promise<any> {
+    //     // Validate the pages.
+    //     if (body.DIMXObjects?.length > 0) {
+    //         console.log('@@@@@@@@ getDIMXResult - enter ', JSON.stringify(body));
+    //         console.log('@@@@@@@@ getDIMXResult - isImport = ', isImport);
 
-            for (let index = 0; index < body.DIMXObjects.length; index++) {
-                const dimxObject = body.DIMXObjects[index];
-                try {
-                    // const page = await this.validateAndOverridePageAccordingInterface(dimxObject['Object'], isImport);
+    //         for (let index = 0; index < body.DIMXObjects.length; index++) {
+    //             const dimxObject = body.DIMXObjects[index];
+    //             try {
+    //                 // const page = await this.validateAndOverridePageAccordingInterface(dimxObject['Object'], isImport);
                     
-                    // // For import always generate new Key and set the Hidden to false.
-                    // if (isImport) {
-                    //     page.Key = page.Key && page.Key.length > 0 ? page.Key : uuidv4();
-                    //     page.Hidden = false;
-                    // }
-                    // dimxObject['Object'] = page;
-                } catch (err) {
-                    // Set the error on the page.
-                    dimxObject['Status'] = 'Error';
-                    dimxObject['Details'] = err;
-                }
-            }
+    //                 // // For import always generate new Key and set the Hidden to false.
+    //                 // if (isImport) {
+    //                 //     page.Key = page.Key && page.Key.length > 0 ? page.Key : uuidv4();
+    //                 //     page.Hidden = false;
+    //                 // }
+    //                 // dimxObject['Object'] = page;
+    //             } catch (err) {
+    //                 // Set the error on the page.
+    //                 dimxObject['Status'] = 'Error';
+    //                 dimxObject['Details'] = err;
+    //             }
+    //         }
 
-            console.log('@@@@@@@@ getDIMXResult - exit ', JSON.stringify(body));
-        }
+    //         console.log('@@@@@@@@ getDIMXResult - exit ', JSON.stringify(body));
+    //     }
         
-        return body;
-    }
+    //     return body;
+    // }
 
-    async importPages(body: any, draft = true): Promise<any> {
-        console.log('@@@@@@@@ importPages - before getDIMXResult');
+    // async importPages(body: any, draft = true): Promise<any> {
+    //     console.log('@@@@@@@@ importPages - before getDIMXResult');
 
-        const res = await this.getDIMXResult(body, true);
+    //     const res = await this.getDIMXResult(body, true);
         
-        console.log('@@@@@@@@ importPages - after getDIMXResult');
+    //     console.log('@@@@@@@@ importPages - after getDIMXResult');
 
-        return res;
-    }
+    //     return res;
+    // }
 
     // NOTE: This function is not used TBD.
     // async importMappingPages(body: any, draft = true): Promise<any> {
@@ -236,10 +236,10 @@ export class RelationsService {
     //     return res;
     // }
     
-    async exportPages(body: any, draft = true): Promise<any> {
-        const res = await this.getDIMXResult(body, false);
-        return res;
-    }
+    // async exportPages(body: any, draft = true): Promise<any> {
+    //     const res = await this.getDIMXResult(body, false);
+    //     return res;
+    // }
 
     // async importPageFile(body: RecursiveImportInput) {
     //     return await this.papiClient.addons.data.import.file.recursive.uuid(this.addonUUID).table(DRAFT_PAGES_TABLE_NAME).upsert(body);
