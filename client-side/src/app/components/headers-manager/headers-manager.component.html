@@ -9,7 +9,7 @@
     </ng-container>
 
     <ng-container pep-main-area>
-        <mat-tab-group>
+        <mat-tab-group [selectedIndex]="currentTabIndex" (selectedTabChange)="onTabChanged($event)">
             <mat-tab label="{{'HEADERS_MANAGER.TABS.HEADERS' | translate}}">
                   <ng-container *ngTemplateOutlet="headersList"></ng-container>
             </mat-tab>

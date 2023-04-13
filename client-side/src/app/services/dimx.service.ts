@@ -26,8 +26,8 @@ export class DIMXService {
         const options = {
             OwnerID: this.navigationService.addonUUID,
         };
-
-        this.dimxService.recursive_import(options);
+        //this.dimxService.recursive_import(options);
+        this.dimxService.import(options); 
     }
 
     export(headerUUID: string, headerName: string) {
@@ -37,8 +37,7 @@ export class DIMXService {
             DIMXExportFileName: `header_${headerUUID}`,
             DIMXExportWhere: 'Key="' + headerUUID + '"'
         };
-        //this.dimxService.export(options);
-        this.dimxService.recursive_export(options);
         //this.dimxService.recursive_export(options);
+        this.dimxService.export(options);
     }
 }

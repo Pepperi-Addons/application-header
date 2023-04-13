@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 // import { SettingsComponent } from './settings.component';
 
 const routes: Routes = [
@@ -8,9 +9,15 @@ const routes: Routes = [
         // component: SettingsComponent,
         children: [
             {
+                path: 'tabs/:tabIndex',
+                loadChildren: () => import('../headers-manager/manage-headers.module').then(m => m.ManageHeadersModule)
+                
+            },
+            {
                 path: ':header_key',
                 loadChildren: () => import('../../block/application-header.module').then(m => m.ApplicationHeaderModule)
             },
+          
             {
                 path: '**',
                 loadChildren: () => import('../headers-manager/headers-manager.module').then(m => m.HeadersManagerModule),

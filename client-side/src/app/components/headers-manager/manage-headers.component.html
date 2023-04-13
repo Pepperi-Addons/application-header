@@ -1,0 +1,60 @@
+<pep-page-layout >
+    <ng-container pep-top-area>
+        <pep-top-bar [title]="('MAPPING.TITLE_PREFIX' | translate) + title">
+            <div header-end-content>
+                <pep-button class="pep-spacing-element" [value]="'Cancel' | translate" (buttonClick)="goBack(1)"></pep-button>
+                <pep-button class="pep-spacing-element" [value]="'Save' | translate" [styleType]="'strong'" (buttonClick)="saveClicked()"></pep-button>
+            </div>
+        </pep-top-bar>
+    </ng-container>
+    <ng-container pep-main-area>
+        <div *ngIf="isFinishLoading" class="mapped-headers-container">
+            <div class="available-headers-side-area">
+                <pep-draggable-items [items]="availableHeaders" [title]="'MAPPING.AVAILABLE_HEADERS' | translate" titleType="with-bottom-border" titleSizeType="md"
+                    itemPlaceholderType="weak" [showSearch]="true" [dropAreaIds]="['emptyDropArea', 'mappedHeaders']">
+                </pep-draggable-items>
+            </div>
+            <div pep-main-area class="mapped-headers-main-area">
+                <div class="mapped-headers-top-area pep-border-bottom"
+                    [title]="('MAPPING.MAPPED_HEADER_TITLE' | translate) + ' ' + ('MAPPING.MAPPED_HEADERS_TITLE_HINT' | translate)">
+                    <span class="title-md">{{'MAPPING.MAPPED_HEADER_TITLE' | translate}}&nbsp;</span>
+                    <span class="color-dimmed">{{('MAPPING.MAPPED_HEADER_TITLE_HINT' | translate)}}
+                    </span>
+                </div>
+
+                <div class="headers-area-overflow">
+                    <ng-container *ngIf="mappedHeaders === null || mappedHeaders.length === 0; then emptyTemplate; else notEmptyTemplate"></ng-container>
+                    <ng-template #emptyTemplate>
+                        <div id="emptyDropArea" class="drop-header-here-area" cdkDropList (cdkDropListDropped)="onDropHeader($event)">
+                            <mat-icon class="pep-spacing-element">
+                                <pep-icon name="'arrow_left_alt'"></pep-icon>
+                            </mat-icon>
+                            <span class="body-sm ellipsis">
+                                {{ 'MAPPING.EMPTY_DROP_AREA_TEXT' | translate }}
+                            </span> 
+                        </div>
+                    </ng-template>
+                    <ng-template #notEmptyTemplate>
+                        <div id="mappedHeader" class="mapped-headers-area" cdkDropList [cdkDropListData]="mappedHeaders" (cdkDropListDropped)="onDropHeader($event)">
+                            <div *ngFor="let mappedHeader of mappedHeaders; let i = index" class="mapped-header-container" cdkDrag (cdkDragStarted)="onDragStart($event)" (cdkDragEnded)="onDragEnd($event)">
+                                <ng-container *ngTemplateOutlet="mappedHeaderTemplate; context: {mappedHeader: mappedHeader}"></ng-container>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <!-- {{ mappedHeader | json}} -->
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</pep-page-layout>
+
+<ng-template #mappedHeaderTemplate let-mappedHeader="mappedHeader">
+    <div class="fields-wrapper">
+        <pep-textbox [label]="'MAPPING.HEADER_NAME_TITLE' | translate" [value]="mappedHeader?.name" [disabled]="true">
+        </pep-textbox>
+        <pep-textbox [label]="'MAPPING.HEADER_DESCRIPTION_TITLE' | translate" [value]="mappedHeader?.desc || ''" [disabled]="true">
+        </pep-textbox>
+        <pep-button class="del-button" iconName="system_bin" (buttonClick)="onDeleteMappedHeader($event, mappedHeader)"></pep-button>
+    </div>
+</ng-template>

@@ -17,7 +17,6 @@ export const USER_ACTION_ON_HEADER_VIEW_LOAD = 'OnHeaderViewLoad';
 
 // **********************************************************************************************
 
-
 export interface HeaderTemplate extends AddonData {
     Name: string;
     Description?: string;

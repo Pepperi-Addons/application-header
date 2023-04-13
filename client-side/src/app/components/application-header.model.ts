@@ -19,7 +19,6 @@ export interface HeaderTemplateRowProjection {
     Description?: string;
     Draft: boolean;
     Published: boolean;
-    HeaderConfig?: {};
     Hidden: boolean;
     ModificationDate?: string;
 }

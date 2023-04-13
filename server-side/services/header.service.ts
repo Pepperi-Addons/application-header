@@ -11,7 +11,6 @@ export interface IHeaderData {
     Key?: string;
     name: string;
     description: string;
-    headerConfig: {};
     Hidden?: boolean;
     draft: boolean;
     published: boolean;
@@ -187,8 +186,11 @@ export class HeaderService {
         if (body.DIMXObjects?.length > 0) {
                     if(isImport){
                         const dimxObject = body.DIMXObjects[0];
-                        dimxObject.Object['name'] = `Imported ${dimxObject.Object['name']}`;
-                        dimxObject.Object['Key'] = uuid();
+                        if(dimxObject){
+                            // check if need to update or to insert new header to the table
+                            const headerKey = dimxObject.Object['Key'] || null; 
+                            dimxObject.Object['Key'] = headerKey || uuid();
+                        }
                     }    
         }
         
@@ -199,7 +201,6 @@ export class HeaderService {
             Key: header.Key || null,
             name: header.name || '',
             description: header.description || '',
-            headerConfig: header || {},
             Hidden: header.Hidden || false, 
             draft: header.draft || true,
             published: header.published || false,
@@ -223,48 +224,42 @@ export class HeaderService {
         // const profiles = await this.papiClient.profiles.find();
         dataPromises.push(this.papiClient.profiles.find());
 
-        // Get the pages
-        // const pages: Page[] = await this.papiClient.pages.find();
-        dataPromises.push(this.papiClient.pages.find());
-        
         // wait for results and return them as object.
         const arr = await Promise.all(dataPromises).then(res => res);
         
         return {
             dataViews: arr[0],
-            profiles: arr[1].map(profile => { return { id: profile.InternalID.toString(), name: profile.Name } }),
-            pages: arr[2].map(page => { return { key: page.Key, name: page.Name } }), // Return projection of key & name
+            profiles: arr[1].map(profile => { return { id: profile.InternalID.toString(), name: profile.Name } })
         }
     }
 
     private getHeadersDataViews(): Promise<DataView[]> {
         const res = this.papiClient.metaData.dataViews.find({
-            //where: `Context.Name='Headers'`
-            where: `Context.Name='Slugs'`
+            where: `Context.Name='Headers'`
+            //where: `Context.Name='Slugs'`
         });
-
         return res;
     }
 
     async getMappedHeaders() {
-        const mappedSlugs: any[] = [];
+        const mappedHeaders: any[] = [];
         const dataViews = await this.getHeadersDataViews();
 
         if (dataViews?.length === 1) {
             const dataView = dataViews[0];
-
+  
             if (dataView && dataView.Fields) {
                 for (let index = 0; index < dataView.Fields.length; index++) {
                     const field = dataView.Fields[index];
-                    mappedSlugs.push({
-                        slug: field.FieldID,
-                        pageKey: field.Title
+                    mappedHeaders.push({
+                        header: field.FieldID,
+                        key: field.Title
                     });
                 }
             }
         }
 
-        return mappedSlugs;
+        return mappedHeaders;
     }
 }
 

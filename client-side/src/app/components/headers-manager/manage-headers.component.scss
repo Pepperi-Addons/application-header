@@ -1,0 +1,104 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as variables;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as mixins;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as functions;
+
+@use '../../../styles';
+
+.mapped-headers-container {
+    max-width: 56rem;
+    display: grid;
+    height: 100%;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "side-area    main-area";
+
+    .available-headers-side-area {
+        grid-area: side-area;
+        width: 240px;
+        max-width: 240px;
+        height: inherit;
+        overflow: auto;
+        padding-top: variables.$spacing-2xl;
+        margin-inline-end: variables.$double-content-margin;
+    }
+    
+    .mapped-headers-main-area {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        grid-area: main-area;
+        padding-top: variables.$spacing-2xl;
+        overflow: auto;
+        height: inherit;
+
+        .mapped-headers-top-area {
+            height: variables.$top-bar-field-height;
+            display: flex;
+            align-items: center;
+
+            // &.pep-border-bottom {
+            //     margin-bottom: variables.$content-margin;
+            // }
+        }
+        
+        .drop-header-here-area {
+            @include styles.mapped-slug-item-container();
+            @include mixins.state-weak-default();
+            @include mixins.inline(functions.get-pep-color(color-system-primary, color-flat-r-20), 1px, dashed);
+            height: 6rem;
+            margin-top: 1rem;
+            margin-inline: 0.25rem;
+
+            &.cdk-drop-list-dragging {
+                @include mixins.focus();
+                
+                &:hover {
+                    @include mixins.state-regular-hover(true);
+                    @include mixins.focus();
+                }
+        
+                // Hide the placeholder when 
+                ::ng-deep.placeholder-item {
+                    display: none;
+                }
+            }
+        }
+
+        .headers-area-overflow {
+            overflow: auto;
+        }
+
+        .mapped-headers-area {
+            // height: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: variables.$content-margin;
+            padding-top: variables.$content-margin;
+            padding-bottom: variables.$content-margin;
+            padding-inline: variables.$spacing-xs;
+
+            &.cdk-drop-list-dragging {
+                ::ng-deep.placeholder-item {
+                    @include styles.mapped-slug-item-container();
+                    @include mixins.state-regular-default(true);
+                    @include mixins.focus();
+                    height: variables.$draggable-item-height;
+                }
+            }
+
+            // The mapped-header-container style declared in style.scss because when dragging in list the item added to the end of the dom and we cannot style it here (component context).
+            .mapped-header-container { 
+                cursor: grab;
+                @include styles.mapped-slug-container();
+
+                &.cdk-drag-placeholder {
+                    // opacity: 0;
+                    // @include mixins.state-regular-default(true);
+                    @include mixins.focus();
+
+                    .fields-wrapper {
+                        opacity: 0;
+                    }
+                }
+            }
+        }
+    }
+}

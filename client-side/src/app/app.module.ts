@@ -13,6 +13,7 @@ import { HeadersManagerModule } from './components/headers-manager/headers-manag
 // import { ApplicationHeaderEditorModule, ApplicationHeaderEditorComponent } from './block-editor';
 
 import { config } from './app.config';
+//import { ManageHeadersModule } from './components/headers-manager/manage-headers.module';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { config } from './app.config';
         BrowserModule,
         BrowserAnimationsModule,
         HeadersManagerModule,
+        //ManageHeadersModule,
         //ApplicationHeaderModule,
         //ApplicationHeaderEditorModule,
         SettingsModule,

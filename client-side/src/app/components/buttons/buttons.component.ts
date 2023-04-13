@@ -20,7 +20,7 @@ export class ButtonsComponent implements OnInit {
     public availableFields: Array<IPepDraggableItem>;
     public dataView: MenuDataView;
     
-    public systemButtons = [{key: 'Announcent', name: 'Announcent'},{key: 'Help', name: 'Help'},{key: 'User', name: 'User'},{key: 'Settings', name: 'Settings'}];
+    // public systemButtons = [{key: 'Announcent', name: 'Announcent'},{key: 'Help', name: 'Help'},{key: 'User', name: 'User'},{key: 'Settings', name: 'Settings'}];
     
     constructor() {
        
@@ -70,7 +70,7 @@ export class ButtonsComponent implements OnInit {
     private setAvailableFieldPermission() {
         // Find the item in the available fields
         this.availableFields.forEach(field => {
-            const item = this.dataView.Fields.filter(f => f.FieldID === field.data.key);
+            const item = this.dataView.Fields.filter(f => f.FieldID === field.data.Key);
                 // If exist disable or enable it.
                 field.disabled = item ? true : false;
         })
