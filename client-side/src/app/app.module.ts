@@ -13,6 +13,8 @@ import { HeadersManagerModule } from './components/headers-manager/headers-manag
 // import { ApplicationHeaderEditorModule, ApplicationHeaderEditorComponent } from './block-editor';
 
 import { config } from './app.config';
+import { ThemeheaderComponent } from './components/theme-header/theme-header.component';
+import { ThemeheaderlModule } from './components/theme-header/theme-header.module';
 //import { ManageHeadersModule } from './components/headers-manager/manage-headers.module';
 
 @NgModule({
@@ -27,6 +29,7 @@ import { config } from './app.config';
         //ApplicationHeaderModule,
         //ApplicationHeaderEditorModule,
         SettingsModule,
+        ThemeheaderlModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -53,6 +56,8 @@ export class AppModule implements DoBootstrap {
 
     ngDoBootstrap() {
         this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, SettingsComponent, this.injector);
+        this.pepAddonService.defineCustomElement(`theme-header-element-${config.AddonUUID}`, ThemeheaderComponent, this.injector);
+
         //this.pepAddonService.defineCustomElement(`settings-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);
 
         //this.pepAddonService.defineCustomElement(`applicationheader-element-${config.AddonUUID}`, ApplicationHeaderComponent, this.injector);

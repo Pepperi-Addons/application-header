@@ -9,6 +9,9 @@ import { Component, OnInit, Injectable, Input, Output, EventEmitter } from '@ang
 @Injectable()
 export class ThemeheaderComponent implements OnInit {
     
+    @Input() hostObject: any;
+    @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
+
     constructor() {
        
     }

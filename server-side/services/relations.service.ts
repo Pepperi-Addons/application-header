@@ -1,4 +1,4 @@
-import { PapiClient, InstalledAddon, Relation, AddonDataScheme } from '@pepperi-addons/papi-sdk'
+import { PapiClient, InstalledAddon, Relation, AddonDataScheme, Subscription } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from '../../shared';
 
@@ -91,16 +91,38 @@ export class RelationsService {
             //promises.push(createPagesVariablesTable);
             return Promise.all(promises);
                 
-            } catch (err) {
-                throw new Error(`Failed to create Headers ADAL Tables. error - ${err}`);
-            }
+        } catch (err) {
+            throw new Error(`Failed to create Headers ADAL Tables. error - ${err}`);
         }
+    }
 
     async upsertRelations() {
         await this.upsertImportRelation();
         await this.upsertExportRelation();
         await this.upsertAddonBlockRelation();
         await this.upsertSettingsRelation();
+        await this.upsertThemeTabsRelation();
+    }
+
+    private async upsertThemeTabsRelation() {
+        const blockRelationName = 'Application Header';
+        const blockName = 'Themeheader';
+
+        const blockRelation: Relation = {
+            RelationName: 'ThemeTabs',
+            Name: blockRelationName,
+            Description: `${blockRelationName} tab`,
+            Type: "NgComponent",
+            SubType: "NG14",
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: this.bundleFileName,
+            ComponentName: `${blockName}Component`, // This is should be the block component name (from the client-side)
+            ModuleName: `${blockName}Module`, // This is should be the block module name (from the client-side)
+            ElementsModule: 'WebComponents',
+            ElementName: `theme-header-element-${this.client.AddonUUID}`
+        };
+
+        return await this.upsertRelation(blockRelation);
     }
 
     private upsertAddonBlockRelation() {
@@ -147,7 +169,7 @@ export class RelationsService {
         this.upsertRelation(settingsBlockRelation);
     }
 
-       /***********************************************************************************************/
+    /***********************************************************************************************/
     //                              Import & Export functions
     /************************************************************************************************/
     
@@ -176,5 +198,38 @@ export class RelationsService {
         };                
 
         this.upsertRelation(exportRelation);
+    }
+
+
+    /***********************************************************************************************/
+    /*                                  PNS functions
+    /***********************************************************************************************/
+
+    async subscribeDeleteHeader(key: string, functionPath: string): Promise<Subscription> {
+        return await this.papiClient.notification.subscriptions.upsert({
+            Key: key,
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: functionPath,
+            Type: 'data',
+            Name: key,
+            FilterPolicy: {
+                Action: ['update'],
+                ModifiedFields: ['Hidden'],
+                Resource: [PUBLISHED_HEADERS_TABLE_NAME],
+                AddonUUID: [this.client.AddonUUID]
+            }
+        });
+    }
+         
+    async unsubscribeDeleteHeader(key: string, functionPath: string): Promise<Subscription> {
+        return await this.papiClient.notification.subscriptions.upsert({
+            Hidden: true,
+            Key: key,
+            AddonUUID: this.client.AddonUUID,
+            AddonRelativeURL: functionPath,
+            Type: 'data',
+            Name: key,
+            FilterPolicy: {}
+        });
     }
 }

@@ -1,9 +1,7 @@
-import { PapiClient, InstalledAddon, FindOptions, Page, DataView, Relation } from '@pepperi-addons/papi-sdk'
+import { PapiClient, FindOptions, DataView } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { v4 as uuid } from 'uuid';
 import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from '../../shared';
-
-import { resolve } from 'dns';
 
 export interface IHeaderData {
     Key?: string;
@@ -33,6 +31,64 @@ export class HeaderService {
 
         this.addonUUID = client.AddonUUID;
     }
+
+
+    /***********************************************************************************************/
+    /*                                  Private functions
+    /***********************************************************************************************/
+
+
+    private getHeadersDataViews(): Promise<DataView[]> {
+        const res = this.papiClient.metaData.dataViews.find({
+            where: `Context.Name='Headers'`
+            //where: `Context.Name='Slugs'`
+        });
+        return res;
+    }
+
+    private getSlugsDataViews(): Promise<DataView[]> {
+        const res = this.papiClient.metaData.dataViews.find({
+            where: `Context.Name='Slugs'`
+        });
+
+        return res;
+    }
+
+    private async upsertSlugDataView(dataView): Promise<DataView> {
+        return await this.papiClient.metaData.dataViews.upsert(dataView);
+    }
+
+    private async getDIMXResult(body: any, isImport: boolean): Promise<any> {
+        if (body.DIMXObjects?.length > 0) {
+                    if(isImport){
+                        const dimxObject = body.DIMXObjects[0];
+                        if(dimxObject){
+                            // check if need to update or to insert new header to the table
+                            const headerKey = dimxObject.Object['Key'] || null; 
+                            dimxObject.Object['Key'] = headerKey || uuid();
+                        }
+                    }    
+        }
+        
+        return body;
+    }
+    
+    private getBody(header): IHeaderData {
+        return {
+            Key: header.Key || null,
+            name: header.name || '',
+            description: header.description || '',
+            Hidden: header.Hidden || false, 
+            draft: header.draft || true,
+            published: header.published || false,
+            menu: header.menu || [],
+            buttons: header.buttons || []
+        };
+    }
+
+    /***********************************************************************************************/
+    /*                                  Public functions
+    /***********************************************************************************************/
 
     async getHeaders(options: FindOptions | undefined = undefined) {
         return await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).find(options) as IHeaderData[];
@@ -180,33 +236,6 @@ export class HeaderService {
         return res;
     }
 
-    private async getDIMXResult(body: any, isImport: boolean): Promise<any> {
-        if (body.DIMXObjects?.length > 0) {
-                    if(isImport){
-                        const dimxObject = body.DIMXObjects[0];
-                        if(dimxObject){
-                            // check if need to update or to insert new header to the table
-                            const headerKey = dimxObject.Object['Key'] || null; 
-                            dimxObject.Object['Key'] = headerKey || uuid();
-                        }
-                    }    
-        }
-        
-        return body;
-    }
-    private getBody(header): IHeaderData {
-        return {
-            Key: header.Key || null,
-            name: header.name || '',
-            description: header.description || '',
-            Hidden: header.Hidden || false, 
-            draft: header.draft || true,
-            published: header.published || false,
-            menu: header.menu || [],
-            buttons: header.buttons || []
-        };
-    }
-
    /**********   MAPPING TAB *******************/
 
     async getHeadersDataViewsData() {
@@ -231,14 +260,6 @@ export class HeaderService {
         }
     }
 
-    private getHeadersDataViews(): Promise<DataView[]> {
-        const res = this.papiClient.metaData.dataViews.find({
-            where: `Context.Name='Headers'`
-            //where: `Context.Name='Slugs'`
-        });
-        return res;
-    }
-
     async getMappedHeaders() {
         const mappedHeaders: any[] = [];
         const dataViews = await this.getHeadersDataViews();
@@ -258,6 +279,55 @@ export class HeaderService {
         }
 
         return mappedHeaders;
+    }
+
+    async deleteHeaderFromSlugMappings(body: any): Promise<void> {
+        const obj = body?.Message?.ModifiedObjects[0];
+        console.log(`obj - ${obj}`);
+        
+        if (obj) {
+            // If the field id is hidden AND the value is true (this slug is deleted)
+            if (obj.ModifiedFields?.filter(field => field.FieldID === 'Hidden' && field.NewValue === true)) {
+                console.log(`obj.ObjectKey - ${obj.ObjectKey}`);
+
+                const header = await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).key(obj.ObjectKey).get() as IHeaderData;
+                
+                console.log(`header - ${JSON.stringify(header)}`);
+
+                if (header) {
+                    // Get all mapped slugs (from all the roles) and remove the deleted slug from the list.
+                    const slugsDataViews = await this.getSlugsDataViews();
+                    
+                    for (let index = 0; index < slugsDataViews.length; index++) {
+                        const dataView = slugsDataViews[index];
+                        
+                        // Delete the mapped slug from list.
+                        let shouldUpdate = false;
+                        if (dataView && dataView.Fields) {
+                            console.log(`dataView before - ${JSON.stringify(dataView)}`);
+
+                            for (let fieldIndex = 0; fieldIndex < dataView.Fields.length; fieldIndex++) {
+                                const field = dataView.Fields[fieldIndex];
+
+                                // If the key is the same as the deleted header, remove it from the list.
+                                if (field.Title === header.Key) {
+                                    dataView.Fields.splice(fieldIndex, 1);
+                                    shouldUpdate = true;
+                                    break;
+                                }
+                            }
+
+                            console.log(`dataView after - ${JSON.stringify(dataView)}`);
+                        }
+
+                        // Update the list of mapped slugs.
+                        if (shouldUpdate) {
+                            this.upsertSlugDataView(dataView);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

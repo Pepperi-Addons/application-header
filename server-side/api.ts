@@ -52,7 +52,6 @@ export async function deleteHeader(client: Client, request: Request) {
     }
 }
 
-
 export async function header_import(client:Client, request: Request): Promise<any> {
     try {
         const service = new AppHeadesService(client);
@@ -86,5 +85,14 @@ export async function get_mapped_headers(client: Client, request: Request): Prom
         return service.getMappedHeaders();
     } catch(err) {
         throw new Error(`Failed to get mapped headers. error - ${err}`);
+    }
+}
+
+export async function on_delete_header(client:Client, request: Request): Promise<any> {
+    try {
+        const service = new AppHeadesService(client);
+        await service.deleteHeaderFromSlugMappings(request.body);
+    } catch(err) {
+        throw new Error(`Failed to delete slug mappings. error - ${err}`);
     }
 }
