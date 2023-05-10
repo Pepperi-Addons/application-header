@@ -1,14 +1,19 @@
 @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as variables;
-// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as functions;
 // @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
 
 
-.page-description{
-    max-width: 28rem;
-}
-
-.page-body{
-    padding-inline-start: variables.$spacing-sm;
-    margin-top: variables.$spacing-lg;
-    max-width: 20rem;
+.assets-btn-cont{
+    display: grid;
+    height: 7.5rem;
+    width: 16rem;
+    border-radius: variables.$border-radius-md;
+    background-color: functions.get-pep-color(color-system-primary, color-tran-30);
+    padding: 1rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    margin-bottom: variables.$form-spacing;
+    align-items: center;
+    justify-content: center;
 }

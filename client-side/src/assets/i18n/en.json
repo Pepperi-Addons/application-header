@@ -75,8 +75,22 @@
         "LOGO": {
             "TITLE": "Logo",
             "SUB_TITLE": "Upload your company logo, prefearably transparent background",
-            "SUB_TITLE2": "PNG or SVG works best"
+            "SUB_TITLE2": "PNG or SVG works best",
+            "OPEN_ASSETS_MANAGER": "Assets Manager"
+        },
+        "COLOR": {
+            "TITLE": "Color",
+            "SUB_TITLE": "You can change the quantity selector styling to that allow customers to add several products to theirs cart at once.",
+            "APP_COLOR": "Select app color",
+            "COLOR_STYLE": "Select color style",
+            "COLORS":{
+                "SYSTEM": "System",
+                "SYSTEM_INVERT": "System invert",
+                "PRIMARY": "Primary",
+                "SECONDARY": "Secondary"
+            }
         }
+
     }
 }
 

@@ -6,6 +6,9 @@ import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 
 import { MatExpansionModule } from '@angular/material/expansion';
+import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
+import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
+
 
 @NgModule({
     declarations: [
@@ -17,7 +20,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
 
         PepTextboxModule,
         PepTextareaModule,
-        MatExpansionModule
+        PepButtonModule,
+        MatExpansionModule,
+        PepSelectModule
 
     ],
     exports: [ThemeheaderComponent]

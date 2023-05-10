@@ -1,10 +1,11 @@
 import { TranslateService } from '@ngx-translate/core';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GeneralComponent } from '../components/general/general.component';
 import { Button, GeneralData, HeaderData, MenuItem } from '../components/application-header.model';
 import { NavigationService } from '../services/navigation.service';
 import { AppHeadersService } from '../services/headers.service';
 import { ActivatedRoute } from '@angular/router';
+
 @Component({
     selector: 'page-block',
     templateUrl: './application-header.component.html',
@@ -18,7 +19,8 @@ export class ApplicationHeaderComponent implements OnInit {
     generalData: GeneralData = new GeneralData();
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private route: ActivatedRoute, private translate: TranslateService, private _navigationService: NavigationService, private appHeadersService: AppHeadersService ) {
+    constructor(private route: ActivatedRoute, private translate: TranslateService, 
+                private _navigationService: NavigationService, private appHeadersService: AppHeadersService) {
     }
 
     async ngOnInit() {
