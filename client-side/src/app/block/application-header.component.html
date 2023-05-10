@@ -29,12 +29,15 @@
                     <general-tab [general]="generalData" (generalDataChanged)="onHeaderKeyChange('general',$event)"></general-tab>
             </mat-tab>
             <mat-tab label="{{'TABS.MENU' | translate}}">
-                <menu-tab [menuItems]="headerData?.menu || []" (onAddNewMenuItem)="onAddNewMenuItem($event,false)"
+                <menu-tab [menuItems]="menuView || []" (onAddNewMenuItem)="onAddNewMenuItem($event,false)"
                 (onAddNewSubMenuItem)="onAddNewMenuItem($event,true)" (onDeleteMenuItem)="deleteMenuItem($event)" (onMenuItemPositionChange)="setMenuItemsPosition($event)"
                 (onMenuItemChange)="onMenuItemChange($event)" ></menu-tab>
             </mat-tab>
             <mat-tab label="{{'TABS.BUTTONS' | translate}}">
                 <buttons-tab [buttons]="headerData?.buttons || []" (onButtonsChange)="onHeaderKeyChange('buttons',$event)"></buttons-tab>
+            </mat-tab>
+            <mat-tab label="Style">
+                <theme-header-tab></theme-header-tab>
             </mat-tab>
         </mat-tab-group>
     </ng-container>

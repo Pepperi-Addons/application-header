@@ -1,11 +1,10 @@
 import { PapiClient, InstalledAddon, Relation, AddonDataScheme } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
+import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from '../../shared';
 
 export class RelationsService {
 
     private papiClient: PapiClient;
-    private TABLE_NAME = 'AppHeaders';
-    private TABLE_NAME_DRAFTS =  this.TABLE_NAME + 'Drafts';
     private bundleFileName = '';
 
     constructor(private client: Client) {
@@ -54,7 +53,6 @@ export class RelationsService {
     async createTablesSchemes(): Promise<AddonDataScheme[]> {
         const promises: AddonDataScheme[] = [];
         try {
-
             const DIMXSchema = {
                     Blocks: {
                         Type: "Array",
@@ -71,7 +69,7 @@ export class RelationsService {
 
             // Create headers table
             const createHeadersTable = await this.papiClient.addons.data.schemes.post({
-                Name: this.TABLE_NAME,
+                Name: PUBLISHED_HEADERS_TABLE_NAME,
                 Type: 'data',
                 SyncData: {
                     Sync: true
@@ -80,8 +78,11 @@ export class RelationsService {
 
             // Create headers draft table
             const createHeadersDraftTable = await this.papiClient.addons.data.schemes.post({
-                Name: this.TABLE_NAME_DRAFTS,
+                Name: DRAFTS_HEADERS_TABLE_NAME,
                 Type: 'data',
+                SyncData: {
+                    Sync: true
+                },
                 Fields: DIMXSchema as any // Declare the schema for the import & export.
             });
         
@@ -153,7 +154,7 @@ export class RelationsService {
     private upsertImportRelation(): void {
         const importRelation: Relation = {
             RelationName: 'DataImportResource',
-            Name: this.TABLE_NAME_DRAFTS,
+            Name: DRAFTS_HEADERS_TABLE_NAME,
             Description: 'Application header import',
             Type: 'AddonAPI',
             AddonUUID: this.client.AddonUUID,
@@ -167,7 +168,7 @@ export class RelationsService {
     private upsertExportRelation(): void {
         const exportRelation: Relation = {
             RelationName: 'DataExportResource',
-            Name: this.TABLE_NAME_DRAFTS,
+            Name: DRAFTS_HEADERS_TABLE_NAME,
             Description: 'Application header export',
             Type: 'AddonAPI',
             AddonUUID: this.client.AddonUUID,

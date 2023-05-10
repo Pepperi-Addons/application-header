@@ -82,6 +82,7 @@ export class MenuItemComponent implements OnInit {
             hostEventsCallback: (event) => { 
                 if (event.action === 'script-picked') {
                     this.menuItem['Script'] = event.data;
+                    this.menuItem.Key = event.data?.runScriptData?.ScriptKey || '';
                     this.onMenuItemChange.emit(this.menuItem);
                     this.dialogRef.close();
                 } else if (event.action === 'close') {

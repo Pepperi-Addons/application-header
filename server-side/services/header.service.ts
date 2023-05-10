@@ -1,11 +1,9 @@
 import { PapiClient, InstalledAddon, FindOptions, Page, DataView, Relation } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { v4 as uuid } from 'uuid';
+import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from '../../shared';
 
 import { resolve } from 'dns';
-
-const TABLE_NAME_DRAFTS = 'AppHeadersDrafts';
-const TABLE_NAME = 'AppHeaders';
 
 export interface IHeaderData {
     Key?: string;
@@ -37,7 +35,7 @@ export class HeaderService {
     }
 
     async getHeaders(options: FindOptions | undefined = undefined) {
-        return await this.papiClient.addons.data.uuid(this.addonUUID).table(TABLE_NAME_DRAFTS).find(options) as IHeaderData[];
+        return await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).find(options) as IHeaderData[];
     }
 
     async upsertHeader(body) {
@@ -52,7 +50,7 @@ export class HeaderService {
             let publishExceptionMessage;
             
             try { // delete from draft table
-                await this.papiClient.addons.data.uuid(this.addonUUID).table(TABLE_NAME_DRAFTS).upsert(headerToUpsert);
+                await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                 draftDeleted = true;
             } catch (e) {
                 draftExceptionMessage = e;
@@ -61,7 +59,7 @@ export class HeaderService {
             try {
                 // delete from publish only when header allready published
                 if(headerToUpsert.published == true){
-                    await this.papiClient.addons.data.uuid(this.addonUUID).table(TABLE_NAME).upsert(headerToUpsert);
+                    await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                 }
                 publishDeleted = true;
 
@@ -112,10 +110,10 @@ export class HeaderService {
                         let publishHeader;
 
                         try { // upsert to draft table
-                            draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(TABLE_NAME_DRAFTS).upsert(headerToUpsert);
+                            draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                             // upsert to publish table if need to
                             if(headerToUpsert.published){
-                            publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(TABLE_NAME).upsert(headerToUpsert);
+                            publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                             }
                         } catch (e) {
                             upsertExceptionMessage = e;
@@ -138,7 +136,7 @@ export class HeaderService {
                 // Update header
                 return {
                     success: true,
-                    body: await this.papiClient.addons.data.uuid(this.addonUUID).table(TABLE_NAME_DRAFTS).upsert(headerToUpsert)
+                    body: await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert)
                 }
             } 
         }

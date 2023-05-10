@@ -1,7 +1,7 @@
 export type ButtonType = 'Button' | 'Group';
 
-export const TABLE_NAME = 'AppHeaders';
-export const TABLE_NAME_DRAFTS = TABLE_NAME + 'Drafts';
+export const PUBLISHED_HEADERS_TABLE_NAME = 'appHeaders';
+export const DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
 
 export interface ButtonIcon {
     Type: string;
@@ -43,14 +43,17 @@ export class MenuItem {
     Title?: string;
     Visible: boolean;
     Enabled: boolean;
+    Items?: Array<MenuItem>;
 
-    constructor(id = undefined,title = '',hirachylevel = 0 ,script = undefined, key = null, type = 'Button', visible = true, enabled = true){
+    constructor(id = undefined,title = '',hirachylevel = 0 ,script = undefined, key = null, type: ButtonType = 'Button', visible = true, enabled = true, items = []){
         this.ID = id;
         this.Title = title;
         this.HierarchyLevel = hirachylevel;
         this.Script = script;
         this.Visible = visible;
         this.Enabled = enabled;
+        this.Type = type;
+        this.Items = items;
 
     }
 }
@@ -64,10 +67,12 @@ export class Button {
     Badge?: ButtonBadge; // The Button badge
     Visible: boolean = true; // Whether to show the button
 
-    constructor(title = '', fieldID = '', visible = true){
+    constructor(title = '', fieldID = '', visible = true, icon = null, buttonKey = '' ){
         this.Title = title;
         this.FieldID = fieldID;
         this.Visible = visible;
+        this.Icon = icon;
+        this.ButtonKey = buttonKey;
     }
 }
 

@@ -4,13 +4,3 @@
     [availableFields]="availableFields" [dataView]="dataView" (dataViewChange)="onDataViewChange($event)" [showAddSeparator]="false" [itemKeyLabel]="'BUTTONS.BUTTON_KEY' | translate" 
     [itemTitleLabel]="'BUTTONS.BUTTON_NAME' | translate">
 </pep-data-view-builder>
-
-<!--  build the hard coded button ( only on the ui )-->
-<!-- <div *ngFor="let btn of systemButtons" class="disabled-btn-cont">
-    <div class="mapped-field-container disabled-btn">
-        <pep-textbox [value]="btn.key" [label]="'BUTTONS.BUTTON_KEY' | translate" [disabled]="true" [showTitle]="'true'">
-        </pep-textbox>
-        <pep-textbox [value]="btn.name" [label]="'BUTTONS.BUTTON_NAME' | translate" [disabled]="true" [showTitle]="'true'">
-        </pep-textbox>
-    </div>
-</div> -->

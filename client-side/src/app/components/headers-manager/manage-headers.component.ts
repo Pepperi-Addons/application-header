@@ -81,38 +81,38 @@ export class ManageHeadersComponent implements OnInit {
             });
         });
  
-        const dataViews: MenuDataView[] = await this.addonService.getHeadersDataView(dataViewId);
-        if (dataViews?.length === 1) {
-            this.dataView = dataViews[0];
+        // const dataViews: MenuDataView[] = await this.addonService.getHeadersDataView(dataViewId);
+        // if (dataViews?.length === 1) {
+        //     this.dataView = dataViews[0];
            
-            for (let index = 0; index < this.dataView.Fields?.length; index++) {
-                const field = this.dataView.Fields[index];
-                this.mappedHeaders.push({
-                    key: field.FieldID,
-                    name: field.Title
-                });
-                this.setAvailableHeaderPermission(field.FieldID, true);
-            }
-        } else {
-            // TODO: Show error data view is not exist.
-            //this.goBack();
-        }
+        //     for (let index = 0; index < this.dataView.Fields?.length; index++) {
+        //         const field = this.dataView.Fields[index];
+        //         this.mappedHeaders.push({
+        //             key: field.FieldID,
+        //             name: field.Title
+        //         });
+        //         this.setAvailableHeaderPermission(field.FieldID, true);
+        //     }
+        // } else {
+        //     // TODO: Show error data view is not exist.
+        //     //this.goBack();
+        // }
 
         this.isFinishLoading = true;
         this.loaderService.hide();
     }
 
-    private saveHeadersDataView(fields: MenuDataViewField[]) {
-        this.dataView.Fields = fields;
-        this.addonService.saveHeadersDataView(this.dataView).then(res => {
-            this.dialogService.openDefaultDialog(new PepDialogData({
-                title: this.translate.instant('MAPPING.DIALOG_INFO_TITLE'),
-                content: this.translate.instant('MAPPING.MAPPED_HEADERS_SAVED_DIALOG_CONTENT')
-            })).afterClosed().subscribe(value => {
-                this.goBack();
-            });
-        });
-    }
+    // private saveHeadersDataView(fields: MenuDataViewField[]) {
+    //     this.dataView.Fields = fields;
+    //     this.addonService.saveHeadersDataView(this.dataView).then(res => {
+    //         this.dialogService.openDefaultDialog(new PepDialogData({
+    //             title: this.translate.instant('MAPPING.DIALOG_INFO_TITLE'),
+    //             content: this.translate.instant('MAPPING.MAPPED_HEADERS_SAVED_DIALOG_CONTENT')
+    //         })).afterClosed().subscribe(value => {
+    //             this.goBack();
+    //         });
+    //     });
+    // }
 
     ngOnInit() {
         this.loadData();
@@ -154,7 +154,7 @@ export class ManageHeadersComponent implements OnInit {
             }
         }
 
-        this.saveHeadersDataView(fields);
+        //this.saveHeadersDataView(fields);
     }
 
     onDragStart(event: CdkDragStart) {

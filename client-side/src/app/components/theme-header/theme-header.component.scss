@@ -1,0 +1,14 @@
+@use '@pepperi-addons/ngx-lib/src/core/style/abstracts/variables' as variables;
+// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/functions' as ngx-functions;
+// @use '@pepperi-addons/ngx-lib/src/core/style/abstracts/mixins' as ngx-mixins;
+
+
+.page-description{
+    max-width: 28rem;
+}
+
+.page-body{
+    padding-inline-start: variables.$spacing-sm;
+    margin-top: variables.$spacing-lg;
+    max-width: 20rem;
+}

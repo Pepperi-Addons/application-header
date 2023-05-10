@@ -19,6 +19,7 @@
     display: flex;
     height: inherit;
     flex-direction: column;
+    padding-top: variables.$spacing-lg;
 }
 
 mat-tab-group{

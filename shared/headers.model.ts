@@ -1,23 +1,20 @@
 import { AddonData } from "@pepperi-addons/papi-sdk";
 
-export const SURVEYS_TABLE_NAME = 'MySurveys';
-export const SURVEYS_BASE_TABLE_NAME = 'surveys'; // 'baseSurveys'
-export const SURVEY_TEMPLATES_TABLE_NAME = 'MySurveyTemplates';
-export const SURVEY_TEMPLATES_BASE_TABLE_NAME = 'survey_templates'; // 'baseSurveyTemplates'
-export const DRAFT_SURVEY_TEMPLATES_TABLE_NAME = 'SurveyTemplatesDrafts';
-
-export const RESOURCE_NAME_PROPERTY = 'ResourceName';
-
+export const PUBLISHED_HEADERS_TABLE_NAME = 'appHeaders';
+export const DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
 // **********************************************************************************************
 //                          Client & User events const
 // **********************************************************************************************
-export const CLIENT_ACTION_ON_CLIENT_HEADER_LOAD = 'OnClientHeaderLoad';
-export const USER_ACTION_ON_HEADER_DATA_LOAD = 'OnHeaderDataLoad';
-export const USER_ACTION_ON_HEADER_VIEW_LOAD = 'OnHeaderViewLoad';
+export const CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = 'OnClientAppHeaderLoad';
 
 // **********************************************************************************************
 
-export interface HeaderTemplate extends AddonData {
+export interface AppHeaderClientEventResult {
+    AppHeaderView: AppHeaderTemplate | null;
+    Success: boolean;
+}
+
+export interface AppHeaderTemplate extends AddonData {
     Name: string;
     Description?: string;
     Hidden: boolean;
@@ -33,4 +30,84 @@ export interface HeaderTemplateRowProjection {
     Draft: boolean
     Published: boolean,
     ModificationDate?: string
+}
+
+// export interface APIAppHeaderTemplate extends AddonData {
+//     Name: string;
+//     Description?: string;
+//     Hidden: boolean;
+//     Menu?: any;
+//     Buttons?: any;
+// }
+export class APIAppHeaderTemplate  {
+    SyncButtonData: Object;
+    SettingsButtonData: Object;
+    Buttons: Array<APIHeaderButton>;
+    MenuButtonData: Object;
+    Action: Object;
+
+    constructor(buttons = [], menus = []){
+        this.SyncButtonData = {};
+        this.SettingsButtonData = {};
+        this.Buttons = buttons;
+        this.MenuButtonData = menus;
+        this.Action = {}
+    }
+}
+
+export class Badge {
+    Visible: boolean;
+    Title: string;
+
+    constructor(visible:boolean = false,title: string = '') {
+        this.Visible = visible;
+        this.Title = title;
+    }
+}
+
+export class Icon {
+    Type: string;
+    Name: string;
+
+    constructor(type: string = '', name: string = ''){
+        this.Type = type;
+        this.Name = name;
+    }
+}
+
+export class APIHeaderButton{
+    Key: string;
+    Icon: Icon;
+    Visible: boolean;
+    Enable: boolean;
+    Badge?: Badge;
+
+    constructor(key = '',icon = new Icon('',''), visible = true, enable = true, badge = null){
+        this.Key = key;
+        this.Icon = icon || new Icon;
+        this.Visible = visible;
+        this.Enable = enable;
+        this.Badge = badge || new Badge();
+    }
+}
+
+export type ButtonType = 'Button' | 'Seperator';
+export type SyncStatus =  "InProgress"|"Error"|"Success";
+
+export class APIMenuItem{
+    Key: string;
+    Type: ButtonType;
+    Title: string;
+    Visible: boolean;
+    Enable: boolean;
+    Items?: Array<APIMenuItem>
+
+    constructor(key = '',type: ButtonType = 'Button',title = '', visible = true, enable = true, items: Array<APIMenuItem> = []){
+        this.Key = key;
+        this.Type = type;
+        this.Title = title;
+        this.Visible = visible;
+        this.Enable = enable;
+        this.Items = items;
+    }
 }

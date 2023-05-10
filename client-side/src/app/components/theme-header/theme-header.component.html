@@ -1,0 +1,18 @@
+<p class="page-description body-md" [innerHTML]="'THEME.TITLE' | translate"></p>
+
+<div class="page-body">
+  <mat-accordion class="pep-accordion" [multi]="'true'">
+    <mat-expansion-panel [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="title title-md">
+            {{THEME.LOGO.TITLE' | translate}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+            <p>{{'THEME.LOGO.SUB_TITLE' | translate}}</p>
+            <p>{{'THEME.LOGO.SUB_TITLE2' | translate}}</p>
+            
+            <div class="body-xs">{{ 'PAGES_MANAGER.ADD_NEW.TEMPLATES.PAGES.' | translate}}</div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</div>

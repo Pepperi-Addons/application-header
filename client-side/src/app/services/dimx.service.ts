@@ -1,9 +1,7 @@
 import { Injectable, ViewContainerRef } from "@angular/core";
 import { NavigationService } from "./navigation.service";
 import { PepDIMXHelperService } from "@pepperi-addons/ngx-composite-lib";
-
-const TABLE_NAME_DRAFTS = 'AppHeadersDrafts';
-const TABLE_NAME = 'AppHeaders';
+import { PUBLISHED_HEADERS_TABLE_NAME, DRAFTS_HEADERS_TABLE_NAME} from '../components/application-header.model'
 
 @Injectable()
 export class DIMXService {
@@ -16,7 +14,7 @@ export class DIMXService {
     register(viewContainerRef: ViewContainerRef, onDIMXProcessDoneCallback: (dimxEvent: any) => void) {
         const dimxHostObject = {
             DIMXAddonUUID: this.navigationService.addonUUID,
-            DIMXResource: TABLE_NAME_DRAFTS
+            DIMXResource: DRAFTS_HEADERS_TABLE_NAME
         };
 
         this.dimxService.register(viewContainerRef, dimxHostObject, onDIMXProcessDoneCallback);

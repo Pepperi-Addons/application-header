@@ -18,7 +18,7 @@ import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
-import { PepProfileDataViewsListModule } from '@pepperi-addons/ngx-lib/profile-data-views-list';
+// import { PepProfileDataViewsListModule } from '@pepperi-addons/ngx-lib/profile-data-views-list';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
@@ -55,7 +55,7 @@ export const routes: Routes = [
         PepPageLayoutModule,
         PepButtonModule,
         PepTextboxModule,
-        PepProfileDataViewsListModule,
+        // PepProfileDataViewsListModule,
         DragDropModule,
         PepDraggableItemsModule,
         PepTextareaModule,

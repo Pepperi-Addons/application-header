@@ -5,7 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { NavigationService } from "./navigation.service";
-import { TABLE_NAME, TABLE_NAME_DRAFTS, HeaderTemplateRowProjection } from '../components/application-header.model';
+import { PUBLISHED_HEADERS_TABLE_NAME, DRAFTS_HEADERS_TABLE_NAME, HeaderTemplateRowProjection } from '../components/application-header.model';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { MatDialogRef } from "@angular/material/dialog";
 import { config } from '../app.config';
@@ -14,7 +14,7 @@ import { PepSelectionData } from "@pepperi-addons/ngx-lib/list";
 import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
 import { MenuDataView, PapiClient } from "@pepperi-addons/papi-sdk";
 import { coerceNumberProperty } from "@angular/cdk/coercion";
-
+// import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, AppHeaderClientEventResult } from '../../../../shared';
 interface IHeaderProj {
     key: string, 
     name: string
@@ -43,11 +43,11 @@ export class AppHeadersService {
     private accessToken = '';
     private parsedToken: any
 
-    private _profiles: Array<IPepProfile> = [];
-    private _profilesSubject = new BehaviorSubject<ReadonlyArray<IPepProfile>>(this._profiles);
-    get profilesChange$(): Observable<ReadonlyArray<IPepProfile>> {
-        return this._profilesSubject.asObservable();
-    }
+    // private _profiles: Array<IPepProfile> = [];
+    // private _profilesSubject = new BehaviorSubject<ReadonlyArray<IPepProfile>>(this._profiles);
+    // get profilesChange$(): Observable<ReadonlyArray<IPepProfile>> {
+    //     return this._profilesSubject.asObservable();
+    // }
 
     // private _headers: Array<IHeaderProj> = null;
     // private _headersSubject = new BehaviorSubject<ReadonlyArray<IHeaderProj>>(this._headers);
@@ -56,18 +56,18 @@ export class AppHeadersService {
     // }
 
     // This subjects is for load the data views into map for better performance.
-    private _dataViewsMap = new Map<string, MenuDataView>();
-    get dataViewsMap(): ReadonlyMap<string, MenuDataView> {
-        return this._dataViewsMap;
-    }
-    private _dataViewsMapSubject = new BehaviorSubject<ReadonlyMap<string, MenuDataView>>(this.dataViewsMap);
-    get dataViewsMapChange$(): Observable<ReadonlyMap<string, MenuDataView>> {
-        return this._dataViewsMapSubject.asObservable();
-    }
-    private _defaultProfileId: string = '';
-    get defaultProfileId(): string {
-        return this._defaultProfileId;
-    }
+    // private _dataViewsMap = new Map<string, MenuDataView>();
+    // get dataViewsMap(): ReadonlyMap<string, MenuDataView> {
+    //     return this._dataViewsMap;
+    // }
+    // private _dataViewsMapSubject = new BehaviorSubject<ReadonlyMap<string, MenuDataView>>(this.dataViewsMap);
+    // get dataViewsMapChange$(): Observable<ReadonlyMap<string, MenuDataView>> {
+    //     return this._dataViewsMapSubject.asObservable();
+    // }
+    // private _defaultProfileId: string = '';
+    // get defaultProfileId(): string {
+    //     return this._defaultProfileId;
+    // }
 
     get papiClient(): PapiClient {
         return new PapiClient({
@@ -90,10 +90,34 @@ export class AppHeadersService {
         this.parsedToken = jwt(accessToken);
         this.papiBaseURL = this.parsedToken["pepperi.baseurl"];
 
-        this.loadHeadersDataViewsData();
+        //this.loadHeadersDataViewsData();
     }    
 
-   
+    // loadHeader(headerKey: string): void {
+    //     const eventData = {
+    //         detail: {
+    //             eventKey: CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD,
+    //             eventData: {
+    //                 headerKey: headerKey,
+    //             },
+    //             completion: (res: AppHeaderClientEventResult) => {
+    //                 if (res.Success) {
+                     
+    //                 } else {
+    //                     // Show default error.
+    //                     this.showErrorDialog();
+    //                 }
+    //             }
+    //         }
+    //     };
+
+    //     this.dispatchEvent(eventData);
+    // }
+
+    dispatchEvent(eventData: CustomEventInit<any>) {
+        const customEvent = new CustomEvent('emit-event', eventData);
+        window.dispatchEvent(customEvent);
+    }
 
     private getBaseUrl(addonUUID: string): string {
         // For devServer run server on localhost.
@@ -106,7 +130,7 @@ export class AppHeadersService {
     }
 
     private getCurrentResourceName() {
-        return TABLE_NAME;
+        return PUBLISHED_HEADERS_TABLE_NAME;
     }
 
     private showErrorDialog(err: string = ''): MatDialogRef<any> {
@@ -151,102 +175,98 @@ export class AppHeadersService {
 
      /**************************** MAPPING TAB *****************************/
 
-     loadHeadersDataViewsData() {
-        this.clearMappingData();
+    //  loadHeadersDataViewsData() {
+    //     this.clearMappingData();
 
-        const baseUrl = this.getBaseUrl(this.addonUUID);
-        this.httpService.getHttpCall(`${baseUrl}/get_headers_data_views_data`).toPromise().then(res => {
+    //     const baseUrl = this.getBaseUrl(this.addonUUID);
+    //     this.httpService.getHttpCall(`${baseUrl}/get_headers_data_views_data`).toPromise().then(res => {
 
-            this._profiles = res.profiles;
-            const repProfile = this._profiles.find(profile => profile.name?.toLowerCase() === 'rep');
-            this._defaultProfileId = repProfile?.id || '';
-            this.notifyProfilesChange();
+    //         this._profiles = res.profiles;
+    //         const repProfile = this._profiles.find(profile => profile.name?.toLowerCase() === 'rep');
+    //         this._defaultProfileId = repProfile?.id || '';
+    //         this.notifyProfilesChange();
 
-            if (res.dataViews.length > 0) {
-                res.dataViews.forEach(dataView => {
-                    this.upsertDataViewToMap(dataView);
-                });
-                this.notifyHeadersDataViewsMapChange();
-            } else {
-                const profileId: number = coerceNumberProperty(this._defaultProfileId);
-                this.createNewHeadersDataView(profileId);
-            }
-        });
-    }
+    //         if (res.dataViews.length > 0) {
+    //             res.dataViews.forEach(dataView => {
+    //                 this.upsertDataViewToMap(dataView);
+    //             });
+    //             this.notifyHeadersDataViewsMapChange();
+    //         } else {
+    //             const profileId: number = coerceNumberProperty(this._defaultProfileId);
+    //             this.createNewHeadersDataView(profileId);
+    //         }
+    //     });
+    // }
 
-    private clearMappingData() {
-        this._profiles = [];
-        //this._headers = [];
-        this._dataViewsMap.clear();
-    }
+    // private clearMappingData() {
+    //     this._profiles = [];
+    //     //this._headers = [];
+    //     this._dataViewsMap.clear();
+    // }
 
-    private notifyHeadersDataViewsMapChange() {
-        this._dataViewsMapSubject.next(this.dataViewsMap);
-    }
-    
-    // private notifyHeadersChange() {
-    //     this._headersSubject.next(this._headers);
+    // private notifyHeadersDataViewsMapChange() {
+    //     this._dataViewsMapSubject.next(this.dataViewsMap);
     // }
     
-    private notifyProfilesChange() {
-        this._profilesSubject.next(this._profiles);
-    }
+    // private notifyProfilesChange() {
+    //     this._profilesSubject.next(this._profiles);
+    // }
 
-    getHeadersDataView(dataViewId) {
-        if (this.dataViewsMap.has(dataViewId)) {
-            return Promise.resolve([this.dataViewsMap.get(dataViewId)]);
-        } else {
-            return this.httpService.getPapiApiCall(`/meta_data/data_views?where=InternalID='${dataViewId}'`).toPromise();
-        }
-    }
+    // getHeadersDataView(dataViewId) {
+    //     if (this.dataViewsMap.has(dataViewId)) {
+    //         return Promise.resolve([this.dataViewsMap.get(dataViewId)]);
+    //     } else {
+    //         return this.httpService.getPapiApiCall(`/meta_data/data_views?where=InternalID='${dataViewId}'`).toPromise();
+    //     }
+    // }
 
-    createNewHeadersDataView(profileId: number) {
-        const dataView: MenuDataView = {
-            Type: 'Menu',
-            Hidden: false,
-            Context: {
-                Name: this.HEADERS_DATAVIEW_NAME,
-                Profile: {
-                    InternalID: profileId
-                },
-                ScreenSize: 'Tablet'
-            },
-            Fields: []
-        }
+    // createNewHeadersDataView(profileId: number) {
+    //     const dataView: MenuDataView = {
+    //         Type: 'Menu',
+    //         Hidden: false,
+    //         Context: {
+    //             Name: this.HEADERS_DATAVIEW_NAME,
+    //             Profile: {
+    //                 InternalID: profileId
+    //             },
+    //             ScreenSize: 'Tablet'
+    //         },
+    //         Fields: []
+    //     }
 
-        return this.saveHeadersDataView(dataView);
-    }
+    //     return this.saveHeadersDataView(dataView);
+    // }
 
-    async deleteHeadersDataView(dataView: MenuDataView) {
-        // Delete the dataview
-        if (dataView) {
-            dataView.Hidden = true;
-            return this.httpService.postPapiApiCall('/meta_data/data_views', dataView).toPromise().then(res => {
-                this._dataViewsMap.delete(dataView.InternalID.toString());
-                this.notifyHeadersDataViewsMapChange();
-            }).catch(err => {
-                this.showErrorDialog(err);
-            });
-        }
-    }
+    // async deleteHeadersDataView(dataView: MenuDataView) {
+    //     // Delete the dataview
+    //     if (dataView) {
+    //         dataView.Hidden = true;
+    //         return this.httpService.postPapiApiCall('/meta_data/data_views', dataView).toPromise().then(res => {
+    //             this._dataViewsMap.delete(dataView.InternalID.toString());
+    //             this.notifyHeadersDataViewsMapChange();
+    //         }).catch(err => {
+    //             this.showErrorDialog(err);
+    //         });
+    //     }
+    // }
 
-    async saveHeadersDataView(dataView: MenuDataView) {
-        return this.upsertSlugDataView(dataView).then(dataView => {
-            this.upsertDataViewToMap(dataView);
-            this.notifyHeadersDataViewsMapChange();
-        }).catch(err => {
-            this.showErrorDialog(err);
-        });
-    }
+    // async saveHeadersDataView(dataView: MenuDataView) {
+    //     return this.upsertSlugDataView(dataView).then(dataView => {
+    //         this.upsertDataViewToMap(dataView);
+    //         this.notifyHeadersDataViewsMapChange();
+    //     }).catch(err => {
+    //         this.showErrorDialog(err);
+    //     });
+    // }
 
-    private upsertDataViewToMap(dataView: MenuDataView) {
-        const id = dataView.InternalID?.toString();
-        if (id && id.length > 0) {
-            this._dataViewsMap.set(id, dataView as MenuDataView);
-        }
-    }
+    // private upsertDataViewToMap(dataView: MenuDataView) {
+    //     const id = dataView.InternalID?.toString();
+    //     if (id && id.length > 0) {
+    //         this._dataViewsMap.set(id, dataView as MenuDataView);
+    //     }
+    // }
 
-    private upsertSlugDataView(dataView: MenuDataView) {
-        return this.httpService.postPapiApiCall('/meta_data/data_views', dataView).toPromise();
-    }
+    // private upsertSlugDataView(dataView: MenuDataView) {
+    //     return this.httpService.postPapiApiCall('/meta_data/data_views', dataView).toPromise();
+    // }
 }

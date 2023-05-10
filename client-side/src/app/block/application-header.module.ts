@@ -2,13 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-
-
-
 import { GeneralModule } from '../components/general/general.module';
 import { MenuModule } from '../components/menu/menu.module';
 import { ButtonsModule } from "../components/buttons/buttons.module";
-//import { DesignModule } from '../components/design/design.module';
 import { TranslateLoader, TranslateModule, TranslateService, TranslateStore } from '@ngx-translate/core';
 import { PepAddonService } from '@pepperi-addons/ngx-lib';
 
@@ -19,6 +15,7 @@ import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
+import { ThemeheaderlModule } from '../components/theme-header/theme-header.module';
 
 
 
@@ -54,10 +51,8 @@ export const routes: Routes = [
         PepButtonModule,
         GeneralModule,
         MenuModule,
-        ButtonsModule
-        //DesignModule
-
-        
+        ButtonsModule,
+        ThemeheaderlModule  
     ],
     exports: [ApplicationHeaderComponent],
     providers: [

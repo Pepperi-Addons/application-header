@@ -2,6 +2,7 @@ import { Component, OnInit, Injectable, Input, Output, EventEmitter, Optional, I
 import { IPepDraggableItem } from '@pepperi-addons/ngx-lib/draggable-items';
 import { MenuDataView } from '@pepperi-addons/papi-sdk';
 import { Button } from '../application-header.model';
+import { Icon } from '../../../../../shared';
 
 
 @Component({
@@ -81,10 +82,30 @@ export class ButtonsComponent implements OnInit {
         if(event?.Fields?.length){
             let tmpButtons: Array<Button> = [];
             event.Fields.forEach(btn => {
-                tmpButtons.push(new Button(btn.Title,btn.FieldID));
+                const icon = this.getBtnIcon(btn.FieldID);
+                tmpButtons.push(new Button(btn.Title,btn.FieldID,true, icon , btn.FieldID));
             });
             this.onButtonsChange.emit(tmpButtons);
         }
+    }
+
+    getBtnIcon(btnKey){
+        let icon = new Icon();
+
+        switch(btnKey){
+            case 'notification': {
+                icon.Name = 'bell';
+                icon.Type = 'system';
+                break;
+            }
+            default: {
+                icon.Name = 'bell';
+                icon.Type = 'system';
+                break;
+            }
+        }
+
+        return icon;
     }
 
 }

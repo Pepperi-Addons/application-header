@@ -12,3 +12,11 @@
     <pep-button class="center-button" [disabled]="!deleteable" iconName="system_bin" [title]="'Delete'" (buttonClick)="deleteMenuItem($event, menuItem)"></pep-button>
 </div>
 </div>
+<!-- <ng-container *ngFor="let subMenuField of menuItem.Items; let i = index" >
+    <menu-item [menuItem]="subMenuField" [deleteable]="(menuItem.Items.length > 1 && subMenuField?.ID !== 0) || (menuItem.Items?.length == 1 && subMenuField?.ID === 0)" 
+      (onDeleteMenuItem)="deleteMenuItem($event,subMenuField)">
+    </menu-item>
+</ng-container> -->
+
+<!-- <div>(onMenuItemChange)="menuItemChange($event)" cdkDrag (cdkDragStarted)="onDragStart($event)" 
+  (cdkDragEnded)="onDragEnd($event)"</div> -->

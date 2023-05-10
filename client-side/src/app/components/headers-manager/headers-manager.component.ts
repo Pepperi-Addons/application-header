@@ -42,12 +42,12 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
 
      // Mapping tab variables
      //private pagesMap = new Map<string, string>();
-     private dataViewsMap = new Map<string, MenuDataView>();
-     defaultProfileId: string = '';
-     private _allProfiles: ReadonlyArray<IPepProfile> = [];
-     availableProfiles: Array<IPepProfile> = [];
+    //  private dataViewsMap = new Map<string, MenuDataView>();
+    //  defaultProfileId: string = '';
+    //  private _allProfiles: ReadonlyArray<IPepProfile> = [];
+    //  availableProfiles: Array<IPepProfile> = [];
      
-     profileDataViewsList: Array<IPepProfileDataViewsCard> = [];
+    //  profileDataViewsList: Array<IPepProfileDataViewsCard> = [];
      
     constructor(
         private router: Router,
@@ -75,24 +75,24 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
         }));
         
         // Get the available profiles
-        this.appHeadersService.profilesChange$.subscribe(profiles => {
-            this._allProfiles = profiles;
+        // this.appHeadersService.profilesChange$.subscribe(profiles => {
+        //     this._allProfiles = profiles;
 
-            // After the profiles loaded the defaultProfileId is already loaded too.
-            this.defaultProfileId = this.appHeadersService.defaultProfileId;
-        });
+        //     // After the profiles loaded the defaultProfileId is already loaded too.
+        //     this.defaultProfileId = this.appHeadersService.defaultProfileId;
+        // });
 
         // Fill the data views.
-        this.appHeadersService.dataViewsMapChange$.subscribe((dataViewsMap: ReadonlyMap<string, MenuDataView>) => {
-            this.dataViewsMap = new Map<string, MenuDataView>();
-            this.profileDataViewsList = [];
+        // this.appHeadersService.dataViewsMapChange$.subscribe((dataViewsMap: ReadonlyMap<string, MenuDataView>) => {
+        //     this.dataViewsMap = new Map<string, MenuDataView>();
+        //     this.profileDataViewsList = [];
 
-            dataViewsMap.forEach(dv => {
-                this.createNewProfileDataViewCard(dv);
-            });
+        //     dataViewsMap.forEach(dv => {
+        //         this.createNewProfileDataViewCard(dv);
+        //     });
 
-            this.availableProfiles = this._allProfiles.filter(p => this.profileDataViewsList.findIndex(pdv => pdv.profileId === p.id) === -1);
-        });
+        //     this.availableProfiles = this._allProfiles.filter(p => this.profileDataViewsList.findIndex(pdv => pdv.profileId === p.id) === -1);
+        // });
     }
 
     ngOnInit() {
@@ -238,60 +238,60 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
         }
     }
 
-    onDataViewEditClicked(event: IPepProfileDataViewClickEvent): void {
-        // console.log(`edit on ${event.dataViewId} was clicked`);
-        this.navigateToManageHeadersDataView(event.dataViewId);
-    }
+    // onDataViewEditClicked(event: IPepProfileDataViewClickEvent): void {
+    //     // console.log(`edit on ${event.dataViewId} was clicked`);
+    //     this.navigateToManageHeadersDataView(event.dataViewId);
+    // }
 
-    onDataViewDeleteClicked(event: IPepProfileDataViewClickEvent): void {
-        // console.log(`delete on ${event.dataViewId} was clicked`);
+    // onDataViewDeleteClicked(event: IPepProfileDataViewClickEvent): void {
+    //     // console.log(`delete on ${event.dataViewId} was clicked`);
         
-        this.dialog.openDefaultDialog(new PepDialogData({
-            title: this.translate.instant('MESSAGES.DIALOG_DELETE_TITLE'),
-            content: this.translate.instant('MESSAGES.DELETE_DIALOG_CONTENT'),
-            actionsType: 'cancel-delete'
-        })).afterClosed().subscribe(isDeleteClicked => {
-            if (isDeleteClicked) {
-                const dataView = this.dataViewsMap.get(event.dataViewId);
-                if (dataView) {
-                    this.appHeadersService.deleteHeadersDataView(dataView).then(res => {
-                        this.dialog.openDefaultDialog(new PepDialogData({
-                            title: this.translate.instant('MESSAGES.DIALOG_INFO_TITLE'),
-                            content: this.translate.instant('MESSAGES.OPERATION_SUCCESS_CONTENT')
-                        }));
-                    });
-                }
-            }
-        });
-    }
+    //     this.dialog.openDefaultDialog(new PepDialogData({
+    //         title: this.translate.instant('MESSAGES.DIALOG_DELETE_TITLE'),
+    //         content: this.translate.instant('MESSAGES.DELETE_DIALOG_CONTENT'),
+    //         actionsType: 'cancel-delete'
+    //     })).afterClosed().subscribe(isDeleteClicked => {
+    //         if (isDeleteClicked) {
+    //             const dataView = this.dataViewsMap.get(event.dataViewId);
+    //             if (dataView) {
+    //                 this.appHeadersService.deleteHeadersDataView(dataView).then(res => {
+    //                     this.dialog.openDefaultDialog(new PepDialogData({
+    //                         title: this.translate.instant('MESSAGES.DIALOG_INFO_TITLE'),
+    //                         content: this.translate.instant('MESSAGES.OPERATION_SUCCESS_CONTENT')
+    //                     }));
+    //                 });
+    //             }
+    //         }
+    //     });
+    // }
 
-    onSaveNewProfileClicked(event: string): void {
-        // console.log(`save new profile was clicked for id - ${event} `);
-        const profileId: number = coerceNumberProperty(event);
-        if (profileId > 0) {
-            this.appHeadersService.createNewHeadersDataView(profileId);
-        }
-    }
+    // onSaveNewProfileClicked(event: string): void {
+    //     // console.log(`save new profile was clicked for id - ${event} `);
+    //     const profileId: number = coerceNumberProperty(event);
+    //     if (profileId > 0) {
+    //         this.appHeadersService.createNewHeadersDataView(profileId);
+    //     }
+    // }
 
 
 
-    private createNewProfileDataViewCard(dataView: MenuDataView) {
-        this.dataViewsMap.set(dataView.InternalID.toString(), dataView);
+    // private createNewProfileDataViewCard(dataView: MenuDataView) {
+    //     this.dataViewsMap.set(dataView.InternalID.toString(), dataView);
 
-        const profileDataView: IPepProfileDataViewsCard = {
-            title: dataView.Context?.Profile?.Name, // dataView.Title,
-            profileId: dataView.Context?.Profile?.InternalID.toString(),
-            dataViews: [{
-                dataViewId: dataView.InternalID.toString(),
-                viewType: dataView.Context?.ScreenSize,
-                fields: dataView.Fields?.map(field => {
-                    return `${field.Title} - ${field.FieldID}`;
-                })
-            }]
-        };
+    //     const profileDataView: IPepProfileDataViewsCard = {
+    //         title: dataView.Context?.Profile?.Name, // dataView.Title,
+    //         profileId: dataView.Context?.Profile?.InternalID.toString(),
+    //         dataViews: [{
+    //             dataViewId: dataView.InternalID.toString(),
+    //             viewType: dataView.Context?.ScreenSize,
+    //             fields: dataView.Fields?.map(field => {
+    //                 return `${field.Title} - ${field.FieldID}`;
+    //             })
+    //         }]
+    //     };
 
-        this.profileDataViewsList.push(profileDataView);
-    }
+    //     this.profileDataViewsList.push(profileDataView);
+    // }
 
     private navigateToManageHeadersDataView(dataViewId: string) {
 

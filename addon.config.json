@@ -1,6 +1,6 @@
 {
   "AddonUUID": "9bc8af38-dd67-4d33-beb0-7d6b39a6e98d",
-  "AddonVersion": "0.0.27",
+  "AddonVersion": "0.0.40",
   "DebugPort": 4401,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -22,9 +22,14 @@
     ],
     "Dependencies": {
       "cpi_node_scripts": "0.0.87",
-      "assets": "0.8.5",
-      "pfs": "1.0.2",
-      "pages": "0.8.13"
+      "cpi_node": "1.1.85",
+      "core": "0.6.41",
+      "cpi_data": "0.6.11",
+      "udc": "0.8.32",
+      "resource_list": "0.7.104",
+      "generic_resource": "0.6.2",
+      "scripts": "0.6.3",
+      "sync": "0.5.12"
     },
     "CPISide": [
       "addon-cpi.ts"
