@@ -28,7 +28,6 @@ export declare class APIAppHeaderTemplate {
     Buttons: Array<APIHeaderButton>;
     MenuButtonData: Object;
     Action: Object;
-    Theme: any;
     constructor(buttons?: never[], menus?: never[]);
 }
 export declare class Badge {

@@ -17,7 +17,7 @@ interface groupButtonArray {
 @Injectable()
 export class ThemeheaderComponent implements OnInit {
     
-    private _hostObject: appHeaderTheme = null;
+    private _hostObject: appHeaderTheme = new appHeaderTheme();
     @Input() 
     set hostObject(value: appHeaderTheme) {
         if (!value) {
