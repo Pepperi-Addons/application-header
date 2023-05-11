@@ -14,7 +14,7 @@ class AppHeaderService {
         try{
               header = (await pepperi.api.adal.get({
                             addon: AddonUUID,
-                            table: DRAFTS_HEADERS_TABLE_NAME,
+                            table: PUBLISHED_HEADERS_TABLE_NAME,
                             key: headerKey
                             
                         })).object;
@@ -22,7 +22,6 @@ class AppHeaderService {
         catch(err){
 
         }   
-   
         return header as any;
     }
 

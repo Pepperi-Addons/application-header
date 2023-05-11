@@ -83,12 +83,46 @@
             "SUB_TITLE": "You can change the quantity selector styling to that allow customers to add several products to theirs cart at once.",
             "APP_COLOR": "Select app color",
             "COLOR_STYLE": "Select color style",
-            "COLORS":{
+            "TYPE":{
                 "SYSTEM": "System",
                 "SYSTEM_INVERT": "System invert",
                 "PRIMARY": "Primary",
                 "SECONDARY": "Secondary"
+            },
+            "STYLE":{
+                "STRONG": "Strong",
+                "REGULAR": "Regular",
+                "WEAK": "Weak"
             }
+        },
+        "DIMENSIONS": {
+            "TITLE": "Dimensions (web only)",
+            "USE_FULL_WIDTH": "Use full width",
+            "PADDING": "Padding",
+            "LEFT_RIGHT_SIDE": "Left & Right side",
+            "HEIGHT": "Height",
+            "SELECT_HEADER_HEIGHT": "Select header eight",
+            "MAX_WIDTH": "Max width"
+        },
+        "SHADOW": {
+            "TITLE": "Shadow (web obly)",
+            "USE": "Use",
+            "SUB_TITLE": "Control the size and intensity of the apps header box shadow property or remove it altogether",
+            "SHADOW_SIZE": "Shadow size",
+            "SHADOW_INTENSITY": "Shadow intensity",
+            "INTENSITY": {
+                "SOFT": "Soft",
+                "REGULAR": "Regular",
+                "HARD": "Hard"
+            }
+        },
+        "BOTTOM_BORDER": {
+            "TITLE": "Bottom border (web only)",
+            "USE": "Use",
+            "SUB_TITLE": "Here you can add or remove a botton border line",
+            "SELECT_COLOR": "Select color",
+            "COLOR_OPACITY": "Color opacity"
+           
         }
 
     }

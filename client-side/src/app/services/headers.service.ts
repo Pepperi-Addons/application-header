@@ -122,7 +122,7 @@ export class AppHeadersService {
     private getBaseUrl(addonUUID: string): string {
         // For devServer run server on localhost.
         if (this.navigationService.devServer) {
-            return `http://localhost:4401/api`;
+            return `http://localhost:4500/internal_api`;
         } else {
             const baseUrl = this.sessionService.getPapiBaseUrl();
             return `${baseUrl}/addons/api/${addonUUID}/api`;

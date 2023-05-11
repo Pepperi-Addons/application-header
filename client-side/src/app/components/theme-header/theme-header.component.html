@@ -2,7 +2,7 @@
 
 <div class="page-body">
   <mat-accordion class="pep-accordion" [multi]="'true'">
-    <mat-expansion-panel>
+    <!-- <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title class="title title-md">
             {{'THEME.LOGO.TITLE' | translate}}
@@ -12,11 +12,11 @@
       <p class="body-sm ellipsis">{{'THEME.LOGO.SUB_TITLE2' | translate}}</p>
       <div>
       <label class="body-xs normal ellipsis">{{'THEME.LOGO.TITLE' | translate}}</label>
-      <div #assetsBtnCont class="assets-btn-cont" [ngStyle]="{'background-image': 'url(' + imageURL + ')'}" (click)="onOpenAssetsDialog();">
+      <div #assetsBtnCont class="assets-btn-cont" [ngStyle]="{'background-image': 'url(' + hostObject?.logoSrc || '' + ')'}" (click)="onOpenAssetsDialog();">
           <pep-button sizeType="sm" [styleType]="'regular'" [value]="'THEME.LOGO.OPEN_ASSETS_MANAGER' | translate"  iconName="system_file_upload_cloud"></pep-button>
       </div>
     </div>
-    </mat-expansion-panel>
+    </mat-expansion-panel> -->
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title class="title title-md">
@@ -24,12 +24,99 @@
         </mat-panel-title>
       </mat-expansion-panel-header> 
       <p class="body-sm ellipsis">{{'THEME.COLOR.SUB_TITLE' | translate}}</p>
-      <div>
-        <pep-select [label]="'THEME.COLOR.APP_COLOR' | translate" [value]="configuration?.color || null" 
-                [options]="headerColor" (valueChange)="onHostEventChange('color',$event)" [emptyOption]="false" 
-                [disabled]="false" styleType="regular"></pep-select>
+      <div class="selectCont">
+          <pep-select [label]="'THEME.COLOR.APP_COLOR' | translate" [value]="hostObject?.color?.color" 
+                      [options]="headerColor" (valueChange)="onHeaderFieldChange('color.color',$event)" [emptyOption]="false" 
+                      styleType="regular"></pep-select>
+          <pep-select [label]="'THEME.COLOR.COLOR_STYLE' | translate" [value]="hostObject?.color?.style" 
+                      [options]="headerStyle" (valueChange)="onHeaderFieldChange('color.style',$event)" [emptyOption]="false" 
+                      styleType="weak">
+        </pep-select>
+    </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel [disabled]="!hostObject?.shadow?.use">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="title title-md">
+            {{'THEME.SHADOW.TITLE' | translate}}
+            <pep-checkbox class="checkbox-no-background pep-spacing-element" [value]="hostObject?.shadow?.use" [label]="'THEME.SHADOW.USE' | translate" 
+                    [renderTitle]="false" (valueChange)="onHeaderFieldChange('shadow.use',$event)"></pep-checkbox>
+        </mat-panel-title>
+      </mat-expansion-panel-header> 
+      <p class="body-sm ellipsis">{{'THEME.SHADOW.SUB_TITLE' | translate}}</p>
+          <div class="dimenstionCont">
+            <div>
+              <pep-group-buttons-settings 
+                  [groupType]="'sizes'" [subHeader]="'THEME.SHADOW.SHADOW_SIZE' | translate" 
+                  [btnKey]="hostObject?.shadow?.size" [excludeKeys]="['lg','xl']"
+                  (btnkeyChange)="onHeaderFieldChange('shadow.size',$event)">
+              </pep-group-buttons-settings>
+            </div>
+            <div>
+              <pep-group-buttons-settings 
+                [groupType]="'custom'" [btnsArray]="shadowIntensity" [subHeader]="'THEME.SHADOW.SHADOW_INTENSITY' | translate" 
+                [btnKey]="hostObject?.shadow?.intensity" 
+                (btnkeyChange)="onHeaderFieldChange('shadow.intensity',$event)">
+              </pep-group-buttons-settings>
+            </div>
+        </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel [disabled]="!hostObject?.bottomBorder?.use">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="title title-md">
+            {{'THEME.BOTTOM_BORDER.TITLE' | translate}}
+            <pep-checkbox class="checkbox-no-background pep-spacing-element" [value]="hostObject?.bottomBorder?.use" [label]="'THEME.BOTTOM_BORDER.USE' | translate" 
+                    [renderTitle]="false" (valueChange)="onHeaderFieldChange('bottomBorder.use',$event)"></pep-checkbox>
+        </mat-panel-title>
+      </mat-expansion-panel-header> 
+      <p class="body-sm ellipsis">{{'THEME.BOTTOM_BORDER.SUB_TITLE' | translate}}</p>
+      <div class="dimenstionCont">
+        <div>
+            <pep-select [label]="'THEME.BOTTOM_BORDER.SELECT_COLOR' | translate" [value]="hostObject?.bottomBorder?.value" 
+            [options]="headerColor" (valueChange)="onHeaderFieldChange('bottomBorder.value',$event)" [emptyOption]="false" 
+            styleType="regular"></pep-select>
+        </div>
+        <div>
+          <pep-slider [label]="'THEME.BOTTOM_BORDER.COLOR_OPACITY' | translate" [hint]="hostObject?.bottomBorder?.opacity" 
+                      [minValue]="0" [maxValue]="100" [value]="hostObject?.bottomBorder?.opacity"
+                      (valueChange)="onHeaderFieldChange('bottomBorder.opacity',$event)">
+          </pep-slider>
+
+        </div>
+    </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title class="title title-md">
+            {{'THEME.DIMENSIONS.TITLE' | translate}}
+        </mat-panel-title>
+      </mat-expansion-panel-header> 
+      <div class="dimenstionCont">
+          <div>
+              <pep-checkbox class="checkbox-no-background" [value]="hostObject?.dimensions?.useFullWidth" [label]="'THEME.DIMENSIONS.USE_FULL_WIDTH' | translate" 
+                    [renderTitle]="false" (valueChange)="onHeaderFieldChange('dimensions.useFullWidth',$event)"></pep-checkbox>
+              <pep-textbox [label]="'THEME.DIMENSIONS.MAX_WIDTH' | translate" type="string" 
+                    [disabled]="hostObject?.dimensions?.useFullWidth" [value]="hostObject?.dimensions?.maxWidth || undefined" 
+                    (valueChange)="onHeaderFieldChange('dimensions.maxWidth',$event)">
+              </pep-textbox>
+            </div>
+          <div>
+            <span class="title-md">{{'THEME.DIMENSIONS.PADDING' | translate}}</span>
+            <pep-group-buttons-settings 
+              [groupType]="'sizes'" [subHeader]="'THEME.DIMENSIONS.LEFT_RIGHT_SIDE' | translate" 
+              [btnKey]="hostObject?.dimensions?.padding" [excludeKeys]="['xs','xl']"
+              (btnkeyChange)="onHeaderFieldChange('dimensions.padding',$event)">
+            </pep-group-buttons-settings>
+          </div>
+          <div>
+            <span class="title-md">{{'THEME.DIMENSIONS.HEIGHT' | translate}}</span>
+            <pep-group-buttons-settings 
+              [groupType]="'sizes'" [subHeader]="'THEME.DIMENSIONS.SELECT_HEADER_HEIGHT' | translate" 
+              [btnKey]="hostObject?.dimensions?.height" [excludeKeys]="['xs','xl']"
+              (btnkeyChange)="onHeaderFieldChange('dimensions.height',$event)">
+            </pep-group-buttons-settings>
+          </div>
       </div>
     </mat-expansion-panel>
   </mat-accordion>
 
-</div>
+</div> 
