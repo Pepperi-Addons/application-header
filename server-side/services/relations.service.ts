@@ -119,7 +119,8 @@ export class RelationsService {
             ComponentName: `${blockName}Component`, // This is should be the block component name (from the client-side)
             ModuleName: `${blockName}Module`, // This is should be the block module name (from the client-side)
             ElementsModule: 'WebComponents',
-            ElementName: `theme-header-element-${this.client.AddonUUID}`
+            ElementName: `theme-header-element-${this.client.AddonUUID}`,
+            OnPublishEndpoint: 'api/on_publish',
         };
 
         return await this.upsertRelation(blockRelation);
