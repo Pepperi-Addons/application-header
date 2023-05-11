@@ -140,6 +140,9 @@ export class HeaderService {
                 throw new Error(`Header Name field can't be empty.`);  
             }
             
+            let upsertExceptionMessage;
+            let draftHeader;
+            let publishHeader;
 
             // Add new header 
             if(headerToUpsert.Key === null){
@@ -149,7 +152,7 @@ export class HeaderService {
                     return header.name == headerToUpsert.name;
                 });
 
-            // check if header is allready exits , 0 means not so create new one
+                // check if header is allready exits , 0 means not so create new one
                 if(tmpList.length === 0){
                         // Limit the num of headers to 50 
                         if( headersList.length >= 50){
@@ -160,10 +163,6 @@ export class HeaderService {
                         }
                         // add Key if need ( for create new )
                         headerToUpsert.Key = uuid();
-                        
-                        let upsertExceptionMessage;
-                        let draftHeader;
-                        let publishHeader;
 
                         try { // upsert to draft table
                             draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
@@ -190,9 +189,19 @@ export class HeaderService {
             }
             else {
                 // Update header
-                return {
-                    success: true,
-                    body: await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert)
+                try { // upsert to draft table
+                        draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
+                        // upsert to publish table if need to
+                        if(headerToUpsert.published){
+                            publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
+                        }
+                } 
+                catch (e) {
+                            upsertExceptionMessage = e;
+                }
+                return{
+                            success: upsertExceptionMessage == null || undefined,
+                            body: { draft: draftHeader, publish: publishHeader }
                 }
             } 
         }
