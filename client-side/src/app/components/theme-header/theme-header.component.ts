@@ -8,8 +8,6 @@ interface groupButtonArray {
     value: string;
 }
 
-
-
 @Component({
     selector: 'theme-header-tab',
     templateUrl: './theme-header.component.html',
@@ -19,8 +17,19 @@ interface groupButtonArray {
 @Injectable()
 export class ThemeheaderComponent implements OnInit {
     
+    private _hostObject: appHeaderTheme = null;
+    @Input() 
+    set hostObject(value: appHeaderTheme) {
+        if (!value) {
+            value = new appHeaderTheme();
+        }
 
-    @Input() hostObject: appHeaderTheme;
+        this._hostObject = value;
+    }
+    get hostObject(): appHeaderTheme {
+        return this._hostObject;
+    }
+
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
     @Input() imageURL: string = '';
 
@@ -39,9 +48,6 @@ export class ThemeheaderComponent implements OnInit {
     }
     
     ngOnInit(): void {
-
-        this.hostObject = new appHeaderTheme();
-
         this.headerColor = [  
             { key: 'system', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM') },
             { key: 'system_invert', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM_INVERT') },
