@@ -1,3 +1,8 @@
+import { PepColorService, PepSizeType, PepStyleType } from "@pepperi-addons/ngx-lib";
+import { max } from "moment";
+import { PepShadowSettings} from "@pepperi-addons/ngx-composite-lib/shadow-settings";
+import { PepColorSettings } from "@pepperi-addons/ngx-composite-lib/color-settings";
+
 export type ButtonType = 'Button' | 'Group';
 
 export const PUBLISHED_HEADERS_TABLE_NAME = 'appHeaders';
@@ -86,4 +91,36 @@ export class HeaderData {
     modificationDate: string;
     menu?: Array<MenuItem> = [];
     buttons?: Array<Button> = [];
+}
+
+export class themeColor{
+    color : string;
+    style: PepStyleType;
+
+    constructor(color = 'system_invert', style: PepStyleType = 'weak'){
+        this.color = color;
+        this.style = style;
+    }
+}
+
+export class themeDimensions{
+    useFullWidth: boolean;
+    maxWidth: number;
+    padding: PepSizeType;
+    height: PepSizeType;
+
+    constructor(useFullWidth = true, maxWidth = 0, padding: PepSizeType  = 'sm' , height: PepSizeType = 'sm' ){
+        this.useFullWidth = useFullWidth;
+        this.maxWidth = maxWidth;
+        this.padding = padding;
+        this.height = height;
+    }
+}
+
+export class appHeaderTheme {
+    logoSrc: string = '';
+    color: themeColor = new themeColor();  
+    dimensions: themeDimensions = new themeDimensions();
+    shadow: PepShadowSettings = new PepShadowSettings(false,'md','soft');
+    bottomBorder: PepColorSettings = new PepColorSettings(false,'system',50);
 }
