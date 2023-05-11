@@ -1,4 +1,4 @@
-import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
+import { Context, IClient, IContext } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, ButtonType , SyncStatus, APIAppHeaderTemplate, Icon, Badge } from '../shared';
 import { AddonUUID } from '../addon.config.json'
 class AppHeaderService {
@@ -34,7 +34,7 @@ class AppHeaderService {
     async getHeaderData(client: IClient | undefined, headerKey: string): Promise<APIAppHeaderTemplate> {
         
         const header = await this.getAppHeader(headerKey);
-        return this.translateHeaderToAPIheader(header);
+        return await this.translateHeaderToAPIheader(header, client?.context || undefined);
         //return header;
 
     }
@@ -52,7 +52,7 @@ class AppHeaderService {
        //return new APIMenuItem(menuItem.ID, menuItem.Type, menuItem.Title, menuItem.Visible,menuItem.Enable, menuItem.Items || [])
     }
 
-    translateHeaderToAPIheader(header: AppHeaderTemplate){
+    async translateHeaderToAPIheader(header: AppHeaderTemplate, context: IContext | undefined){
 
         const showSettingsKey = true;
         let buttons: Array<APIHeaderButton> = [];
@@ -75,6 +75,13 @@ class AppHeaderService {
 
             menuItems = this.translateMenuItemsToAPImenuItems(header.menu);
         }
+
+        // Get the theme object from theme addon api (on the CPI side).
+        const themeAddonUUID = '95501678-6687-4fb3-92ab-1155f47f839e';
+        const theme = await pepperi.addons.api.uuid(themeAddonUUID).get({
+            url: `/themes/${AddonUUID}`,
+            context: context
+        })
 
         return {
             SyncButtonData: {
@@ -103,7 +110,8 @@ class AppHeaderService {
             
             "Action": {
             
-            }
+            },
+            Theme: theme
         }
     }
 }
