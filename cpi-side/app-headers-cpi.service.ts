@@ -78,7 +78,7 @@ class AppHeaderService {
         // Get the theme object from theme addon api (on the CPI side).
         const themeAddonUUID = '95501678-6687-4fb3-92ab-1155f47f839e';
         const theme = await pepperi.addons.api.uuid(themeAddonUUID).get({
-            url: `/themes/${AddonUUID}`,
+            url: `/addon-cpi/themes/${AddonUUID}`,
             context: context
         })
 
