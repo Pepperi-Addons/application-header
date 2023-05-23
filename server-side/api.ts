@@ -96,3 +96,7 @@ export async function on_delete_header(client:Client, request: Request): Promise
         throw new Error(`Failed to delete slug mappings. error - ${err}`);
     }
 }
+
+export async function on_publish(client:Client, request: Request): Promise<any> {
+    // TODO: Implement
+}
