@@ -2,6 +2,8 @@ import { Component, OnInit, Injectable, Input, Output, EventEmitter, ViewContain
 import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
 import { TranslateService } from '@ngx-translate/core';
 import { appHeaderTheme } from '../application-header.model';
+import { firstValueFrom } from 'rxjs';
+import { PepButton } from '@pepperi-addons/ngx-lib/button';
 
 interface groupButtonArray {
     key: string; 
@@ -31,64 +33,42 @@ export class ThemeheaderComponent implements OnInit {
     }
 
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
-    @Input() imageURL: string = '';
-
-    assetsHostObject = {
-        selectionType: 'single',
-        allowedAssetsTypes: 'images',
-        inDialog: true
-    }
 
     headerColor: Array<groupButtonArray> = [];
     headerStyle:  Array<groupButtonArray> = [];
-    shadowIntensity:  Array<groupButtonArray> = [];
+    shadowIntensity:  Array<PepButton> = []; 
 
     constructor(private translate: TranslateService, private addonBlockLoaderService: PepAddonBlockLoaderService, private viewContainerRef: ViewContainerRef) {
        
     }
     
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
+
+        const system = await this.translate.get('THEME.COLOR.TYPE.SYSTEM').toPromise();
+
         this.headerColor = [  
-            { key: 'system', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM') },
-            { key: 'system_invert', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM_INVERT') },
-            { key: 'primary', value: this.translate.instant('THEME.COLOR.TYPE.PRIMARY') },
-            { key: 'secondary', value: this.translate.instant('THEME.COLOR.TYPE.SECONDARY') }
+            { key: 'system-primary', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM') },
+            { key: 'system-primary-invert', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM_INVERT') },
+            { key: 'user-primary', value: this.translate.instant('THEME.COLOR.TYPE.PRIMARY') },
+            { key: 'user-secondary', value: this.translate.instant('THEME.COLOR.TYPE.SECONDARY') }
         ];
 
 
         this.headerStyle = [
-            { key: 'strong', value:this.translate.instant('THEME.COLOR.STYLE.STRONG')},
+            { key: 'strong', value: this.translate.instant('THEME.COLOR.STYLE.STRONG')},
             { key: 'regular', value: this.translate.instant('THEME.COLOR.STYLE.REGULAR')},
             { key: 'weak', value: this.translate.instant('THEME.COLOR.STYLE.WEAK')}
         ];
         
         this.shadowIntensity = [
-            { key: 'soft', value: this.translate.instant('THEME.SHADOW.INTENSITY.SOFT')},
-            { key: 'regular', value: this.translate.instant('THEME.SHADOW.INTENSITY.REGULAR')},
-            { key: 'hard', value: this.translate.instant('THEME.SHADOW.INTENSITY.HARD')}
+            { key: 'soft', value: this.translate.instant('THEME.SHADOW.INTENSITY.SOFT'), callback: (event: any) => this.onHeaderFieldChange('shadow.intensity',event)},
+            { key: 'regular', value: this.translate.instant('THEME.SHADOW.INTENSITY.REGULAR'), callback: (event: any) => this.onHeaderFieldChange('shadow.intensity',event)},
+            { key: 'hard', value: this.translate.instant('THEME.SHADOW.INTENSITY.HARD'), callback: (event: any) => this.onHeaderFieldChange('shadow.intensity',event)}
         ];
     }
 
-    onOpenAssetsDialog(){
-        const dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
-            container: this.viewContainerRef,
-            name: 'AssetPicker',
-            hostObject: this.assetsHostObject,
-            hostEventsCallback: (event) => { this.onAssetsHostEventChange(event, dialogRef); }
-        });
-    }
-
-    onAssetsHostEventChange(event: any, dialogRef) {
-        this.hostObject.logoSrc = event?.url || '';
-
-        this.updateHostObject();
-
-        if (dialogRef) {
-            dialogRef.close(null);
-        }
-    }
-
     onHeaderFieldChange(key, event){
+ 
        const value = event && event.source && event.source.key ? event.source.key : event && event.source && event.source.value ? event.source.value :  event;
 
         if(key.indexOf('.') > -1){

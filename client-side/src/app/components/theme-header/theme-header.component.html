@@ -2,21 +2,6 @@
 
 <div class="page-body">
   <mat-accordion class="pep-accordion" [multi]="'true'">
-    <!-- <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title class="title title-md">
-            {{'THEME.LOGO.TITLE' | translate}}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <p class="body-sm ellipsis">{{'THEME.LOGO.SUB_TITLE' | translate}}</p>
-      <p class="body-sm ellipsis">{{'THEME.LOGO.SUB_TITLE2' | translate}}</p>
-      <div>
-      <label class="body-xs normal ellipsis">{{'THEME.LOGO.TITLE' | translate}}</label>
-      <div #assetsBtnCont class="assets-btn-cont" [ngStyle]="{'background-image': 'url(' + hostObject?.logoSrc || '' + ')'}" (click)="onOpenAssetsDialog();">
-          <pep-button sizeType="sm" [styleType]="'regular'" [value]="'THEME.LOGO.OPEN_ASSETS_MANAGER' | translate"  iconName="system_file_upload_cloud"></pep-button>
-      </div>
-    </div>
-    </mat-expansion-panel> -->
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title class="title title-md">
@@ -54,8 +39,7 @@
             <div>
               <pep-group-buttons-settings 
                 [groupType]="'custom'" [btnsArray]="shadowIntensity" [subHeader]="'THEME.SHADOW.SHADOW_INTENSITY' | translate" 
-                [btnKey]="hostObject?.shadow?.intensity" 
-                (btnkeyChange)="onHeaderFieldChange('shadow.intensity',$event)">
+                [btnKey]="hostObject?.shadow?.intensity" >
               </pep-group-buttons-settings>
             </div>
         </div>
@@ -77,14 +61,14 @@
         </div>
         <div>
           <pep-slider [label]="'THEME.BOTTOM_BORDER.COLOR_OPACITY' | translate" [hint]="hostObject?.bottomBorder?.opacity" 
-                      [minValue]="0" [maxValue]="100" [value]="hostObject?.bottomBorder?.opacity"
+                      [minValue]="1" [maxValue]="100" [value]="hostObject?.bottomBorder?.opacity"
                       (valueChange)="onHeaderFieldChange('bottomBorder.opacity',$event)">
           </pep-slider>
 
         </div>
     </div>
     </mat-expansion-panel>
-    <mat-expansion-panel>
+    <!-- <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title class="title title-md">
             {{'THEME.DIMENSIONS.TITLE' | translate}}
@@ -116,7 +100,7 @@
             </pep-group-buttons-settings>
           </div>
       </div>
-    </mat-expansion-panel>
+    </mat-expansion-panel> -->
   </mat-accordion>
 
 </div> 

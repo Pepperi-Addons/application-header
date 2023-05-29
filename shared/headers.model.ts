@@ -6,12 +6,17 @@ export const DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
 //                          Client & User events const
 // **********************************************************************************************
 export const CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = 'OnClientAppHeaderLoad';
-
+export const CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClicked";
 // **********************************************************************************************
 
 export interface AppHeaderClientEventResult {
     AppHeaderView: AppHeaderTemplate | null;
     Success: boolean;
+}
+
+export interface AppheaderAction {
+    Type: string;
+    Data: Object;
 }
 
 export interface AppHeaderTemplate extends AddonData {
@@ -32,26 +37,17 @@ export interface HeaderTemplateRowProjection {
     ModificationDate?: string
 }
 
-// export interface APIAppHeaderTemplate extends AddonData {
-//     Name: string;
-//     Description?: string;
-//     Hidden: boolean;
-//     Menu?: any;
-//     Buttons?: any;
-// }
 export class APIAppHeaderTemplate  {
     SyncButtonData: Object;
-    SettingsButtonData: Object;
     Buttons: Array<APIHeaderButton>;
     MenuButtonData: Object;
-    Action: Object;
+    Action: AppheaderAction;
 
     constructor(buttons = [], menus = []){
         this.SyncButtonData = {};
-        this.SettingsButtonData = {};
         this.Buttons = buttons;
         this.MenuButtonData = menus;
-        this.Action = {}
+        this.Action = { Type: '', Data: {}}
     }
 }
 
@@ -75,15 +71,21 @@ export class Icon {
     }
 }
 
+export type MenuItemType = 'Button' | 'Group' | 'Seperator';
+export type SyncStatus =  "InProgress"|"Error"|"Success";
+export type ButtonType = 'Settings' | 'SystemAvatar' | 'Support' | 'Announcekit' | 'Regular';
+
 export class APIHeaderButton{
     Key: string;
+    Type: ButtonType;
     Icon: Icon;
     Visible: boolean;
     Enable: boolean;
     Badge?: Badge;
 
-    constructor(key = '',icon = new Icon('',''), visible = true, enable = true, badge = null){
+    constructor(key = '', type: ButtonType = 'Regular', icon = new Icon('',''), visible = true, enable = true, badge = null){
         this.Key = key;
+        this.Type = type;
         this.Icon = icon || new Icon;
         this.Visible = visible;
         this.Enable = enable;
@@ -91,18 +93,15 @@ export class APIHeaderButton{
     }
 }
 
-export type ButtonType = 'Button' | 'Seperator';
-export type SyncStatus =  "InProgress"|"Error"|"Success";
-
 export class APIMenuItem{
     Key: string;
-    Type: ButtonType;
+    Type: MenuItemType;
     Title: string;
     Visible: boolean;
     Enable: boolean;
     Items?: Array<APIMenuItem>
 
-    constructor(key = '',type: ButtonType = 'Button',title = '', visible = true, enable = true, items: Array<APIMenuItem> = []){
+    constructor(key = '',type: MenuItemType = 'Button',title = '', visible = true, enable = true, items: Array<APIMenuItem> = []){
         this.Key = key;
         this.Type = type;
         this.Title = title;

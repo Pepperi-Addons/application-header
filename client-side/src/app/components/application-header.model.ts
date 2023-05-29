@@ -3,8 +3,7 @@ import { max } from "moment";
 import { PepShadowSettings} from "@pepperi-addons/ngx-composite-lib/shadow-settings";
 import { PepColorSettings } from "@pepperi-addons/ngx-composite-lib/color-settings";
 
-export type ButtonType = 'Button' | 'Group';
-
+export type MenuItemType = 'Button' | 'Group' | 'Seperator';
 export const PUBLISHED_HEADERS_TABLE_NAME = 'appHeaders';
 export const DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
 
@@ -40,21 +39,18 @@ export class GeneralData {
 
 
 export class MenuItem {
-    ID?: number;
     HierarchyLevel: number;
-    Script?: any;
     Key?: string;
-    Type?: ButtonType;
+    Type?: MenuItemType;
     Title?: string;
     Visible: boolean;
     Enabled: boolean;
     Items?: Array<MenuItem>;
 
-    constructor(id = undefined,title = '',hirachylevel = 0 ,script = undefined, key = null, type: ButtonType = 'Button', visible = true, enabled = true, items = []){
-        this.ID = id;
+    constructor(title = '',hirachylevel = 0 , key = null, type: MenuItemType = 'Button', visible = true, enabled = true, items = []){
         this.Title = title;
         this.HierarchyLevel = hirachylevel;
-        this.Script = script;
+        this.Key = key;
         this.Visible = visible;
         this.Enabled = enabled;
         this.Type = type;
@@ -64,20 +60,21 @@ export class MenuItem {
 }
 
 export class Button {
-    ID?: number;
     Title: string;
     FieldID: string;
-    ButtonKey?: string = ''; // When the button is pressed use this key in the OnClientAppHeaderButtonClicked
+    Key: string = ''; // When the button is pressed use this key in the OnClientAppHeaderButtonClicked
+    Type: string;
     Icon?: ButtonIcon; // The Button icon
     Badge?: ButtonBadge; // The Button badge
     Visible: boolean = true; // Whether to show the button
 
-    constructor(title = '', fieldID = '', visible = true, icon = null, buttonKey = '' ){
+    constructor(title = '', fieldID = '', visible = true, icon = null, key = '', type = '' ){
         this.Title = title;
         this.FieldID = fieldID;
         this.Visible = visible;
         this.Icon = icon;
-        this.ButtonKey = buttonKey;
+        this.Key = key;
+        this.Type = type;
     }
 }
 
@@ -103,24 +100,24 @@ export class themeColor{
     }
 }
 
-export class themeDimensions{
-    useFullWidth: boolean;
-    maxWidth: number;
-    padding: PepSizeType;
-    height: PepSizeType;
+// export class themeDimensions{
+//     useFullWidth: boolean;
+//     maxWidth: number;
+//     padding: PepSizeType;
+//     height: PepSizeType;
 
-    constructor(useFullWidth = true, maxWidth = 0, padding: PepSizeType  = 'sm' , height: PepSizeType = 'sm' ){
-        this.useFullWidth = useFullWidth;
-        this.maxWidth = maxWidth;
-        this.padding = padding;
-        this.height = height;
-    }
-}
+//     constructor(useFullWidth = true, maxWidth = 0, padding: PepSizeType  = 'sm' , height: PepSizeType = 'sm' ){
+//         this.useFullWidth = useFullWidth;
+//         this.maxWidth = maxWidth;
+//         this.padding = padding;
+//         this.height = height;
+//     }
+// }
 
 export class appHeaderTheme {
     logoSrc: string = '';
     color: themeColor = new themeColor();  
-    dimensions: themeDimensions = new themeDimensions();
-    shadow: PepShadowSettings = new PepShadowSettings(false,'md','soft');
-    bottomBorder: PepColorSettings = new PepColorSettings(false,'system',50);
+    // dimensions: themeDimensions = new themeDimensions();
+    shadow: PepShadowSettings = new PepShadowSettings(false,'md','hard');
+    bottomBorder: PepColorSettings = new PepColorSettings(false,'system',1);
 }

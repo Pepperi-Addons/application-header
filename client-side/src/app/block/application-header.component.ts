@@ -5,6 +5,7 @@ import { Button, GeneralData, HeaderData, MenuItem } from '../components/applica
 import { NavigationService } from '../services/navigation.service';
 import { AppHeadersService } from '../services/headers.service';
 import { ActivatedRoute } from '@angular/router';
+import { v4 as uuid } from 'uuid';
 
 @Component({
     selector: 'page-block',
@@ -58,12 +59,8 @@ export class ApplicationHeaderComponent implements OnInit {
         })
     }
 
-    // removeSystemButtons(){
-    //     this.headerData.buttons = this.headerData.buttons.filter(btn => {
-    //         return btn.ButtonKey === 'notification';
-    //     })
-    // }
     async saveHeader(event, isPublish: boolean = false){
+ 
         //check if click on save or publish
         this.headerData.published = isPublish;
         
@@ -99,54 +96,48 @@ export class ApplicationHeaderComponent implements OnInit {
         return menuItems;
     }
 
-    // addDefaultButtons(){
-    //     let buttons:Array<Button> = [];
-    
-    //     const defaultHeaderBtns = [
-    //         new Button('Settings','settings',true, { Type: 'system', Name: 'settings' }, 'settings'),
-    //         new Button('Support','support',true, { Type: 'system', Name: 'question' }, 'support'),
-    //         new Button('Announcekit','announcekit',true, { Type: 'system', Name: 'megaphone' }, 'announcekit'),
-    //         new Button('Notification','notification',true, { Type: 'system', Name: 'bell' }, 'notification'),
-    //      ]
-
-    //     return [...buttons,...defaultHeaderBtns];
-    // }
-
     onAddNewMenuItem(menuItem,isSubMenu){
+
         // check if comes from click on menu item or from ad new item button on the header
         const hierachy = isSubMenu && menuItem ? (menuItem.HierarchyLevel + 1) : 0;
-        const item = new MenuItem(this.menuView?.length || 0 , '', hierachy); 
-        const index = menuItem == null ? this.menuView?.length : menuItem.ID + 1;
+
+        const item = new MenuItem('', hierachy,uuid(),); 
+        //const index = menuItem == null ? this.menuView?.length : menuItem.ID + 1;
+        const index = menuItem == null ? (this.menuView?.length || 0) : (this.menuView.findIndex(i => i.Key == menuItem.Key) + 1);
         
         this.menuView.splice(index, 0, item);
         //fix the ids (index of the items 0,1,2...)
-        this.fixMenuItemsIDKeys();
+        //this.fixMenuItemsIDKeys();
     }
 
     setMenuItemsPosition(menuItems: Array<MenuItem>){
         this.menuView = menuItems;
-        this.fixMenuItemsIDKeys();
+        //this.fixMenuItemsIDKeys();
     }
 
     onMenuItemChange(menuItem){
+        debugger;
         this.menuView[menuItem.ID] = menuItem;
     }
 
     deleteMenuItem(menuItem){
-        this.menuView.splice(menuItem.ID,1);
-        this.fixMenuItemsIDKeys();
+        const index = this.menuView.findIndex(function(mItem) {
+            return mItem.Key == menuItem.Key;
+        });
+
+        this.menuView.splice(index,1);
     }
 
-    fixMenuItemsIDKeys(){
-        for(let i = 0; i < this.menuView.length; i++){
-            if(i === 0){
-                this.menuView[i].HierarchyLevel = 0;
-            }
+    // fixMenuItemsIDKeys(){
+    //     for(let i = 0; i < this.menuView.length; i++){
+    //         if(i === 0){
+    //             this.menuView[i].HierarchyLevel = 0;
+    //         }
             
-            this.menuView[i].ID = i;
+    //         this.menuView[i].ID = i;
             
-        }
-    }
+    //     }
+    // }
 
     onHeaderKeyChange(key,event: any){
         if(key === 'general'){

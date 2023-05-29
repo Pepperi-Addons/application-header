@@ -3,6 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { PepButton } from '@pepperi-addons/ngx-lib/button';
 import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
 import { MenuItem } from '../../application-header.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'menu-item',
@@ -26,7 +27,8 @@ export class MenuItemComponent implements OnInit {
     private dialogRef: MatDialogRef<any>;
     
     constructor(private viewContainerRef: ViewContainerRef,
-                private addonBlockLoaderService: PepAddonBlockLoaderService) {
+                private addonBlockLoaderService: PepAddonBlockLoaderService,
+                public translate: TranslateService) {
        
     }
     
@@ -59,8 +61,8 @@ export class MenuItemComponent implements OnInit {
     }
 
     setArrowsState(){
-            this.leftRightArrows[0].disabled = this.menuItem.HierarchyLevel == 0 || this.menuItem.ID === 0 ? true : false;
-            this.leftRightArrows[1].disabled = this.menuItem.HierarchyLevel == 2 || this.menuItem.ID === 0 ? true : false; 
+            this.leftRightArrows[0].disabled = this.menuItem.HierarchyLevel == 0 ? true : false;
+            this.leftRightArrows[1].disabled = this.menuItem.HierarchyLevel == 2 && this.deleteable ? true : false; 
     }
 
     openScriptPickerDialog(){
@@ -81,8 +83,9 @@ export class MenuItemComponent implements OnInit {
             hostObject: script,
             hostEventsCallback: (event) => { 
                 if (event.action === 'script-picked') {
-                    this.menuItem['Script'] = event.data;
-                    this.menuItem.Key = event.data?.runScriptData?.ScriptKey || '';
+                    this.menuItem.Key = btoa(JSON.stringify(event.data?.runScriptData))
+                    //this.menuItem['Script'] = event.data;
+                    //this.menuItem.Key = event.data?.runScriptData?.ScriptKey || '';
                     this.onMenuItemChange.emit(this.menuItem);
                     this.dialogRef.close();
                 } else if (event.action === 'close') {
@@ -90,5 +93,16 @@ export class MenuItemComponent implements OnInit {
                 }
             }
         });
+    }
+
+    getScriptData(menuItem){
+        const chooseScript = this.translate.instant("MENU.ACTION.CHOOSE_SCRIPT");
+        try{
+            const script = JSON.parse(atob(menuItem.Key));
+            return script?.ScriptKey || chooseScript;
+        }
+        catch(err){
+            return chooseScript;
+        }
     }
 }

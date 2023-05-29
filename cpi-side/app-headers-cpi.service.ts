@@ -1,5 +1,5 @@
-import { Context, IClient, IContext } from '@pepperi-addons/cpi-node/build/cpi-side/events';
-import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, ButtonType , SyncStatus, APIAppHeaderTemplate, Icon, Badge } from '../shared';
+import { Client, Context, IClient, IContext } from '@pepperi-addons/cpi-node/build/cpi-side/events';
+import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, MenuItemType , SyncStatus, APIAppHeaderTemplate, Icon, Badge } from '../shared';
 import { AddonUUID } from '../addon.config.json'
 class AppHeaderService {
     
@@ -11,6 +11,7 @@ class AppHeaderService {
     
     private async getAppHeader(headerKey: string): Promise<AppHeaderTemplate> {
        let header; 
+       
         try{
               header = (await pepperi.api.adal.get({
                             addon: AddonUUID,
@@ -23,6 +24,21 @@ class AppHeaderService {
 
         }   
         return header as any;
+    }
+
+    public async runScriptData(scriptData, context){
+        let res;
+        try{
+                const script = JSON.parse(Buffer.from(scriptData, 'base64').toString('utf8'));
+                res = await pepperi.scripts.key(script.ScriptKey).run(script.ScriptData, context);
+        }
+        catch(err){
+            res = {
+                success: false
+            }
+        }
+
+        return res;
     }
 
 
@@ -40,8 +56,10 @@ class AppHeaderService {
     translateMenuItemsToAPImenuItems(menuItems){
         
         let tempItems: Array<APIMenuItem> = [];
+
         menuItems.forEach(item => {
-            item = new APIMenuItem(item.ID, item.Type, item.Title, item.Visible,item.Enable, item.Items || [])
+            const type = item.Items?.length > 0 ? 'Group' : 'Button';
+            item = new APIMenuItem(item.ID, type , item.Title, item.Visible,item.Enable, item.Items || [])
             if(item.Items?.length){
                 this.translateMenuItemsToAPImenuItems(item.Items);
             }
@@ -59,17 +77,17 @@ class AppHeaderService {
    
         
         buttons = [
-                new APIHeaderButton('settings', new Icon('system','settings'), true, true, null),
-                new APIHeaderButton('support', new Icon('system','question'), true, true, null),
-                new APIHeaderButton('announcekit', new Icon('system','megaphone'), true, true, null),
-                new APIHeaderButton('systemavatar', new Icon('system','avatar'), true, true, null),
+                new APIHeaderButton('Settings', 'Settings', new Icon('system','settings'), true, true, null),
+                new APIHeaderButton('Systemavatar', 'SystemAvatar', new Icon('system','avatar'), true, true, null),
+                new APIHeaderButton('Support', 'Support', new Icon('system','question'), true, true, null),
+                new APIHeaderButton('Announcekit', 'Announcekit', new Icon('system','megaphone'), true, true, null)  
         ]
 
         if(header !== undefined){
             // take custom menu and buttons from the app Header.
 
             header.buttons.forEach(btn => {
-                buttons.push(new APIHeaderButton(btn.ButtonKey, btn.Icon || '', btn.Visible, true));
+                buttons.push(new APIHeaderButton(btn.Key, btn.Type, btn.Icon || '',btn.Visible, true));
             });
 
             menuItems = this.translateMenuItemsToAPImenuItems(header.menu);
@@ -84,15 +102,10 @@ class AppHeaderService {
 
         return {
             SyncButtonData: {
-                "ButtonKey": "syncButton",
+                "Key": "syncButton",
                 "Visible": true,
                 "ChangeObjects": 0,
                 "SyncStatus": 'Success'
-            },
-            
-            SettingsButtonData: {
-                "ButtonKey": "settingsButton",
-                "Visible": showSettingsKey
             },
             
             Buttons: buttons || [],
@@ -107,9 +120,11 @@ class AppHeaderService {
                 Items: menuItems || []    
             },
             
-            "Action": {
-            
+            Action: {
+                "Type": '',
+                "Data": {}
             },
+            
             Theme: theme
         }
     }

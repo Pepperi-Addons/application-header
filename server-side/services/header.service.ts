@@ -97,6 +97,7 @@ export class HeaderService {
     async upsertHeader(body) {
         const headersList = await this.getHeaders({ where : 'Hidden=false'});
         const headerToUpsert = this.getBody(body);
+
         if(body.Hidden) {
 
             let draftDeleted = false;
@@ -149,6 +150,7 @@ export class HeaderService {
 
                 // get list of headers & filter by name field
                 let tmpList = headersList.filter((header) => {
+                    debugger;
                     return header.name == headerToUpsert.name;
                 });
 
@@ -183,18 +185,27 @@ export class HeaderService {
                 else{
                     return {
                             success: false,
-                            message: `Header ${headerToUpsert.name} already exists`
+                            message: `Header with the same name ${headerToUpsert.name} already exists`
                     }
                 }
             }
             else {
                 // Update header
-                try { // upsert to draft table
-                        draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
+                try { 
+                        debugger;
                         // upsert to publish table if need to
                         if(headerToUpsert.published){
                             publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                         }
+                        // get list of headers & filter by name field
+                        const currHeader = headersList.filter((header) => {
+                                return header.Key == headerToUpsert.Key;
+                        })[0];
+                        if(currHeader && !headerToUpsert.published) {
+                            headerToUpsert.published = currHeader.published;
+                        }
+                        // upsert to draft table
+                        draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                 } 
                 catch (e) {
                             upsertExceptionMessage = e;

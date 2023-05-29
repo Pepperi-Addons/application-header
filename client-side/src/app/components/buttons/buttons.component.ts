@@ -21,8 +21,6 @@ export class ButtonsComponent implements OnInit {
     public availableFields: Array<IPepDraggableItem>;
     public dataView: MenuDataView;
     
-    // public systemButtons = [{key: 'Announcent', name: 'Announcent'},{key: 'Help', name: 'Help'},{key: 'User', name: 'User'},{key: 'Settings', name: 'Settings'}];
-    
     constructor() {
        
     }
@@ -49,7 +47,7 @@ export class ButtonsComponent implements OnInit {
         
 
         this.availableFields = [
-            { title: 'Notification', data: { key: 'notification' } }
+            { title: 'Notification', data: { key: 'Notification' } }
         ]
     }
 
@@ -83,17 +81,17 @@ export class ButtonsComponent implements OnInit {
             let tmpButtons: Array<Button> = [];
             event.Fields.forEach(btn => {
                 const icon = this.getBtnIcon(btn.FieldID);
-                tmpButtons.push(new Button(btn.Title,btn.FieldID,true, icon , btn.FieldID));
+                tmpButtons.push(new Button(btn.Title,btn.FieldID,true, icon , btn.FieldID, btn.Title));
             });
             this.onButtonsChange.emit(tmpButtons);
         }
     }
 
-    getBtnIcon(btnKey){
+    getBtnIcon(btnType){
         let icon = new Icon();
 
-        switch(btnKey){
-            case 'notification': {
+        switch(btnType){
+            case 'Notification': {
                 icon.Name = 'bell';
                 icon.Type = 'system';
                 break;
