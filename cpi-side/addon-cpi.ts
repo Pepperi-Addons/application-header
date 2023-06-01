@@ -1,6 +1,7 @@
 import '@pepperi-addons/cpi-node';
 import AppHeaderService from './app-headers-cpi.service';
 import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED, AppHeaderClientEventResult, AppHeaderTemplate, APIAppHeaderTemplate } from '../shared';
+
 export async function load(configuration: any) {
      /***********************************************************************************************/
     //                              Client Events for survey
@@ -14,7 +15,7 @@ export async function load(configuration: any) {
         const slug = await pepperi.slugs.getPage('/application_header');
         const headerUUID = slug?.pageKey || ''; 
         let appHeader:  APIAppHeaderTemplate = await service.getHeaderData(data.client, headerUUID);
-
+        
         return appHeader;
     });
     
@@ -30,6 +31,7 @@ export async function load(configuration: any) {
 
         switch (data.Key) {
             case "Settings":
+                appHeader.Action['Type'] = 'NavigateToSettings';
                 await data.client?.navigateTo({
                     url: '/settings/home'
                 });
@@ -44,12 +46,11 @@ export async function load(configuration: any) {
                     appHeader.Action['Type'] = 'OpenUserMenu';
                     break;
             case "Support":
-                    appHeader.Action['Type'] = 'OpenSupportMenu';
-                    appHeader.Action['Data']['Menu'] = [
-                        {title: 'HelpSupportGuide' , url: 'https://support.pepperi.com/hc/en-us'},
-                        {title: 'Community', url:'https://support.pepperi.com/hc/en-us/community/posts?sort_by=created_at'},
-                        {title: 'AttendWebinar', url: 'https://www.pepperi.com/free-online-training/'}]; 
-                        break;
+                    appHeader.Action['Type'] = 'OpenSupportTab';
+                    await data.client?.openURI({
+                        uri: 'https://support.pepperi.com/hc/en-us'
+                    });
+                    break;
             case 'runSript':
 
             default:

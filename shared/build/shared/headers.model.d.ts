@@ -46,7 +46,7 @@ export declare class Icon {
 }
 export type MenuItemType = 'Button' | 'Group' | 'Seperator';
 export type SyncStatus = "InProgress" | "Error" | "Success";
-export type ButtonType = 'Settings' | 'SystemAvatar' | 'Support' | 'Announcekit' | 'Regular';
+export type ButtonType = 'Notification' | 'Settings' | 'SystemAvatar' | 'Support' | 'Announcekit' | 'Regular';
 export declare class APIHeaderButton {
     Key: string;
     Type: ButtonType;

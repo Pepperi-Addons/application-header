@@ -5,13 +5,13 @@ import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from '../../s
 
 export interface IHeaderData {
     Key?: string;
-    name: string;
-    description: string;
+    Name: string;
+    Description: string;
     Hidden?: boolean;
-    draft: boolean;
-    published: boolean;
-    menu: any; // TODO - SET THE TYPE
-    buttons: any; // TODO - SET THE TYPE
+    Draft: boolean;
+    Published: boolean;
+    Menu: any; // TODO - SET THE TYPE
+    Buttons: any; // TODO - SET THE TYPE
 }
 
 export class HeaderService {
@@ -76,13 +76,13 @@ export class HeaderService {
     private getBody(header): IHeaderData {
         return {
             Key: header.Key || null,
-            name: header.name || '',
-            description: header.description || '',
+            Name: header.Name || '',
+            Description: header.Description || '',
             Hidden: header.Hidden || false, 
-            draft: header.draft || true,
-            published: header.published || false,
-            menu: header.menu || [],
-            buttons: header.buttons || []
+            Draft: header.Draft || true,
+            Published: header.Published || false,
+            Menu: header.Menu || [],
+            Buttons: header.Buttons || []
         };
     }
 
@@ -115,7 +115,7 @@ export class HeaderService {
     
             try {
                 // delete from publish only when header allready published
-                if(headerToUpsert.published == true){
+                if(headerToUpsert.Published == true){
                     await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                 }
                 publishDeleted = true;
@@ -137,7 +137,7 @@ export class HeaderService {
         }
         else {
 
-            if(headerToUpsert.name === ''){
+            if(headerToUpsert.Name === ''){
                 throw new Error(`Header Name field can't be empty.`);  
             }
             
@@ -150,8 +150,7 @@ export class HeaderService {
 
                 // get list of headers & filter by name field
                 let tmpList = headersList.filter((header) => {
-                    debugger;
-                    return header.name == headerToUpsert.name;
+                    return header.Name == headerToUpsert.Name;
                 });
 
                 // check if header is allready exits , 0 means not so create new one
@@ -169,7 +168,7 @@ export class HeaderService {
                         try { // upsert to draft table
                             draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                             // upsert to publish table if need to
-                            if(headerToUpsert.published){
+                            if(headerToUpsert.Published){
                             publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                             }
                         } catch (e) {
@@ -185,24 +184,23 @@ export class HeaderService {
                 else{
                     return {
                             success: false,
-                            message: `Header with the same name ${headerToUpsert.name} already exists`
+                            message: `Header with the same name ${headerToUpsert.Name} already exists`
                     }
                 }
             }
             else {
                 // Update header
                 try { 
-                        debugger;
                         // upsert to publish table if need to
-                        if(headerToUpsert.published){
+                        if(headerToUpsert.Published){
                             publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
                         }
                         // get list of headers & filter by name field
                         const currHeader = headersList.filter((header) => {
                                 return header.Key == headerToUpsert.Key;
                         })[0];
-                        if(currHeader && !headerToUpsert.published) {
-                            headerToUpsert.published = currHeader.published;
+                        if(currHeader && !headerToUpsert.Published) {
+                            headerToUpsert.Published = currHeader.Published;
                         }
                         // upsert to draft table
                         draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
@@ -223,8 +221,8 @@ export class HeaderService {
         const header = (await this.getHeaders({ where : `Key="${body.headerUUID}"`}))[0] || null;
 
         if(header){
-            header.name = `${header.name} copy`;
-            header.published = false; // duplicate will create only draft header
+            header.Name = `${header.Name} copy`;
+            header.Published = false; // duplicate will create only draft header
             delete header.Key; // delete the key and upsert like new header
             return await this.upsertHeader(header);
         }

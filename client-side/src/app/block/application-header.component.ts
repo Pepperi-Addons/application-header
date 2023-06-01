@@ -36,15 +36,15 @@ export class ApplicationHeaderComponent implements OnInit {
         };
 
         if(this.headerData){
-            if(this.headerData.menu?.length){
-                this.setMenuView(this.headerData.menu);
+            if(this.headerData.Menu?.length){
+                this.setMenuView(this.headerData.Menu);
                 this.setMenuItemsObj();
             }
             // if(this.headerData?.buttons?.length){
             //     this.removeSystemButtons()
             // }
 
-            this.generalData = { name: this.headerData.name || '' , description: this.headerData.description || '' };
+            this.generalData = { name: this.headerData.Name || '' , description: this.headerData.Description || '' };
         }
 
         //this.appHeadersService.loadHeader(headerKey);
@@ -62,9 +62,9 @@ export class ApplicationHeaderComponent implements OnInit {
     async saveHeader(event, isPublish: boolean = false){
  
         //check if click on save or publish
-        this.headerData.published = isPublish;
+        this.headerData.Published = isPublish;
         
-        this.headerData.menu = this.setMenuItemsObj();
+        this.headerData.Menu = this.setMenuItemsObj();
         //this.headerData.buttons = this.addDefaultButtons();
   
         const header = await this.appHeadersService.upsertHeader(this.headerData); // options
@@ -116,7 +116,6 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     onMenuItemChange(menuItem){
-        debugger;
         this.menuView[menuItem.ID] = menuItem;
     }
 
@@ -141,11 +140,11 @@ export class ApplicationHeaderComponent implements OnInit {
 
     onHeaderKeyChange(key,event: any){
         if(key === 'general'){
-            this.headerData.name = event.name || '';
-            this.headerData.description = event.description || '';
+            this.headerData.Name = event.Name || event.name || '';
+            this.headerData.Description = event.Description || event.description || '';
         }
         else{
-            this.headerData[key] = event;
+            this.headerData.Key = event;
         }
        
     }

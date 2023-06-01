@@ -126,7 +126,7 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
                 this.headers = await this.appHeadersService.getHeaders(); // encodeURI(options)
 
                 if (params?.searchString) {
-                    this.headers = this.headers.filter((header: any) =>  header.name.toLowerCase().indexOf(params.searchString.toLowerCase()) > -1  );
+                    this.headers = this.headers.filter((header: any) =>  header.Name.toLowerCase().indexOf(params.searchString.toLowerCase()) > -1  );
                 }
 
                 this.totalHeaders = this.headers?.length || 0;
@@ -203,7 +203,7 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
 
     private getRegularReadOnlyColumn(columnId: string, columnType: DataViewFieldType = 'TextBox'): GridDataViewField {
         return {
-            FieldID: columnId.toLowerCase(),
+            FieldID: columnId,
             Type: columnType,
             Title: this.translate.instant(`HEADERS_MANAGER.GRID_HEADER.${columnId.toUpperCase()}`),
             Mandatory: false,

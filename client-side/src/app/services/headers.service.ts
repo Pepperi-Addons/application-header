@@ -22,13 +22,13 @@ interface IHeaderProj {
 
 export interface IHeaderData {
     Key?: string;
-    name: string;
-    description: string;
+    Name: string;
+    Description: string;
     Hidden?: boolean;
-    draft: boolean;
-    published: boolean;
-    menu: any; // TODO - SET THE TYPE
-    buttons: any; // TODO - SET THE TYPE,
+    Draft: boolean;
+    Published: boolean;
+    Menu: any; // TODO - SET THE TYPE
+    Buttons: any; // TODO - SET THE TYPE,
 }
 
 @Injectable({

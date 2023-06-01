@@ -9,16 +9,7 @@
     </ng-container>
 
     <ng-container pep-main-area>
-        <ng-container *ngTemplateOutlet="headersList"></ng-container>
-        <!-- <mat-tab-group [selectedIndex]="currentTabIndex" (selectedTabChange)="onTabChanged($event)"> -->
-            <!-- <mat-tab label="{{'HEADERS_MANAGER.TABS.HEADERS' | translate}}">
-                  
-            </mat-tab> -->
-            <!-- <mat-tab label="{{'HEADERS_MANAGER.TABS.MAPPING' | translate}}">
-                <ng-container *ngTemplateOutlet="mappingTemp"></ng-container>
-        </mat-tab> -->
-        <!-- </mat-tab-group> -->
-        
+        <ng-container *ngTemplateOutlet="headersList"></ng-container>   
     </ng-container>
 </pep-page-layout>
 
@@ -39,14 +30,6 @@
         </pep-generic-list>
     </div>
 </ng-template>
-
-<!-- <ng-template #mappingTemp>
-    <pep-profile-data-views-list [profileDataViewsList]="profileDataViewsList"
-                    [availableProfiles]="availableProfiles"
-                    [defaultProfileId]="defaultProfileId" (dataViewEditClick)="onDataViewEditClicked($event)"
-                    (dataViewDeleteClick)="onDataViewDeleteClicked($event)" (saveNewProfileClick)="onSaveNewProfileClicked($event)">
-    </pep-profile-data-views-list> 
-</ng-template> -->
 
 <ng-template #topBarEnd>
     <pep-menu class="pep-spacing-element" [items]="[{key: 'import', text: 'HEADERS_MANAGER.ACTION.IMPORT' | translate }]" [sizeType]="'sm'" (menuItemClick)="onMenuItemClicked($event)">

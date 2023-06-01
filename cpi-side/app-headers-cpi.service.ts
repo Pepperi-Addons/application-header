@@ -1,6 +1,6 @@
 import { Client, Context, IClient, IContext } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, MenuItemType , SyncStatus, APIAppHeaderTemplate, Icon, Badge } from '../shared';
-import { AddonUUID } from '../addon.config.json'
+import { AddonUUID } from '../addon.config.json';
 class AppHeaderService {
     
     constructor() {}
@@ -86,19 +86,54 @@ class AppHeaderService {
         if(header !== undefined){
             // take custom menu and buttons from the app Header.
 
-            header.buttons.forEach(btn => {
+            header.Buttons.forEach(btn => {
                 buttons.push(new APIHeaderButton(btn.Key, btn.Type, btn.Icon || '',btn.Visible, true));
             });
 
-            menuItems = this.translateMenuItemsToAPImenuItems(header.menu);
+            menuItems = this.translateMenuItemsToAPImenuItems(header.Menu);
         }
 
         // Get the theme object from theme addon api (on the CPI side).
         const themeAddonUUID = '95501678-6687-4fb3-92ab-1155f47f839e';
-        const theme = await pepperi.addons.api.uuid(themeAddonUUID).get({
-            url: `/addon-cpi/themes/${AddonUUID}`,
-            context: context
-        })
+        
+        const themePromises: Promise<any>[] = [];
+
+        // Get the app headers tab object
+        themePromises.push(
+            pepperi.addons.api.uuid(themeAddonUUID).get({
+                url: `/addon-cpi/themes/${AddonUUID}`,
+                context: context
+            })
+        );
+
+        // Get the profiles
+        // const profiles = await this.papiClient.profiles.find();
+        themePromises.push(
+            pepperi.addons.api.uuid(themeAddonUUID).get({
+                url: `/addon-cpi/themes/themes`,
+                context: context
+            })
+        );
+
+        // wait for results and return them as object.
+        const themeArr = await Promise.all(themePromises).then(res => res);
+
+        const theme = themeArr[0];
+        const themeVariables = themeArr[1];
+        // Set the default values for the logo's if needed.
+        const logoKey = '--pep-branding-logo-src';
+        const faviconKey = '--pep-favicon-src';
+
+        if (!themeVariables.hasOwnProperty(logoKey)) {
+            themeVariables[logoKey] = '/assets/images/Pepperi-Logo-HiRes.png'; 
+        }
+            
+        if (!themeVariables.hasOwnProperty(faviconKey)) {
+            themeVariables[faviconKey] = '/assets/favicon.ico';
+        }
+        
+        theme['faviconSrc'] = themeVariables[faviconKey];
+        theme['brandingLogoSrc'] = themeVariables[logoKey];
 
         return {
             SyncButtonData: {

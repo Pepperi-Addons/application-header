@@ -6,7 +6,7 @@
                     <pep-button [iconName]="'arrow_left_alt'" [styleType]="'weak'" (click)="navigateBack()"
                         class="pep-spacing-element pull-left flip">
                     </pep-button>
-                    <span class="title-xl pull-left flip">{{('HEADER_TITLE' | translate) + ': '+ (headerData?.name != '' ? headerData.name : ('HEADERS_MANAGER.GRID_HEADER.NAME_NO_SET' | translate))}}</span>
+                    <span class="title-xl pull-left flip">{{('HEADER_TITLE' | translate) + ': '+ (headerData?.Name != '' ? headerData.Name : ('HEADERS_MANAGER.GRID_HEADER.NAME_NO_SET' | translate))}}</span>
                 </div>
             </ng-container>
             <ng-container header-end-content>
@@ -34,7 +34,7 @@
                 (onMenuItemChange)="onMenuItemChange($event)" ></menu-tab>
             </mat-tab>
             <mat-tab label="{{'TABS.BUTTONS' | translate}}">
-                <buttons-tab [buttons]="headerData?.buttons || []" (onButtonsChange)="onHeaderKeyChange('buttons',$event)"></buttons-tab>
+                <buttons-tab [buttons]="headerData?.Buttons || []" (onButtonsChange)="onHeaderKeyChange('Buttons',$event)"></buttons-tab>
             </mat-tab>
             <!-- <mat-tab label="Style">
                 <theme-header-tab></theme-header-tab>

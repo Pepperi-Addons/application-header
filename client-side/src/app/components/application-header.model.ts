@@ -80,14 +80,14 @@ export class Button {
 
 export class HeaderData {
     Key?: string;
-    name: string = '';
-    description?: string = '';
+    Name: string = '';
+    Description?: string = '';
     Hidden: boolean;
-    draft: boolean;
-    published: boolean;
-    modificationDate: string;
-    menu?: Array<MenuItem> = [];
-    buttons?: Array<Button> = [];
+    Draft: boolean;
+    Published: boolean;
+    ModificationDate: string;
+    Menu?: Array<MenuItem> = [];
+    Buttons?: Array<Button> = [];
 }
 
 export class themeColor{
@@ -115,7 +115,6 @@ export class themeColor{
 // }
 
 export class appHeaderTheme {
-    logoSrc: string = '';
     color: themeColor = new themeColor();  
     // dimensions: themeDimensions = new themeDimensions();
     shadow: PepShadowSettings = new PepShadowSettings(false,'md','hard');

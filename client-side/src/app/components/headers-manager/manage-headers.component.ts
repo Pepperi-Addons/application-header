@@ -10,9 +10,9 @@ import { IPepButtonClickEvent } from '@pepperi-addons/ngx-lib/button';
 import { MenuDataView, MenuDataViewField, Page } from '@pepperi-addons/papi-sdk';
 
 interface IMappedHeader {
-    desc?: string;
-    name?: string;
-    key?: string;
+    Desc?: string;
+    Name?: string;
+    Key?: string;
 }
 
 @Component({
@@ -51,7 +51,7 @@ export class ManageHeadersComponent implements OnInit {
     private addNewHeader(draggableItem: IPepDraggableItem, index: number) {
         this.setAvailableHeaderPermission(draggableItem.data.Key, true);
         // Add new mappedHeader to the mappedHeaders.
-        const mappedHeader: IMappedHeader = { name: draggableItem.title, key: draggableItem.data.key, desc: draggableItem.data.desc };
+        const mappedHeader: IMappedHeader = { Name: draggableItem.title, Key: draggableItem.data.key, Desc: draggableItem.data.desc };
         this.mappedHeaders.splice(index, 0, mappedHeader);
     }
 
@@ -72,8 +72,8 @@ export class ManageHeadersComponent implements OnInit {
         const dataViewId = this.activatedRoute.snapshot.params["tabIndex"];
 
         await this.addonService.getHeaders().then((headers: IHeaderData[]) => {
-            this.availableHeaders = headers.filter(h => h.published === true).map(header => { 
-                    return { title: header.name, data: {key: header.Key, desc: header.description } }
+            this.availableHeaders = headers.filter(h => h.Published === true).map(header => { 
+                    return { title: header.Name, data: {key: header.Key, desc: header.Description } }
             }).sort((header1, header2) => {
                 if (header1.title < header2.title) { return -1; }
                 if (header1.title > header2.title) { return 1; }
@@ -144,10 +144,10 @@ export class ManageHeadersComponent implements OnInit {
             const mappedHeader = this.mappedHeaders[index];
             
             // Add the mapped slug only if the page is selected.            
-            if (mappedHeader.key) {
+            if (mappedHeader.Key) {
                 fields.push({
-                    FieldID: mappedHeader.key,
-                    Title: mappedHeader.name
+                    FieldID: mappedHeader.Key,
+                    Title: mappedHeader.Name
                 });
             } else {
 
@@ -181,11 +181,11 @@ export class ManageHeadersComponent implements OnInit {
     // }
 
     onDeleteMappedHeader(event: IPepButtonClickEvent, mappedHeader: IMappedHeader) {
-        const index = this.mappedHeaders.findIndex( ms => ms.key === mappedHeader.key);
+        const index = this.mappedHeaders.findIndex( ms => ms.Key === mappedHeader.Key);
         if (index > -1) {
             this.mappedHeaders.splice(index, 1);
 
-            this.setAvailableHeaderPermission(mappedHeader.key, false);
+            this.setAvailableHeaderPermission(mappedHeader.Key, false);
         }
     }
 }
