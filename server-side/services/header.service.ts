@@ -191,14 +191,22 @@ export class HeaderService {
             else {
                 // Update header
                 try { 
-                        // upsert to publish table if need to
-                        if(headerToUpsert.Published){
-                            publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
-                        }
                         // get list of headers & filter by name field
                         const currHeader = headersList.filter((header) => {
-                                return header.Key == headerToUpsert.Key;
+                            return header.Key == headerToUpsert.Key;
                         })[0];
+                        
+                        // upsert to publish table if need to
+                        if(headerToUpsert.Published){
+                            try{
+                                publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
+                                currHeader.Published = true;
+                            }
+                            catch(err){
+
+                            }
+                        }
+                       
                         if(currHeader && !headerToUpsert.Published) {
                             headerToUpsert.Published = currHeader.Published;
                         }

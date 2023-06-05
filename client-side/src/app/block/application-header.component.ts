@@ -127,26 +127,14 @@ export class ApplicationHeaderComponent implements OnInit {
         this.menuView.splice(index,1);
     }
 
-    // fixMenuItemsIDKeys(){
-    //     for(let i = 0; i < this.menuView.length; i++){
-    //         if(i === 0){
-    //             this.menuView[i].HierarchyLevel = 0;
-    //         }
-            
-    //         this.menuView[i].ID = i;
-            
-    //     }
-    // }
-
     onHeaderKeyChange(key,event: any){
         if(key === 'general'){
             this.headerData.Name = event.Name || event.name || '';
             this.headerData.Description = event.Description || event.description || '';
         }
         else{
-            this.headerData.Key = event;
-        }
-       
+            this.headerData[key] = event;
+        }  
     }
 
     ngOnChanges(e: any): void {
