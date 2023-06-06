@@ -101,7 +101,8 @@ class AppHeaderService {
         // Get the app headers tab object
         themePromises.push(
             pepperi.addons.api.uuid(themeAddonUUID).get({
-                url: `/addon-cpi/themes/${AddonUUID}`,
+                // url: `/addon-cpi/themes/${AddonUUID}`,
+                url: `/addon-cpi/themes/ApplicationHeader`,
                 context: context
             })
         );
@@ -110,10 +111,15 @@ class AppHeaderService {
         // const profiles = await this.papiClient.profiles.find();
         themePromises.push(
             pepperi.addons.api.uuid(themeAddonUUID).get({
-                url: `/addon-cpi/themes/themes`,
+                // url: `/addon-cpi/themes/themes`,
+                url: `/addon-cpi/themes/branding`,
                 context: context
             })
         );
+
+        // await pepperi.themes.get() // Return all the theme object.
+        // await pepperi.themes.get('TAB_NAME:GROUP1:GROUP2:PROPERTY_NAME')
+        // await pepperi.themes.get('TAB_NAME:GROUP1')
 
         // wait for results and return them as object.
         const themeArr = await Promise.all(themePromises).then(res => res);
@@ -121,8 +127,8 @@ class AppHeaderService {
         const theme = themeArr[0];
         const themeVariables = themeArr[1];
         // Set the default values for the logo's if needed.
-        const logoKey = '--pep-branding-logo-src';
-        const faviconKey = '--pep-favicon-src';
+        const logoKey = 'logoSrc';
+        const faviconKey = 'faviconSrc';
 
         if (!themeVariables.hasOwnProperty(logoKey)) {
             themeVariables[logoKey] = '/assets/images/Pepperi-Logo-HiRes.png'; 
