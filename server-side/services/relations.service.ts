@@ -1,6 +1,6 @@
 import { PapiClient, InstalledAddon, Relation, AddonDataScheme, Subscription } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
-import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from '../../shared';
+import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from 'shared';
 
 export class RelationsService {
 

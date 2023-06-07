@@ -1,5 +1,5 @@
 import { Client, Context, IClient, IContext } from '@pepperi-addons/cpi-node/build/cpi-side/events';
-import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, MenuItemType , SyncStatus, APIAppHeaderTemplate, Icon, Badge } from '../shared';
+import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, MenuItemType , SyncStatus, APIAppHeaderTemplate, Icon, Badge } from 'shared';
 import { AddonUUID } from '../addon.config.json';
 class AppHeaderService {
     
@@ -11,7 +11,7 @@ class AppHeaderService {
     
     private async getAppHeader(headerKey: string): Promise<AppHeaderTemplate> {
        let header; 
-       
+
         try{
               header = (await pepperi.api.adal.get({
                             addon: AddonUUID,

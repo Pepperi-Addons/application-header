@@ -14,7 +14,7 @@ import { PepSelectionData } from "@pepperi-addons/ngx-lib/list";
 import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
 import { MenuDataView, PapiClient } from "@pepperi-addons/papi-sdk";
 import { coerceNumberProperty } from "@angular/cdk/coercion";
-// import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, AppHeaderClientEventResult } from '../../../../shared';
+// import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, AppHeaderClientEventResult } from 'shared';
 interface IHeaderProj {
     key: string, 
     name: string

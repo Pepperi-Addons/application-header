@@ -1,6 +1,6 @@
 import '@pepperi-addons/cpi-node';
 import AppHeaderService from './app-headers-cpi.service';
-import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED, AppHeaderClientEventResult, AppHeaderTemplate, APIAppHeaderTemplate } from '../shared';
+import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED, AppHeaderClientEventResult, AppHeaderTemplate, APIAppHeaderTemplate } from 'shared';
 
 export async function load(configuration: any) {
      /***********************************************************************************************/

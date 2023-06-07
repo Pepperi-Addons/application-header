@@ -2,7 +2,7 @@ import { Component, OnInit, Injectable, Input, Output, EventEmitter, Optional, I
 import { IPepDraggableItem } from '@pepperi-addons/ngx-lib/draggable-items';
 import { MenuDataView } from '@pepperi-addons/papi-sdk';
 import { Button } from '../application-header.model';
-import { Icon } from '../../../../../shared';
+import { Icon } from 'shared';
 
 
 @Component({
