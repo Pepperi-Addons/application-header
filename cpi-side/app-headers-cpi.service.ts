@@ -131,9 +131,25 @@ class AppHeaderService {
         if (!themeVariables.hasOwnProperty(faviconKey)) {
             themeVariables[faviconKey] = '/assets/favicon.ico';
         }
-        
-        theme['faviconSrc'] = themeVariables[faviconKey];
-        theme['brandingLogoSrc'] = themeVariables[logoKey];
+
+        let mergedTheme = {
+            'BottomBorder': {
+                'Opacity': theme.bottomBorder.opacity || 1,
+                'Use': theme.bottomBorder.use || false,
+                'Value': theme.bottomBorder.value || 'system'
+            },
+            'Color': {
+                'Color': theme?.color?.color || 'system_invert',
+                'Style': theme?.color?.style || 'weak'
+            },
+            'Shadow': {
+                'Intensity': theme?.shadow?.intensity || 'hard',
+                'Size': theme?.shadow?.size || 'md',
+                'Use': theme.shadow.use || false,
+            },
+            'FaviconSrc': themeVariables[faviconKey],
+            'BrandingLogoSrc': themeVariables[logoKey]
+        }
 
         return {
             SyncButtonData: {
@@ -160,7 +176,7 @@ class AppHeaderService {
                 "Data": {}
             },
             
-            Theme: theme
+            Theme: mergedTheme
         }
     }
 }
