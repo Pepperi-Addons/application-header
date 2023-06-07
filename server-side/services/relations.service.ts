@@ -105,13 +105,12 @@ export class RelationsService {
     }
 
     private async upsertThemeTabsRelation() {
-        const blockRelationName = 'Application Header';
         const blockName = 'Themeheader';
 
         const blockRelation: Relation = {
             RelationName: 'ThemeTabs',
-            Name: blockRelationName,
-            Description: `${blockRelationName} tab`,
+            Name: 'ApplicationHeader',
+            Description: 'Application Header',
             Type: "NgComponent",
             SubType: "NG14",
             AddonUUID: this.client.AddonUUID,
