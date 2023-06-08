@@ -42,7 +42,8 @@ export class APIAppHeaderTemplate  {
     Buttons: Array<APIHeaderButton>;
     MenuButtonData: Object;
     Action: AppheaderAction;
-
+    DefaultHeader?:  boolean;
+    
     constructor(buttons = [], menus = []){
         this.SyncButtonData = {};
         this.Buttons = buttons;
