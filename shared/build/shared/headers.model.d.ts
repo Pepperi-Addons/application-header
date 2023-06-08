@@ -32,7 +32,8 @@ export declare class APIAppHeaderTemplate {
     Buttons: Array<APIHeaderButton>;
     MenuButtonData: Object;
     Action: AppheaderAction;
-    constructor(buttons?: never[], menus?: never[]);
+    DefaultHeader?:  boolean;
+    constructor(buttons?: never[], menus?: never[])
 }
 export declare class Badge {
     Visible: boolean;

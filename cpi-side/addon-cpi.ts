@@ -10,12 +10,15 @@ export async function load(configuration: any) {
     // Handle on survey load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD as any, {}, async (data): Promise<APIAppHeaderTemplate> => {
         const service = new AppHeaderService();
-        
+
         // look for header UUID if null will return default header
         const slug = await pepperi.slugs.getPage('/application_header');
         const headerUUID = slug?.pageKey || ''; 
         let appHeader:  APIAppHeaderTemplate = await service.getHeaderData(data.client, headerUUID);
         
+        // default header is true when there is no mapping. 
+        appHeader.DefaultHeader = headerUUID !== '' ? false : true;
+
         return appHeader;
     });
     

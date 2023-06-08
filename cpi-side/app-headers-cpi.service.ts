@@ -55,8 +55,6 @@ class AppHeaderService {
     }
     translateMenuItemsToAPImenuItems(menuItems){
         
-        let tempItems: Array<APIMenuItem> = [];
-
         menuItems.forEach(item => {
             const type = item.Items?.length > 0 ? 'Group' : 'Button';
             item = new APIMenuItem(item.ID, type , item.Title, item.Visible,item.Enable, item.Items || [])
@@ -74,8 +72,7 @@ class AppHeaderService {
         const showSettingsKey = true;
         let buttons: Array<APIHeaderButton> = [];
         let menuItems: Array<APIMenuItem> = [];
-   
-        
+    
         buttons = [
                 new APIHeaderButton('Settings', 'Settings', new Icon('system','settings'), true, true, null),
                 new APIHeaderButton('Systemavatar', 'SystemAvatar', new Icon('system','avatar'), true, true, null),
@@ -116,10 +113,6 @@ class AppHeaderService {
                 context: context
             })
         );
-
-        // await pepperi.themes.get() // Return all the theme object.
-        // await pepperi.themes.get('TAB_NAME:GROUP1:GROUP2:PROPERTY_NAME')
-        // await pepperi.themes.get('TAB_NAME:GROUP1')
 
         // wait for results and return them as object.
         const themeArr = await Promise.all(themePromises).then(res => res);
