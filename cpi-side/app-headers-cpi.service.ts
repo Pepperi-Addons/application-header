@@ -18,7 +18,7 @@ class AppHeaderService {
                             table: PUBLISHED_HEADERS_TABLE_NAME,
                             key: headerKey
                             
-                        })).object;
+                      })).object;
         } 
         catch(err){
 
@@ -146,8 +146,8 @@ class AppHeaderService {
                 'Size': theme?.shadow?.size || 'md',
                 'Use': theme.shadow.use || false,
             },
-            'FaviconSrc': themeVariables[faviconKey],
-            'BrandingLogoSrc': themeVariables[logoKey]
+            'FaviconURL': themeVariables[faviconKey],
+            'BrandingLogoURL': themeVariables[logoKey]
         }
 
         return {
