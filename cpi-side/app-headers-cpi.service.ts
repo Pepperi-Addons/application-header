@@ -1,5 +1,5 @@
 import { Client, Context, IClient, IContext } from '@pepperi-addons/cpi-node/build/cpi-side/events';
-import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, MenuItemType , SyncStatus, APIAppHeaderTemplate, Icon, Badge } from 'shared';
+import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, MenuItemType , SyncStatus, APIAppHeaderTemplate, Icon, Badge, SYNC_BUTTIN_KEY } from 'shared';
 import { AddonUUID } from '../addon.config.json';
 class AppHeaderService {
     
@@ -53,6 +53,11 @@ class AppHeaderService {
         //return header;
 
     }
+    isDefaultHeader(headerUUID):boolean {
+        // default header is true when there is no mapping. 
+        return headerUUID !== '' ? false : true;
+    }
+
     translateMenuItemsToAPImenuItems(menuItems){
         
         menuItems.forEach(item => {
@@ -72,7 +77,7 @@ class AppHeaderService {
         const showSettingsKey = true;
         let buttons: Array<APIHeaderButton> = [];
         let menuItems: Array<APIMenuItem> = [];
-    
+        const isDefaultHeader = header === undefined;
         buttons = [
                 new APIHeaderButton('Settings', 'Settings', new Icon('system','settings'), true, true, null),
                 new APIHeaderButton('Systemavatar', 'SystemAvatar', new Icon('system','avatar'), true, true, null),
@@ -80,7 +85,7 @@ class AppHeaderService {
                 new APIHeaderButton('Announcekit', 'Announcekit', new Icon('system','megaphone'), true, true, null)  
         ]
 
-        if(header !== undefined){
+        if(!isDefaultHeader){
             // take custom menu and buttons from the app Header.
 
             header.Buttons.forEach(btn => {
@@ -138,7 +143,8 @@ class AppHeaderService {
                 'Value': theme.bottomBorder.value || 'system'
             },
             'Color': {
-                'Color': theme?.color?.color || 'system_invert',
+                'ColorName': theme?.color?.color || 'system_invert',
+                'ColorValue': "rgba(.....", // TODO
                 'Style': theme?.color?.style || 'weak'
             },
             'Shadow': {
@@ -149,14 +155,10 @@ class AppHeaderService {
             'FaviconURL': themeVariables[faviconKey],
             'BrandingLogoURL': themeVariables[logoKey]
         }
-
+        mergedTheme = isDefaultHeader? await this.convertForMobileDefault(mergedTheme): mergedTheme
+        
         return {
-            SyncButtonData: {
-                "Key": "syncButton",
-                "Visible": true,
-                "ChangeObjects": 0,
-                "SyncStatus": 'Success'
-            },
+            SyncButtonData:  await this.getSyncButtonData(context!),
             
             Buttons: buttons || [],
             
@@ -176,6 +178,53 @@ class AppHeaderService {
             },
             
             Theme: mergedTheme
+        }
+    }
+    async convertForMobileDefault(themes): Promise<any> {
+        const isWebApp = await pepperi.environment.isWebApp
+        if (!isWebApp) {
+            // set transparent color for mobile
+            themes.Color.ColorValue = 'rgba(0,0,0,0)'
+            // set empty logo image
+            themes.BrandingLogoURL = ''
+        }
+        return themes
+    }
+
+    async getSyncButtonData(context: IContext): Promise<any> {
+        const stateInfo = await pepperi.application.sync.stateInfo();
+        const obj = {
+            SyncButtonData: {    
+                // When the button is pressed use this key in the
+                // OnClientAppHeaderButtonClicked
+                ButtonKey: SYNC_BUTTIN_KEY,
+                
+                // Whether to show the button
+                Visible: true,
+        
+                // the number of changed objects not synced
+                // When this is > 0 the client will draw the 
+                // indciation on the button
+                ChangeObjects: this.getChangedObject(stateInfo.status),
+                
+
+                SyncStatus: stateInfo.status,
+            },
+        }
+        return obj;
+    }
+
+
+    async getSyncStatus(client: IClient): Promise<string> {
+        const stateInfo = await pepperi.application.sync.stateInfo();
+        return stateInfo.status
+    }
+  
+    getChangedObject(status: string): number {
+        if (status === "HasChanges") {
+            return 1;
+        } else {
+            return 0;
         }
     }
 }

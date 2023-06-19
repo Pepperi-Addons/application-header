@@ -1,6 +1,7 @@
 import '@pepperi-addons/cpi-node';
 import AppHeaderService from './app-headers-cpi.service';
-import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED, AppHeaderClientEventResult, AppHeaderTemplate, APIAppHeaderTemplate } from 'shared';
+import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED, AppHeaderClientEventResult, AppHeaderTemplate, SYNC_BUTTIN_KEY, APIAppHeaderTemplate } from 'shared';
+import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 
 export async function load(configuration: any) {
      /***********************************************************************************************/
@@ -21,16 +22,36 @@ export async function load(configuration: any) {
 
         return appHeader;
     });
-    
+    /// sync button pressed
+    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED as any, {
+        ButtonKey: SYNC_BUTTIN_KEY
+    }, async (data): Promise<APIAppHeaderTemplate> => {
+        // start sync
+        await sync(data.client!);
+        // get header data
+        return await getAppHeader(data.client!);
 
-    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED as any, {}, async (data): Promise<APIAppHeaderTemplate> => {
+    });
+
+    async function getAppHeader(client: IClient): Promise<APIAppHeaderTemplate> {
         const service = new AppHeaderService();
-
         // look for header UUID if null will return default header
         const slug = await pepperi.slugs.getPage('/application_header');
         const headerUUID = slug?.pageKey || ''; 
+        const appHeader:  APIAppHeaderTemplate = await service.getHeaderData(client, headerUUID);
+        return appHeader;
+    }
 
-        let appHeader:  APIAppHeaderTemplate = await service.getHeaderData(data.client, headerUUID);
+    async function sync(client: IClient) {
+        const syncOptions = {    
+            "allowContinueInBackground": false,
+            "abortExisting": true,
+        };
+        return await client["sync"](syncOptions);
+    }
+
+    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED as any, {}, async (data): Promise<APIAppHeaderTemplate> => { 
+        let appHeader = await getAppHeader(data.client!);
 
         switch (data.Key) {
             case "Settings":
@@ -57,7 +78,8 @@ export async function load(configuration: any) {
             case 'runSript':
 
             default:
-                const res  = await service.runScriptData(data.Key, data);
+                const res  = await new AppHeaderService().runScriptData(data.Key, data);
+                console.log(`runScriptData res: ${JSON.stringify(res)}`);
                 break;
         }
 

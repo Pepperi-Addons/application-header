@@ -8,6 +8,7 @@ export const DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
 export const CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = 'OnClientAppHeaderLoad';
 export const CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClicked";
 // **********************************************************************************************
+export const SYNC_BUTTIN_KEY = 'SyncButtonPressed';
 
 export interface AppHeaderClientEventResult {
     AppHeaderView: AppHeaderTemplate | null;
