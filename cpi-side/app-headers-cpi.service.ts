@@ -69,7 +69,6 @@ class AppHeaderService {
                         context: context
                     });
 
-                    debugger;
                 }
             }        
         }
@@ -79,7 +78,6 @@ class AppHeaderService {
             }
         }
         finally{
-            debugger;
             return res;
         }
         
