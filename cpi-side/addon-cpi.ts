@@ -5,7 +5,7 @@ import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 
 export async function load(configuration: any) {
      /***********************************************************************************************/
-    //                              Client Events for survey
+    //                              Client Events for application header
     /************************************************************************************************/
 
     // Handle on survey load
@@ -16,9 +16,6 @@ export async function load(configuration: any) {
         const slug = await pepperi.slugs.getPage('/application_header');
         const headerUUID = slug?.pageKey || ''; 
         let appHeader:  APIAppHeaderTemplate = await service.getHeaderData(data.client, headerUUID);
-        
-        // default header is true when there is no mapping. 
-        appHeader.DefaultHeader = headerUUID !== '' ? false : true;
 
         return appHeader;
     });
@@ -32,23 +29,6 @@ export async function load(configuration: any) {
         return await getAppHeader(data.client!);
 
     });
-
-    async function getAppHeader(client: IClient): Promise<APIAppHeaderTemplate> {
-        const service = new AppHeaderService();
-        // look for header UUID if null will return default header
-        const slug = await pepperi.slugs.getPage('/application_header');
-        const headerUUID = slug?.pageKey || ''; 
-        const appHeader:  APIAppHeaderTemplate = await service.getHeaderData(client, headerUUID);
-        return appHeader;
-    }
-
-    async function sync(client: IClient) {
-        const syncOptions = {    
-            "allowContinueInBackground": false,
-            "abortExisting": true,
-        };
-        return await client["sync"](syncOptions);
-    }
 
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED as any, {}, async (data): Promise<APIAppHeaderTemplate> => { 
         let appHeader = await getAppHeader(data.client!);
@@ -75,16 +55,34 @@ export async function load(configuration: any) {
                         uri: 'https://support.pepperi.com/hc/en-us'
                     });
                     break;
-            case 'runSript':
 
             default:
-                const res  = await new AppHeaderService().runScriptData(data.Key, data);
-                console.log(`runScriptData res: ${JSON.stringify(res)}`);
+                const res  = await new AppHeaderService().runFlowData(data.Key, data);
+                console.log(`runFlowData res: ${JSON.stringify(res)}`);
                 break;
         }
 
         return appHeader;
     });
+
+    async function getAppHeader(client: IClient): Promise<APIAppHeaderTemplate> {
+        const service = new AppHeaderService();
+        // look for header UUID if null will return default header
+        const slug = await pepperi.slugs.getPage('/application_header');
+        const headerUUID = slug?.pageKey || ''; 
+        const appHeader:  APIAppHeaderTemplate = await service.getHeaderData(client, headerUUID);
+        return appHeader;
+    }
+
+    async function sync(client: IClient) {
+        const syncOptions = {    
+            "allowContinueInBackground": true,
+            "abortExisting": true,
+            "showHUD": false
+        };
+
+        return await client["sync"](syncOptions);
+    }
 }
 
 export const router = Router()

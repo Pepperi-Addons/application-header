@@ -1,4 +1,4 @@
-import { PapiClient, FindOptions, DataView } from '@pepperi-addons/papi-sdk'
+import { PapiClient, FindOptions, DataView, SearchBody } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { v4 as uuid } from 'uuid';
 import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from 'shared';
@@ -91,9 +91,62 @@ export class HeaderService {
     /***********************************************************************************************/
 
     async getHeaders(options: FindOptions | undefined = undefined) {
-        return await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).find(options) as IHeaderData[];
+        
+        
+         const header = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).find(options) as IHeaderData[];
+            let flowUUIDs: Array<string> = []
+            let flowsArr = [];
+            const flatMenu = this.getFlattenMenu(header[0]?.Menu);
+
+            flowUUIDs = (flatMenu?.filter(menuItem => {return menuItem.Flow?.FlowKey != undefined}))
+                                        .map(menuItem => {return (menuItem.Flow?.FlowKey)});
+        
+            try {
+                // get flows object
+                const flowsArr = (await this.papiClient.userDefinedFlows.search({ KeyList: flowUUIDs, Fields: ['Key', 'Name'] })).Objects;
+                // display flow names on the menu buttons
+                this.setMenuItemsName(header[0]?.Menu,flowsArr);       
+            }
+            catch(err){
+                
+            }
+           
+        return header;
+        
     }
 
+    private setMenuItemsName(items,flowsArr){
+        items.forEach(menuItem => {
+            if(menuItem?.Flow?.FlowKey){
+                const flowName = this.getFlowNameByKey(flowsArr,menuItem?.Flow?.FlowKey);
+                menuItem.Flow['FlowName'] = flowName;
+            }
+
+            if(menuItem.Items?.length){
+                this.setMenuItemsName(menuItem.Items, flowsArr);
+            }
+        })
+    }
+    
+    private getFlowNameByKey(flowsArr, flowKey){
+        for(let i=0; i< flowsArr.length; i++)
+            if(flowsArr[i].Key == flowKey){
+                return flowsArr[i].Name;
+            }
+        return '';
+    }
+
+    private getFlattenMenu = (members) => {
+        let children:any = [];
+      
+        return members.map(m => {
+          if (m.Items && m.Items.length) {
+            children = [...children, ...m.Items];
+          }
+          return m;
+        }).concat(children.length ? this.getFlattenMenu(children) : children);
+      };
+      
     async upsertHeader(body) {
         const headersList = await this.getHeaders({ where : 'Hidden=false'});
         const headerToUpsert = this.getBody(body);

@@ -26,19 +26,63 @@ class AppHeaderService {
         return header as any;
     }
 
-    public async runScriptData(scriptData, context){
+
+    private getFlattenMenu = (members) => {
+        let children:any = [];
+      
+        return members.map(m => {
+          if (m.Items && m.Items.length) {
+            children = [...children, ...m.Items];
+          }
+          return m;
+        }).concat(children.length ? this.getFlattenMenu(children) : children);
+      };
+
+    public async runFlowData(btnKey, context){
         let res;
+        
         try{
-                const script = JSON.parse(Buffer.from(scriptData, 'base64').toString('utf8'));
-                res = await pepperi.scripts.key(script.ScriptKey).run(script.ScriptData, context);
+            const slug = await pepperi.slugs.getPage('/application_header');
+            const headerUUID = slug?.pageKey || ''; 
+
+            const appHeader = await new AppHeaderService().getAppHeader(headerUUID);
+            
+            const flatMenu = this.getFlattenMenu(appHeader.Menu);
+            if(flatMenu){
+                const item = flatMenu?.filter(item => {
+                    return item.Key === btnKey;
+                });
+
+                const flow = item?.length ? item[0].Flow : null;
+                
+                if(flow){
+                   
+                    res = await pepperi.flows.run({
+                        // The runFlow object
+                        RunFlow: flow,  
+                        // dynamic parameters that will be set to the flow data
+                        Data: {
+                           
+                        },
+                        // optional, but needed for executing client actions within flow
+                        // this is taken from the interceptor data
+                        context: context
+                    });
+
+                    debugger;
+                }
+            }        
         }
         catch(err){
             res = {
                 success: false
             }
         }
-
-        return res;
+        finally{
+            debugger;
+            return res;
+        }
+        
     }
 
 
@@ -47,7 +91,7 @@ class AppHeaderService {
     /************************************************************************************************/
 
     async getHeaderData(client: IClient | undefined, headerKey: string): Promise<APIAppHeaderTemplate> {
-        
+       
         const header = await this.getAppHeader(headerKey);
         return await this.translateHeaderToAPIheader(header, client?.context || undefined);
         //return header;
@@ -59,25 +103,28 @@ class AppHeaderService {
     }
 
     translateMenuItemsToAPImenuItems(menuItems){
-        
+    
         menuItems.forEach(item => {
-            const type = item.Items?.length > 0 ? 'Group' : 'Button';
-            item = new APIMenuItem(item.ID, type , item.Title, item.Visible,item.Enable, item.Items || [])
+            // check if menuItem have subMenu (Items) and set Type to group | button
+            item.Type = item.Items?.length > 0 ? 'Group' : 'Button';
+            //delete the Flow from the menu items if exit. we will run it from the cpi side by button key
+            delete item.Flow;
+            
+            // if has children build them too
             if(item.Items?.length){
                 this.translateMenuItemsToAPImenuItems(item.Items);
             }
         });
 
         return menuItems;
-       //return new APIMenuItem(menuItem.ID, menuItem.Type, menuItem.Title, menuItem.Visible,menuItem.Enable, menuItem.Items || [])
     }
 
     async translateHeaderToAPIheader(header: AppHeaderTemplate, context: IContext | undefined){
 
-        const showSettingsKey = true;
         let buttons: Array<APIHeaderButton> = [];
         let menuItems: Array<APIMenuItem> = [];
         const isDefaultHeader = header === undefined;
+
         buttons = [
                 new APIHeaderButton('Settings', 'Settings', new Icon('system','settings'), true, true, null),
                 new APIHeaderButton('Systemavatar', 'SystemAvatar', new Icon('system','avatar'), true, true, null),
@@ -94,69 +141,16 @@ class AppHeaderService {
 
             menuItems = this.translateMenuItemsToAPImenuItems(header.Menu);
         }
-
-        // Get the theme object from theme addon api (on the CPI side).
-        const themeAddonUUID = '95501678-6687-4fb3-92ab-1155f47f839e';
-        
-        const themePromises: Promise<any>[] = [];
-
-        // Get the app headers tab object
-        themePromises.push(
-            pepperi.addons.api.uuid(themeAddonUUID).get({
-                // url: `/addon-cpi/themes/${AddonUUID}`,
-                url: `/addon-cpi/themes/ApplicationHeader`,
-                context: context
-            })
-        );
-
-        // Get the profiles
-        // const profiles = await this.papiClient.profiles.find();
-        themePromises.push(
-            pepperi.addons.api.uuid(themeAddonUUID).get({
-                // url: `/addon-cpi/themes/themes`,
-                url: `/addon-cpi/themes/branding`,
-                context: context
-            })
-        );
-
-        // wait for results and return them as object.
-        const themeArr = await Promise.all(themePromises).then(res => res);
-
-        const theme = themeArr[0];
-        const themeVariables = themeArr[1];
-        // Set the default values for the logo's if needed.
-        const logoKey = 'logoSrc';
-        const faviconKey = 'faviconSrc';
-
-        if (!themeVariables.hasOwnProperty(logoKey)) {
-            themeVariables[logoKey] = '/assets/images/Pepperi-Logo-HiRes.png'; 
-        }
-            
-        if (!themeVariables.hasOwnProperty(faviconKey)) {
-            themeVariables[faviconKey] = '/assets/favicon.ico';
+        else{
+            // if default - need to check if has slug of notification --> add notification button
+            const page = await pepperi.slugs.getPage("/notifications");
+            if(page.success){
+                buttons.push(new APIHeaderButton('Notification', 'Notification', new Icon('system','bell'), true, true, null));
+            }
         }
 
-        let mergedTheme = {
-            'BottomBorder': {
-                'Opacity': theme.bottomBorder.opacity || 1,
-                'Use': theme.bottomBorder.use || false,
-                'Value': theme.bottomBorder.value || 'system'
-            },
-            'Color': {
-                'ColorName': theme?.color?.color || 'system_invert',
-                'ColorValue': "rgba(.....", // TODO
-                'Style': theme?.color?.style || 'weak'
-            },
-            'Shadow': {
-                'Intensity': theme?.shadow?.intensity || 'hard',
-                'Size': theme?.shadow?.size || 'md',
-                'Use': theme.shadow.use || false,
-            },
-            'FaviconURL': themeVariables[faviconKey],
-            'BrandingLogoURL': themeVariables[logoKey]
-        }
-        mergedTheme = isDefaultHeader? await this.convertForMobileDefault(mergedTheme): mergedTheme
-        
+        let mergedTheme = await this.getMergedTheme(isDefaultHeader, context);
+
         return {
             SyncButtonData:  await this.getSyncButtonData(context!),
             
@@ -180,36 +174,109 @@ class AppHeaderService {
             Theme: mergedTheme
         }
     }
-    async convertForMobileDefault(themes): Promise<any> {
-        const isWebApp = await pepperi.environment.isWebApp
-        if (!isWebApp) {
-            // set transparent color for mobile
-            themes.Color.ColorValue = 'rgba(0,0,0,0)'
-            // set empty logo image
-            themes.BrandingLogoURL = ''
+
+    async getMergedTheme(isDefaultHeader, context){
+        
+        const isWebApp = await pepperi.environment.isWebApp();
+        let mergedTheme = {};
+
+        if(isWebApp || (!isDefaultHeader && !isWebApp)){
+            // Get the theme object from theme addon api (on the CPI side).
+            const themeAddonUUID = '95501678-6687-4fb3-92ab-1155f47f839e';
+            
+            const themePromises: Promise<any>[] = [];
+            
+            // Get the app headers tab object
+            themePromises.push(
+                pepperi.addons.api.uuid(themeAddonUUID).get({
+                // url: `/addon-cpi/themes/${AddonUUID}`,
+                url: `/addon-cpi/themes/ApplicationHeader`,
+                    context: context
+                })
+            );
+            
+            // Get the branding tab
+            themePromises.push(
+                pepperi.addons.api.uuid(themeAddonUUID).get({
+                url: `/addon-cpi/themes/branding`,
+                    context: context
+                })
+            );
+            
+            // wait for results and return them as object.
+            const themeArr = await Promise.all(themePromises).then(res => res);
+
+            const theme = themeArr[0];
+            const themeVariables = themeArr[1];
+
+            // Set the default values for the logo's if needed.
+            const logoKey = 'logoAssetKey';
+            const faviconKey = 'faviconAssetsKey'; 
+
+           // if (!themeVariables.hasOwnProperty(logoKey)) {
+                const logo = await pepperi.addons.pfs.uuid("ad909780-0c23-401e-8e8e-f514cc4f6aa2").schema("Assets").key(themeVariables.logoAssetKey).get();
+                themeVariables[logoKey] = logo.URL; 
+           // }
+                
+            //if (!themeVariables.hasOwnProperty(faviconKey)) {
+                const favIcon = await pepperi.addons.pfs.uuid("ad909780-0c23-401e-8e8e-f514cc4f6aa2").schema("Assets").key(themeVariables.faviconAssetKey).get();
+                themeVariables[faviconKey] = favIcon.URL;
+           // }
+
+            mergedTheme = {
+                'BottomBorder': {
+                    'Opacity': theme.bottomBorder.opacity || 1,
+                    'Use': theme.bottomBorder.use || false,
+                    'Value': theme.bottomBorder.value || 'system'
+                },
+                'Color': {
+                    'ColorName': theme?.color?.color || 'system_invert',
+                    'ColorValue': theme?.color?.colorValue || 'rgba(255,255,255,0)',
+                    'Style': theme?.color?.style || 'weak'
+                },
+                'Shadow': {
+                    'Intensity': theme?.shadow?.intensity || 'hard',
+                    'Size': theme?.shadow?.size || 'md',
+                    'Use': theme.shadow.use || false,
+                },
+                'FaviconURL': themeVariables[faviconKey],
+                'BrandingLogoURL': themeVariables[logoKey]
+            }
         }
-        return themes
+        else{ // only mobile with default header
+            mergedTheme = {
+                'Color': {
+                    'ColorValue': 'rgba(255,255,255,0)'  // set transparent color for mobile
+                },
+                'BrandingLogoURL': '' // set empty logo image
+            }
+        }
+
+        return mergedTheme;
+             
     }
+
+ 
 
     async getSyncButtonData(context: IContext): Promise<any> {
         const stateInfo = await pepperi.application.sync.stateInfo();
-        const obj = {
-            SyncButtonData: {    
-                // When the button is pressed use this key in the
-                // OnClientAppHeaderButtonClicked
-                ButtonKey: SYNC_BUTTIN_KEY,
-                
-                // Whether to show the button
-                Visible: true,
-        
-                // the number of changed objects not synced
-                // When this is > 0 the client will draw the 
-                // indciation on the button
-                ChangeObjects: this.getChangedObject(stateInfo.status),
-                
 
-                SyncStatus: stateInfo.status,
-            },
+        const obj = {  
+            // When the button is pressed use this key in the
+            // OnClientAppHeaderButtonClick
+            ButtonKey: SYNC_BUTTIN_KEY,
+            
+            // Whether to show the button
+            Visible: true,
+    
+            // the number of changed objects not synced
+            // When this is > 0 the client will draw the 
+            // indciation on the button
+            ChangeObjects: this.getChangedObject(stateInfo.status),
+            
+
+            SyncStatus: stateInfo.status,
+          
         }
         return obj;
     }

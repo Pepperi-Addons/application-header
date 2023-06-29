@@ -4,7 +4,7 @@
     </pep-textbox>
     <div>
       <label class="body-xs normal ellipsis">Action</label>
-    <pep-button class="script-button" [title]="'Action'" [value]="getScriptData(menuItem)" (buttonClick)="openScriptPickerDialog();"></pep-button>
+    <pep-button class="script-button" [title]="'Action'" [value]="(menuItem?.Flow?.FlowKey ? menuItem?.Flow?.FlowName : ('MENU.ACTION.CHOOSE_FLOW' | translate))" [disabled]="menuItem?.Items?.length > 0" (buttonClick)="openFlowPickerDialog();"></pep-button>
       </div>
     <pep-group-buttons-settings [groupType]="'custom'" [btnsArray]="leftRightArrows" [title]="' '" [subHeader]="null"
         pepResetConfigurationField="'group-buttons-test'" [dir]="'ltr'">

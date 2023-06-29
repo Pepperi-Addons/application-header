@@ -7,7 +7,7 @@ exports.DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
 //                          Client & User events const
 // **********************************************************************************************
 exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = 'OnClientAppHeaderLoad';
-exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClicked";
+exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClick";
 // **********************************************************************************************
 exports.SYNC_BUTTIN_KEY = 'SyncButtonPressed';
 class APIAppHeaderTemplate {

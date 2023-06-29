@@ -97,26 +97,21 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     onAddNewMenuItem(menuItem,isSubMenu){
-
+       
         // check if comes from click on menu item or from ad new item button on the header
         const hierachy = isSubMenu && menuItem ? (menuItem.HierarchyLevel + 1) : 0;
 
-        const item = new MenuItem('', hierachy,uuid(),); 
+        const item = new MenuItem('', hierachy,uuid(),null,true,true,[]); 
         //const index = menuItem == null ? this.menuView?.length : menuItem.ID + 1;
         const index = menuItem == null ? (this.menuView?.length || 0) : (this.menuView.findIndex(i => i.Key == menuItem.Key) + 1);
         
         this.menuView.splice(index, 0, item);
-        //fix the ids (index of the items 0,1,2...)
-        //this.fixMenuItemsIDKeys();
-    }
 
-    setMenuItemsPosition(menuItems: Array<MenuItem>){
-        this.menuView = menuItems;
-        //this.fixMenuItemsIDKeys();
-    }
-
-    onMenuItemChange(menuItem){
-        this.menuView[menuItem.ID] = menuItem;
+        // update also menu items object 
+        if(isSubMenu){
+            menuItem.Items.push(item);
+        }
+       
     }
 
     deleteMenuItem(menuItem){
@@ -124,7 +119,34 @@ export class ApplicationHeaderComponent implements OnInit {
             return mItem.Key == menuItem.Key;
         });
 
+        // check if has parent --> need to update the parent Items (childs) array.
+        if(menuItem.HierarchyLevel > 0){
+            const parent = this.menuView[index-1];
+            const childIndex = parent.Items?.findIndex(function(cItem) {
+                return cItem.Key == menuItem.Key;
+            });
+            parent.Items?.splice(childIndex, 1);
+        }
         this.menuView.splice(index,1);
+    }
+
+    setMenuItemsPosition(menuItems: Array<MenuItem>){
+        this.menuView = menuItems;
+        //this.fixMenuItemsIDKeys();
+    }
+
+    async onMenuItemChange(menuItem){
+        try{
+            // get flow name and display it to menu button
+            const res = await this.appHeadersService.getFlowNameByFlowKey(menuItem.Flow.FlowKey);
+            menuItem.Flow.FlowName = res.Name || this.translate.instant("MENU.ACTION.CHOOSE_FLOW");
+        }
+        catch(err){
+            menuItem.Flow.FlowName = this.translate.instant("MENU.ACTION.CHOOSE_FLOW");
+        }
+        finally{
+            this.menuView[menuItem.ID] = menuItem;
+        }
     }
 
     onHeaderKeyChange(key,event: any){

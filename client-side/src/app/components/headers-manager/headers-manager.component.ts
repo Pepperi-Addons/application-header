@@ -34,7 +34,7 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
 
     dataSource: IPepGenericListDataSource = null;
     //actions: IPepGenericListActions;
-
+    isSyncInstalled = true;
     totalHeaders: number = 0;
     headers: HeaderTemplateRowProjection[];
 
@@ -63,9 +63,7 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
         private pepAddonBlockLoader: PepAddonBlockLoaderService,
         private viewContainerRef: ViewContainerRef
     ) {
-
-        const index = coerceNumberProperty(this.activatedRoute.snapshot.queryParamMap.get('tabIndex'), 0);
-        this.setCurrentTabIndex(index);
+        
 
         this.pepAddonService.setShellRouterData({ showSidebar: true, addPadding: true});
         this.dimxService.register(this.viewContainerRef, this.onDIMXProcessDone.bind(this));
@@ -95,8 +93,15 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
         // });
     }
 
-    ngOnInit() {
-        //this.dataSource = this.setDataSource();
+    async ngOnInit() {
+        // checking if new sync is installed , if not --> lock the appHeader editor
+            this.isSyncInstalled =  await this.appHeadersService.cheakIfSyncInstalled();
+         
+            const index = coerceNumberProperty(this.activatedRoute.snapshot.queryParamMap.get('tabIndex'), 0);
+            this.setCurrentTabIndex(index);
+        
+
+        
     }
 
     onDIMXProcessDone(event:any) {
@@ -315,7 +320,7 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
         this.currentTabIndex = index;
 
         // Load the datasource only if not loaded already and the current tab is the first tab.
-        if (this.currentTabIndex === 0 && this.dataSource === null) {
+        if (this.currentTabIndex === 0 && this.dataSource === null && this.isSyncInstalled) {
             this.setDataSource();
         }
     }

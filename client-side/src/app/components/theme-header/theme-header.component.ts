@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable, Input, Output, EventEmitter, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, Injectable, Input, Output, EventEmitter, ViewContainerRef, Renderer2, ElementRef, ViewChild } from '@angular/core';
 import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
 import { TranslateService } from '@ngx-translate/core';
 import { appHeaderTheme } from '../application-header.model';
@@ -19,6 +19,7 @@ interface groupButtonArray {
 @Injectable()
 export class ThemeheaderComponent implements OnInit {
     
+    @ViewChild('colorExample') colorExample: ElementRef;
     private _hostObject: appHeaderTheme = new appHeaderTheme();
     @Input() 
     set hostObject(value: appHeaderTheme) {
@@ -38,7 +39,10 @@ export class ThemeheaderComponent implements OnInit {
     headerStyle:  Array<groupButtonArray> = [];
     shadowIntensity:  Array<PepButton> = []; 
 
-    constructor(private translate: TranslateService, private addonBlockLoaderService: PepAddonBlockLoaderService, private viewContainerRef: ViewContainerRef) {
+    constructor(private translate: TranslateService, 
+                private addonBlockLoaderService: PepAddonBlockLoaderService, 
+                private viewContainerRef: ViewContainerRef, 
+                private renderer: Renderer2) {
        
     }
     
@@ -67,11 +71,26 @@ export class ThemeheaderComponent implements OnInit {
         ];
     }
 
+    setColorValue(){
+        this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.color);
+        this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.style);
+
+        setTimeout(() => {
+            const elem = document.getElementById('colorExample'); // get element
+            if(elem){
+                this.hostObject.color.colorValue = getComputedStyle(this.colorExample.nativeElement).getPropertyValue('background-color');
+                this.updateHostObject();  
+            }
+        }, 100);
+    }
     onHeaderFieldChange(key, event){
  
        const value = event && event.source && event.source.key ? event.source.key : event && event.source && event.source.value ? event.source.value :  event;
+       
+       this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.color);
+       this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.style);
 
-        if(key.indexOf('.') > -1){
+        if(key.indexOf('.') > -1){``
             let keyObj = key.split('.');
             this.hostObject[keyObj[0]][keyObj[1]] = value;
         }
@@ -79,7 +98,12 @@ export class ThemeheaderComponent implements OnInit {
             this.hostObject[key] = value;
         }
 
-        this.updateHostObject();
+        if(key.indexOf('color') > -1){
+            this.setColorValue();
+        }
+        else{
+            this.updateHostObject();
+        }
     }
 
     private updateHostObject() {

@@ -46,8 +46,9 @@ export class MenuItem {
     Visible: boolean;
     Enabled: boolean;
     Items?: Array<MenuItem>;
+    Flow?: any;
 
-    constructor(title = '',hirachylevel = 0 , key = null, type: MenuItemType = 'Button', visible = true, enabled = true, items = []){
+    constructor(title = '',hirachylevel = 0 , key = null, type: MenuItemType = 'Button', visible = true, enabled = true, items = [], flow = null){
         this.Title = title;
         this.HierarchyLevel = hirachylevel;
         this.Key = key;
@@ -55,6 +56,7 @@ export class MenuItem {
         this.Enabled = enabled;
         this.Type = type;
         this.Items = items;
+        this.Flow = flow;
 
     }
 }
@@ -62,7 +64,7 @@ export class MenuItem {
 export class Button {
     Title: string;
     FieldID: string;
-    Key: string = ''; // When the button is pressed use this key in the OnClientAppHeaderButtonClicked
+    Key: string = ''; // When the button is pressed use this key in the OnClientAppHeaderButtonClick
     Type: string;
     Icon?: ButtonIcon; // The Button icon
     Badge?: ButtonBadge; // The Button badge
@@ -92,11 +94,13 @@ export class HeaderData {
 
 export class themeColor{
     color : string;
+    colorValue: string;
     style: PepStyleType;
 
-    constructor(color = 'system_invert', style: PepStyleType = 'weak'){
+    constructor(color = 'system_invert', style: PepStyleType = 'weak', colorvalue = 'rgba(255,255,255,0)'){
         this.color = color;
         this.style = style;
+        this.colorValue = colorvalue;
     }
 }
 

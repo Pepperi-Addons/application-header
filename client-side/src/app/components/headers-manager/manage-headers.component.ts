@@ -115,7 +115,7 @@ export class ManageHeadersComponent implements OnInit {
     // }
 
     ngOnInit() {
-        this.loadData();
+            this.loadData(); 
     }
 
     goBack(tabID = 1) {

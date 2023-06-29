@@ -2,7 +2,7 @@ import { AddonData } from "@pepperi-addons/papi-sdk";
 export declare const PUBLISHED_HEADERS_TABLE_NAME = "appHeaders";
 export declare const DRAFTS_HEADERS_TABLE_NAME = "appHeadersDrafts";
 export declare const CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = "OnClientAppHeaderLoad";
-export declare const CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClicked";
+export declare const CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClick";
 export declare const SYNC_BUTTIN_KEY = "SyncButtonPressed";
 export interface AppHeaderClientEventResult {
     AppHeaderView: AppHeaderTemplate | null;
@@ -33,7 +33,6 @@ export declare class APIAppHeaderTemplate {
     Buttons: Array<APIHeaderButton>;
     MenuButtonData: Object;
     Action: AppheaderAction;
-    DefaultHeader?: boolean;
     constructor(buttons?: never[], menus?: never[]);
 }
 export declare class Badge {

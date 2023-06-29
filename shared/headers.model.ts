@@ -6,7 +6,7 @@ export const DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
 //                          Client & User events const
 // **********************************************************************************************
 export const CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = 'OnClientAppHeaderLoad';
-export const CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClicked";
+export const CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClick";
 // **********************************************************************************************
 export const SYNC_BUTTIN_KEY = 'SyncButtonPressed';
 
@@ -43,7 +43,6 @@ export class APIAppHeaderTemplate  {
     Buttons: Array<APIHeaderButton>;
     MenuButtonData: Object;
     Action: AppheaderAction;
-    DefaultHeader?:  boolean;
     
     constructor(buttons = [], menus = []){
         this.SyncButtonData = {};

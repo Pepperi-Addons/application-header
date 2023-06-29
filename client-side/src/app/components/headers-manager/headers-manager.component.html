@@ -9,7 +9,10 @@
     </ng-container>
 
     <ng-container pep-main-area>
-        <ng-container *ngTemplateOutlet="headersList"></ng-container>   
+    <ng-container *ngIf="isSyncInstalled">
+            <ng-container *ngTemplateOutlet="headersList"></ng-container>  
+    </ng-container> 
+    <div *ngIf="!isSyncInstalled" class="msgContainer">{{ 'HEADERS_MANAGER.SYNC_ADDON_MISSING' | translate }}</div>
     </ng-container>
 </pep-page-layout>
 

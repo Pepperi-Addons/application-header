@@ -5,6 +5,7 @@
         "MAIN_EXPLANATION": "Create custom headers for the Webapp and for the Native apps with our drag & drop builder that gives you total control of each detail of your page. You can configur a costume header for each role. You can read more about the App Header Configuration options and features in our docs in this link.",
         "LIST_HEADER": "Headers",
         "ADD_HEADER": "Add a new Header",
+        "SYNC_ADDON_MISSING": "Sync addon not installed",
         "DELETE_HEADER":{
             "TITLE": "Delete header",
             "MSG": "Are you sure you want to delete this header? "
@@ -56,7 +57,7 @@
             "NAME_LABEL": "Display name"
         },
         "ACTION":{
-            "CHOOSE_SCRIPT": "Choose script",
+            "CHOOSE_FLOW": "Choose flow",
             "ADD_MENU_ITEM": "Add an item",
             "ADD_SUB_MENU_ITEM": "Add a sub item"
         }

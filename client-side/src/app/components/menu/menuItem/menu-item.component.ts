@@ -42,7 +42,6 @@ export class MenuItemComponent implements OnInit {
     }
 
     deleteMenuItem(event, menuItem: MenuItem){
-
         this.onDeleteMenuItem.emit(menuItem);
     }
 
@@ -65,44 +64,25 @@ export class MenuItemComponent implements OnInit {
             this.leftRightArrows[1].disabled = this.menuItem.HierarchyLevel == 2 && this.deleteable ? true : false; 
     }
 
-    openScriptPickerDialog(){
-        const script = this.menuItem['script'] || {};
-        const fields = {};
-        // Object.keys(this._pageParameters).forEach(paramKey => {
-        //     fields[paramKey] = {
-        //         Type: 'String'
-        //     }
-        // });
-
-        script['fields'] = fields;
+    openFlowPickerDialog(){
+        const flow = this.menuItem?.Flow || null;
 
         this.dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
             container: this.viewContainerRef,
-            name: 'ScriptPicker',
+            name: 'FlowPicker',
             size: 'large',
-            hostObject: script,
-            hostEventsCallback: (event) => { 
-                if (event.action === 'script-picked') {
-                    this.menuItem.Key = btoa(JSON.stringify(event.data?.runScriptData))
-                    //this.menuItem['Script'] = event.data;
-                    //this.menuItem.Key = event.data?.runScriptData?.ScriptKey || '';
-                    this.onMenuItemChange.emit(this.menuItem);
-                    this.dialogRef.close();
-                } else if (event.action === 'close') {
-                    this.dialogRef.close();
+            hostObject: {
+                'runFlowData': flow
+            },
+            hostEventsCallback: (event) => {
+                if (event.action === 'on-done') {
+                        this.menuItem.Flow = event.data;
+                        this.onMenuItemChange.emit(this.menuItem); 
+                        this.dialogRef.close();
+                } else if (event.action === 'on-cancel') {
+                        this.dialogRef.close();
                 }
             }
-        });
-    }
-
-    getScriptData(menuItem){
-        const chooseScript = this.translate.instant("MENU.ACTION.CHOOSE_SCRIPT");
-        try{
-            const script = JSON.parse(atob(menuItem.Key));
-            return script?.ScriptKey || chooseScript;
-        }
-        catch(err){
-            return chooseScript;
-        }
+        })
     }
 }
