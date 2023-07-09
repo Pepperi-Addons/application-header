@@ -29,7 +29,7 @@
       "resource_list": "0.7.104",
       "generic_resource": "0.6.2",
       "scripts": "0.6.3",
-      "webapp": "18.00"
+      "cpas": "17.20.1"
     },
     "CPISide": [
       "addon-cpi.ts"
