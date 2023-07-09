@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.APIMenuItem = exports.APIHeaderButton = exports.Icon = exports.Badge = exports.APIAppHeaderTemplate = exports.SYNC_BUTTIN_KEY = exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = exports.DRAFTS_HEADERS_TABLE_NAME = exports.PUBLISHED_HEADERS_TABLE_NAME = void 0;
+exports.APIMenuItem = exports.APIHeaderButton = exports.Icon = exports.Badge = exports.APIAppHeaderTemplate = exports.SYNC_BUTTIN_KEY = exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK = exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = exports.DRAFTS_HEADERS_TABLE_NAME = exports.PUBLISHED_HEADERS_TABLE_NAME = void 0;
 exports.PUBLISHED_HEADERS_TABLE_NAME = 'appHeaders';
 exports.DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
 // **********************************************************************************************
 //                          Client & User events const
 // **********************************************************************************************
 exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = 'OnClientAppHeaderLoad';
-exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED = "OnClientAppHeaderButtonClick";
+exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK = "OnClientAppHeaderButtonClick";
 // **********************************************************************************************
 exports.SYNC_BUTTIN_KEY = 'SyncButtonPressed';
 class APIAppHeaderTemplate {

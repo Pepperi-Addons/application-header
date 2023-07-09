@@ -1,6 +1,6 @@
 import '@pepperi-addons/cpi-node';
 import AppHeaderService from './app-headers-cpi.service';
-import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED, AppHeaderClientEventResult, AppHeaderTemplate, SYNC_BUTTIN_KEY, APIAppHeaderTemplate } from 'shared';
+import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK, AppHeaderClientEventResult, AppHeaderTemplate, SYNC_BUTTIN_KEY, APIAppHeaderTemplate } from 'shared';
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 
 export async function load(configuration: any) {
@@ -20,7 +20,7 @@ export async function load(configuration: any) {
         return appHeader;
     });
     /// sync button pressed
-    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED as any, {
+    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK as any, {
         ButtonKey: SYNC_BUTTIN_KEY
     }, async (data): Promise<APIAppHeaderTemplate> => {
         // start sync
@@ -30,7 +30,7 @@ export async function load(configuration: any) {
 
     });
 
-    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICKED as any, {}, async (data): Promise<APIAppHeaderTemplate> => { 
+    pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK as any, {}, async (data): Promise<APIAppHeaderTemplate> => { 
         let appHeader = await getAppHeader(data.client!);
 
         switch (data.Key) {

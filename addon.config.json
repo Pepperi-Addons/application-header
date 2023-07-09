@@ -1,6 +1,6 @@
 {
   "AddonUUID": "9bc8af38-dd67-4d33-beb0-7d6b39a6e98d",
-  "AddonVersion": "0.1.14",
+  "AddonVersion": "0.1.15",
   "DebugPort": 4500,
   "WebappBaseUrl": "https://app.sandbox.pepperi.com",
   "DefaultEditor": "main",
@@ -22,7 +22,7 @@
     ],
     "Dependencies": {
       "cpi_node_scripts": "0.0.87",
-      "cpi_node": "1.1.85",
+      "cpi_node": "1.3.18",
       "core": "0.6.41",
       "cpi_data": "0.6.11",
       "udc": "0.8.32",
