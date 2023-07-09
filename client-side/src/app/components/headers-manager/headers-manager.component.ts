@@ -98,10 +98,7 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
             this.isSyncInstalled =  await this.appHeadersService.cheakIfSyncInstalled();
          
             const index = coerceNumberProperty(this.activatedRoute.snapshot.queryParamMap.get('tabIndex'), 0);
-            this.setCurrentTabIndex(index); 
-        
-
-        
+            this.setCurrentTabIndex(index);  
     }
 
     onDIMXProcessDone(event:any) {
