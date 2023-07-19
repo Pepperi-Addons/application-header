@@ -151,7 +151,7 @@ export class RelationsService {
         const name = 'Application Header';
 
         const settingsBlockRelation: Relation = {
-            RelationName: "ApplicationHeader",
+            RelationName: "SettingsBlock",
             GroupName: 'Pages',
             SlugName: 'application_header',
             Name: name,

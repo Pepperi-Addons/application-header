@@ -94,23 +94,24 @@ export class HeaderService {
         
         
          const header = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).find(options) as IHeaderData[];
-            let flowUUIDs: Array<string> = []
-            let flowsArr = [];
-            const flatMenu = this.getFlattenMenu(header[0]?.Menu);
+            if(header?.length){
+                let flowUUIDs: Array<string> = []
+                let flowsArr = [];
+                const flatMenu = this.getFlattenMenu(header[0]?.Menu);
 
-            flowUUIDs = (flatMenu?.filter(menuItem => {return menuItem.Flow?.FlowKey != undefined}))
+                flowUUIDs = (flatMenu?.filter(menuItem => {return menuItem.Flow?.FlowKey != undefined}))
                                         .map(menuItem => {return (menuItem.Flow?.FlowKey)});
         
-            try {
-                // get flows object
-                const flowsArr = (await this.papiClient.userDefinedFlows.search({ KeyList: flowUUIDs, Fields: ['Key', 'Name'] })).Objects;
-                // display flow names on the menu buttons
-                this.setMenuItemsName(header[0]?.Menu,flowsArr);       
+                try {
+                    // get flows object
+                    const flowsArr = (await this.papiClient.userDefinedFlows.search({ KeyList: flowUUIDs, Fields: ['Key', 'Name'] })).Objects;
+                    // display flow names on the menu buttons
+                    this.setMenuItemsName(header[0]?.Menu,flowsArr);       
+                }
+                catch(err){
+                    flowsArr = []; 
+                }
             }
-            catch(err){
-                
-            }
-           
         return header;
         
     }

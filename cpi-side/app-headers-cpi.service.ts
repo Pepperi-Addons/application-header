@@ -200,6 +200,7 @@ class AppHeaderService {
                 })
             );
             
+            try{
             // wait for results and return them as object.
             const themeArr = await Promise.all(themePromises).then(res => res);
 
@@ -238,6 +239,15 @@ class AppHeaderService {
                 },
                 'FaviconURL': themeVariables[faviconKey],
                 'BrandingLogoURL': themeVariables[logoKey]
+            }
+            }
+            catch(err){
+                mergedTheme = {
+                    'Color': {
+                        'ColorValue': 'rgba(255,255,255,0)'  // set transparent color for mobile
+                    },
+                    'BrandingLogoURL': '' // set empty logo image
+                }
             }
         }
         else{ // only mobile with default header

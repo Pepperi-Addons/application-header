@@ -76,6 +76,7 @@ export class AppHeadersService {
             return `http://localhost:4500/api`;
         } else {
             const baseUrl = this.sessionService.getPapiBaseUrl();
+            //return `${baseUrl}/addons/api/${addonUUID}/internal_api`;
             return `${baseUrl}/addons/api/${addonUUID}/api`;
         }
     }
