@@ -1,5 +1,5 @@
 import { Client, Context, IClient, IContext } from '@pepperi-addons/cpi-node/build/cpi-side/events';
-import { AppHeaderTemplate, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem, MenuItemType , SyncStatus, APIAppHeaderTemplate, Icon, Badge, SYNC_BUTTIN_KEY } from 'shared';
+import { AppHeaderTemplate, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem , APIAppHeaderTemplate, Icon, SYNC_BUTTIN_KEY } from 'shared';
 import { AddonUUID } from '../addon.config.json';
 class AppHeaderService {
     

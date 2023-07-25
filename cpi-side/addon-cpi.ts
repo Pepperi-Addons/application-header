@@ -8,7 +8,7 @@ export async function load(configuration: any) {
     //                              Client Events for application header
     /************************************************************************************************/
 
-    // Handle on survey load
+    // Handle on application header load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD as any, {}, async (data): Promise<APIAppHeaderTemplate> => {
         const service = new AppHeaderService();
 
