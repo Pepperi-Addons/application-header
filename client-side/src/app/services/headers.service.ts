@@ -1,9 +1,9 @@
 import { Injectable, ɵɵresolveBody } from "@angular/core";
-import { Params } from "@angular/router";
+//import { Params } from "@angular/router";
 import jwt from 'jwt-decode';
 import { TranslateService } from "@ngx-translate/core";
-import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
-import { Observable, BehaviorSubject, from, firstValueFrom } from 'rxjs';
+import { PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
+import { Observable, firstValueFrom } from 'rxjs';
 import { NavigationService } from "./navigation.service";
 import { PUBLISHED_HEADERS_TABLE_NAME, DRAFTS_HEADERS_TABLE_NAME, HeaderTemplateRowProjection } from '../components/application-header.model';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
@@ -11,9 +11,9 @@ import { MatDialogRef } from "@angular/material/dialog";
 import { config } from '../app.config';
 import * as _ from 'lodash';
 import { PepSelectionData } from "@pepperi-addons/ngx-lib/list";
-import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
+//import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
 import { MenuDataView, PapiClient } from "@pepperi-addons/papi-sdk";
-import { coerceNumberProperty } from "@angular/cdk/coercion";
+//import { coerceNumberProperty } from "@angular/cdk/coercion";
 // import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, AppHeaderClientEventResult } from 'shared';
 interface IHeaderProj {
     key: string, 
