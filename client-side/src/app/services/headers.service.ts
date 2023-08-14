@@ -5,7 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
 import { Observable, firstValueFrom } from 'rxjs';
 import { NavigationService } from "./navigation.service";
-import { PUBLISHED_HEADERS_TABLE_NAME, DRAFTS_HEADERS_TABLE_NAME, HeaderTemplateRowProjection } from '../components/application-header.model';
+import { PUBLISHED_HEADERS_TABLE_NAME, HeaderTemplateRowProjection } from '../components/application-header.model';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { MatDialogRef } from "@angular/material/dialog";
 import { config } from '../app.config';
@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import { PepSelectionData } from "@pepperi-addons/ngx-lib/list";
 //import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
 import { MenuDataView, PapiClient } from "@pepperi-addons/papi-sdk";
+import { APIHeaderButton, APIMenuItem } from "shared";
 //import { coerceNumberProperty } from "@angular/cdk/coercion";
 // import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, AppHeaderClientEventResult } from 'shared';
 interface IHeaderProj {
@@ -27,8 +28,8 @@ export interface IHeaderData {
     Hidden?: boolean;
     Draft: boolean;
     Published: boolean;
-    Menu: any; // TODO - SET THE TYPE
-    Buttons: any; // TODO - SET THE TYPE,
+    Menu: Array<APIMenuItem>;
+    Buttons: Array<APIHeaderButton>;
 }
 
 @Injectable({
@@ -115,13 +116,6 @@ export class AppHeadersService {
     async deleteHeader(headerUUID: string){
         const baseUrl = this.getBaseUrl(config.AddonUUID);
         return this.httpService.postHttpCall(`${baseUrl}/deleteHeader`,{headerUUID}).toPromise();
-    }
-
-    // Get the surveys (distinct with the drafts)
-    getHeadersList(addonUUID: string, options: any): Observable<HeaderTemplateRowProjection[]> {
-        // Get the header list from the server.
-        const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/get_headers_list?resourceName=${this.getCurrentResourceName()}&${options}`);
     }
 
     async getFlowNameByFlowKey(flowKey: string){

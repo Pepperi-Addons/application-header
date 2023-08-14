@@ -1,4 +1,4 @@
-import { PapiClient, InstalledAddon, Relation, AddonDataScheme, Subscription } from '@pepperi-addons/papi-sdk'
+import { PapiClient, InstalledAddon, Relation, AddonDataScheme, Subscription, ConfigurationScheme } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from 'shared';
 
@@ -50,50 +50,47 @@ export class RelationsService {
             ElementName: `${blockName.toLocaleLowerCase()}-element-${this.client.AddonUUID}`,
         };
     }
-    async createTablesSchemes(): Promise<AddonDataScheme[]> {
-        const promises: AddonDataScheme[] = [];
-        try {
-            const DIMXSchema = {
-                    Blocks: {
-                        Type: "Array",
-                        Items: {
-                            Type: "Object",
-                            Fields: {
-                                Configuration: {
-                                    Type: "Object"
-                                }
-                            }
-                        }
+
+    async createConfigurationScheme(): Promise<ConfigurationScheme>{
+        const configurationScheme:ConfigurationScheme = {
+            Name: 'AppHeaderConfiguration', //the name of the configuration scheme
+            AddonUUID: this.client.AddonUUID, //the addonUUID of the addon that own this configuration
+            //the interface of the configurations object
+            Fields: {
+                    Key: {
+                        Type: "String"
                     },
-            };
-
-            // Create headers table
-            const createHeadersTable = await this.papiClient.addons.data.schemes.post({
-                Name: PUBLISHED_HEADERS_TABLE_NAME,
-                Type: 'data',
-                SyncData: {
-                    Sync: true
-                }
-            });
-
-            // Create headers draft table
-            const createHeadersDraftTable = await this.papiClient.addons.data.schemes.post({
-                Name: DRAFTS_HEADERS_TABLE_NAME,
-                Type: 'data',
-                SyncData: {
-                    Sync: true
-                },
-                Fields: DIMXSchema as any // Declare the schema for the import & export.
-            });
-        
-            promises.push(createHeadersTable);
-            promises.push(createHeadersDraftTable);
-            //promises.push(createPagesVariablesTable);
-            return Promise.all(promises);
-                
-        } catch (err) {
-            throw new Error(`Failed to create Headers ADAL Tables. error - ${err}`);
+                    Name: {
+                        Type: "String"
+                    },
+                    Description: {
+                        Type: "String"
+                    },
+                    Hidden: {
+                        Type: "Bool"
+                    },
+                    Draft: {
+                        Type: "Bool"
+                    },
+                    Published: {
+                        Type: "Bool"
+                    },
+                    Menu: {
+                        Type: "Array"
+                    },
+                    Buttons: {
+                        Type: "Array"
+                    }
+            },
+            //if this configurations should be synced or not.
+            Sync: {
+                //Sync: true
+                SyncData: true
+            } as any 
         }
+    
+        return await this.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('objects').post({addonUUID: this.client.AddonUUID, scheme: 'configuration_schemes', name: 'AppHeaderConfiguration'}, configurationScheme) as ConfigurationScheme
+
     }
 
     async upsertRelations() {

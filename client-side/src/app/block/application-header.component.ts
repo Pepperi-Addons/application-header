@@ -27,25 +27,27 @@ export class ApplicationHeaderComponent implements OnInit {
     async ngOnInit() {
        
         const headerKey =  this.route.snapshot.data['header_key'] || this.route?.snapshot?.params['header_key'] || '';
-        let options = `where=Key="${headerKey}"`; 
-        const res = (await this.appHeadersService.getHeaders(encodeURI(options)))[0] || {};
- 
-        this.headerData =  {
-            ...this.headerData,
-            ...res
-        };
-
-        if(this.headerData){
-            if(this.headerData.Menu?.length){
-                this.setMenuView(this.headerData.Menu);
-                this.setMenuItemsObj();
+  
+        await this.appHeadersService.getHeaders(encodeURI(JSON.stringify({Key: headerKey}))).then(res => {
+            this.headerData =  {
+                ...this.headerData,
+                ...res.Data
+            };
+    
+            if(this.headerData){
+                if(this.headerData.Menu?.length){
+                    this.setMenuView(this.headerData.Menu);
+                    this.setMenuItemsObj();
+                }
+                // if(this.headerData?.buttons?.length){
+                //     this.removeSystemButtons()
+                // }
+    
+                this.generalData = { name: this.headerData.Name || '' , description: this.headerData.Description || '' };
             }
-            // if(this.headerData?.buttons?.length){
-            //     this.removeSystemButtons()
-            // }
 
-            this.generalData = { name: this.headerData.Name || '' , description: this.headerData.Description || '' };
-        }
+        })
+       
 
         //this.appHeadersService.loadHeader(headerKey);
     }

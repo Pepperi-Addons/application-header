@@ -132,9 +132,10 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
                 }
 
                 this.totalHeaders = this.headers?.length || 0;
-
+                const items = this.headers.map(header => { return header['Data'] });
+        
                 return {
-                    items: this.headers,
+                    items: items,
                     totalCount: this.totalHeaders,
                     dataView: {
                         Context: {

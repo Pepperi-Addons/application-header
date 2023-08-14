@@ -1,7 +1,7 @@
-import { PapiClient, FindOptions, DataView, SearchBody } from '@pepperi-addons/papi-sdk'
+import { PapiClient, FindOptions, DataView } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
 import { v4 as uuid } from 'uuid';
-import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from 'shared';
+import { APIHeaderButton, APIMenuItem } from 'shared';
 
 export interface IHeaderData {
     Key?: string;
@@ -10,8 +10,8 @@ export interface IHeaderData {
     Hidden?: boolean;
     Draft: boolean;
     Published: boolean;
-    Menu: any; // TODO - SET THE TYPE
-    Buttons: any; // TODO - SET THE TYPE
+    Menu: Array<APIMenuItem>;
+    Buttons: Array<APIHeaderButton>;
 }
 
 export class HeaderService {
@@ -90,11 +90,22 @@ export class HeaderService {
     /*                                  Public functions
     /***********************************************************************************************/
 
-    async getHeaders(options: FindOptions | undefined = undefined) {
-        
-        
-         const header = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).find(options) as IHeaderData[];
-            if(header?.length){
+    //async getHeaders(options: FindOptions | undefined = undefined) {
+    async getHeaders(options: any = undefined) {  
+        let header; 
+        let headerUUID = -1;
+   
+        if(options && Object.keys(options).length){
+            headerUUID = options.Key || (JSON.parse((Object.keys(options)[0]))['Key']);
+            if(headerUUID !== -1){
+                header = headerUUID.toString() === '-1' ? null : await this.getConfigurationObj('drafts','get',undefined,headerUUID.toString());
+            }
+        }
+        if(headerUUID == -1){
+            //header = null;
+            header = await this.getConfigurationObj('drafts','get',undefined);
+        }
+        /*   if(header?.length){
                 let flowUUIDs: Array<string> = []
                 let flowsArr = [];
                 const flatMenu = this.getFlattenMenu(header[0]?.Menu);
@@ -111,7 +122,7 @@ export class HeaderService {
                 catch(err){
                     flowsArr = []; 
                 }
-            }
+            }*/
         return header;
         
     }
@@ -149,8 +160,8 @@ export class HeaderService {
       };
       
     async upsertHeader(body) {
-        const headersList = await this.getHeaders({ where : 'Hidden=false'});
-        const headerToUpsert = this.getBody(body);
+        const headersList = await this.getHeaders();
+        const headerToUpsert: IHeaderData = this.getBody(body);
 
         if(body.Hidden) {
 
@@ -161,7 +172,7 @@ export class HeaderService {
             let publishExceptionMessage;
             
             try { // delete from draft table
-                await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
+                const deleteDraft = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
                 draftDeleted = true;
             } catch (e) {
                 draftExceptionMessage = e;
@@ -170,7 +181,7 @@ export class HeaderService {
             try {
                 // delete from publish only when header allready published
                 if(headerToUpsert.Published == true){
-                    await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
+                    const deleteDraft = await this.getConfigurationObj('publish','post',headerToUpsert,headerToUpsert.Key);
                 }
                 publishDeleted = true;
 
@@ -220,10 +231,10 @@ export class HeaderService {
                         headerToUpsert.Key = uuid();
 
                         try { // upsert to draft table
-                            draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
+                            draftHeader = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
                             // upsert to publish table if need to
                             if(headerToUpsert.Published){
-                            publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
+                                publishHeader = await this.getConfigurationObj('publish','post',headerToUpsert,headerToUpsert.Key);
                             }
                         } catch (e) {
                             upsertExceptionMessage = e;
@@ -247,14 +258,14 @@ export class HeaderService {
                 try { 
                         // get list of headers & filter by name field
                         const currHeader = headersList.filter((header) => {
-                            return header.Key == headerToUpsert.Key;
+                            return header.Data.Key == headerToUpsert.Key;
                         })[0];
                         
                         // upsert to publish table if need to
                         if(headerToUpsert.Published){
                             try{
-                                publishHeader =  await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).upsert(headerToUpsert);
-                                currHeader.Published = true;
+                                publishHeader = await this.getConfigurationObj('publish','post',headerToUpsert,headerToUpsert.Key);
+                                currHeader.Data.Published = true;
                             }
                             catch(err){
 
@@ -262,11 +273,11 @@ export class HeaderService {
                         }
                        
                         if(currHeader && !headerToUpsert.Published) {
-                            headerToUpsert.Published = currHeader.Published;
+                            headerToUpsert.Published = currHeader.Data.Published;
                         }
                         // upsert to draft table
-                        draftHeader = await this.papiClient.addons.data.uuid(this.addonUUID).table(DRAFTS_HEADERS_TABLE_NAME).upsert(headerToUpsert);
-                } 
+                       draftHeader = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
+                    } 
                 catch (e) {
                             upsertExceptionMessage = e;
                 }
@@ -278,32 +289,71 @@ export class HeaderService {
         }
     }
 
-    async duplicateHeader(body){
-        
-        const header = (await this.getHeaders({ where : `Key="${body.headerUUID}"`}))[0] || null;
-
-        if(header){
-            header.Name = `${header.Name} copy`;
-            header.Published = false; // duplicate will create only draft header
-            delete header.Key; // delete the key and upsert like new header
-            return await this.upsertHeader(header);
+    async getConfigurationObj(schemeName = 'drafts', method = 'get', headerToUpsert: IHeaderData | undefined, uuid:string = ''){
+        const configuration = {
+            Key: uuid,
+            ConfigurationSchemaName: 'AppHeaderConfiguration',
+            AddonUUID: this.addonUUID,
+            
+            // Data: {
+            //     Name: "Name",
+            //     Age: 120,
+            //     ID: "GeneralID"
+            // },
+            Description: schemeName, 
+            Profiles: [
+            // {
+            //     "Key": "51c5c372-35e7-11ee-be56-0242ac120002", //key for rep profile
+            //     "Data": {
+            //         Name: "Rep",
+            //     }
+            // }
+            ]
         }
+        if(headerToUpsert){
+            configuration['Data'] = headerToUpsert;
+            configuration['Hidden'] = headerToUpsert.Hidden || false;
+        }
+
+        let funcName;
+
+       if(method === 'get'){
+             funcName = !uuid || uuid == '' ? 'objects' : 'get_by_key';
+        }
+        else{
+             funcName = schemeName == 'drafts' ? 'objects' : 'publish';
+        }  
+        return  await this.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func(funcName)[method]({ addonUUID: this.addonUUID, scheme: schemeName, name: 'AppHeaderConfiguration', key: uuid }, configuration);   
+    }
+
+    async duplicateHeader(body){
+        const options = {
+            Key: body.headerUUID
+        }
+
+        //const header = (await this.getHeaders({ where : `Key="${body.headerUUID}"`}))[0] || null;
+        await this.getHeaders(options).then(async header => {
+            if(header){
+                header.Data.Name = `${header.Data.Name} copy`;
+                header.Data.Published = false; // duplicate will create only draft header
+                delete header.Data.Key; // delete the key and upsert like new header
+                return await this.upsertHeader(header.Data);
+            }
+        })
     }
 
     async deleteHeader(body){
-        
-        const header = (await this.getHeaders({ where : `Key="${body.headerUUID}"`}))[0] || null;
-
-        if(header){
-            header.Hidden = true;
-            return await this.upsertHeader(header);
+        const options = {
+            Key: body.headerUUID
         }
-    }
 
-    getHeadersList(query: string = '') {
-        let addonURL = `/addons/data/${this.addonUUID}/Headers` + query;
-                
-        return this.papiClient.get(encodeURI(addonURL)); 
+        await this.getHeaders(options).then(async header => {
+            if(header){
+                header.Data.Hidden = true;
+                return await this.upsertHeader(header.Data);
+            }
+        });
+       // const header = (await this.getHeaders({ where : `Key="${body.headerUUID}"`}))[0] || null;  
     }
 
     async exportHeader(body){
@@ -370,8 +420,8 @@ export class HeaderService {
             if (obj.ModifiedFields?.filter(field => field.FieldID === 'Hidden' && field.NewValue === true)) {
                 console.log(`obj.ObjectKey - ${obj.ObjectKey}`);
 
-                const header = await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).key(obj.ObjectKey).get() as IHeaderData;
-                
+                //const header = await this.papiClient.addons.data.uuid(this.addonUUID).table(PUBLISHED_HEADERS_TABLE_NAME).key(obj.ObjectKey).get() as IHeaderData;
+                const header = this.getHeaders(encodeURI(JSON.stringify({Key: obj.ObjectKey})));
                 console.log(`header - ${JSON.stringify(header)}`);
 
                 if (header) {
@@ -390,7 +440,7 @@ export class HeaderService {
                                 const field = dataView.Fields[fieldIndex];
 
                                 // If the key is the same as the deleted header, remove it from the list.
-                                if (field.Title === header.Key) {
+                                if (field.Title === header['Data'].Key) {
                                     dataView.Fields.splice(fieldIndex, 1);
                                     shouldUpdate = true;
                                     break;
