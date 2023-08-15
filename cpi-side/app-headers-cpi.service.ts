@@ -89,9 +89,9 @@ class AppHeaderService {
     /************************************************************************************************/
 
     async getHeaderData(client: IClient | undefined, headerKey: string): Promise<APIAppHeaderTemplate> {
-       
         const header = await this.getAppHeader(headerKey);
-        return await this.translateHeaderToAPIheader(header, client?.context || undefined);
+      
+        return await this.translateHeaderToAPIheader(header.Data, client?.context || undefined);
         //return header;
 
     }
@@ -122,7 +122,6 @@ class AppHeaderService {
         let buttons: Array<APIHeaderButton> = [];
         let menuItems: Array<APIMenuItem> = [];
         const isDefaultHeader = header === undefined;
-
         buttons = [
                 new APIHeaderButton('Settings', 'Settings', new Icon('system','settings'), true, true, null),
                 new APIHeaderButton('Systemavatar', 'SystemAvatar', new Icon('system','avatar'), true, true, null),
