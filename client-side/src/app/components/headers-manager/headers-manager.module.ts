@@ -13,7 +13,7 @@ import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
 import { PepSizeDetectorModule } from '@pepperi-addons/ngx-lib/size-detector';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
-import { PepIconModule, PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus } from '@pepperi-addons/ngx-lib/icon';
+import { PepIconModule, PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus, pepIconSystemBin } from '@pepperi-addons/ngx-lib/icon';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
@@ -26,6 +26,7 @@ import { HeadersManagerComponent } from './headers-manager.component';
 
 const pepIcons = [
     pepIconSystemClose,
+    pepIconSystemBin,
     pepIconArrowLeftAlt,
     pepIconNumberPlus
 ];

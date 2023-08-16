@@ -13,7 +13,7 @@ import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
 import { PepSizeDetectorModule } from '@pepperi-addons/ngx-lib/size-detector';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
-import { PepIconModule, PepIconRegistry, pepIconArrowDownAlt, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus } from '@pepperi-addons/ngx-lib/icon';
+import { PepIconModule, PepIconRegistry, pepIconArrowDownAlt, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus, pepIconSystemBin } from '@pepperi-addons/ngx-lib/icon';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -28,7 +28,8 @@ const pepIcons = [
     pepIconSystemClose,
     pepIconArrowLeftAlt,
     pepIconNumberPlus,
-    pepIconArrowDownAlt
+    pepIconArrowDownAlt,
+    pepIconSystemBin
 ];
 
 export const routes: Routes = [
