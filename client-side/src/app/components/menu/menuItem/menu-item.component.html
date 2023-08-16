@@ -3,8 +3,10 @@
     <pep-textbox [label]="'MENU.ITEM.NAME_LABEL' | translate" [value]="menuItem?.Title" (valueChange)="menuItemChange($event,menuItem)" [maxFieldCharacters]="menuItemLabelMaxCharacters">
     </pep-textbox>
     <div>
-      <label class="body-xs normal ellipsis">Action</label>
-    <pep-button class="script-button" [title]="'Action'" [value]="(menuItem?.Flow?.FlowKey ? menuItem?.Flow?.FlowName : ('MENU.ACTION.CHOOSE_FLOW' | translate))" [disabled]="menuItem?.Items?.length > 0" (buttonClick)="openFlowPickerDialog();"></pep-button>
+    <label class="body-xs normal ellipsis flow-label">{{'MENU.ACTION.TITLE' | translate}}</label>
+    <pep-button class="script-button" [title]="'MENU.ACTION.TITLE' | translate" [value]="(menuItem?.Flow?.FlowKey ? menuItem?.Flow?.FlowName : ('MENU.ACTION.CHOOSE_FLOW' | translate))" 
+                [disabled]="menuItem?.Items?.length > 0" [ngStyle]="{'pointer-events': menuItem?.Items?.length > 0 ? 'none' : 'unset'}"
+                (buttonClick)="openFlowPickerDialog();"></pep-button>
       </div>
     <pep-group-buttons-settings [groupType]="'custom'" [btnsArray]="leftRightArrows" [title]="' '" [subHeader]="null"
         pepResetConfigurationField="'group-buttons-test'" [dir]="'ltr'">

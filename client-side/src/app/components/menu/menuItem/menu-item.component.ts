@@ -61,10 +61,16 @@ export class MenuItemComponent implements OnInit {
 
     setArrowsState(){
             this.leftRightArrows[0].disabled = this.menuItem.HierarchyLevel == 0 ? true : false;
+            this.leftRightArrows[0].classNames = this.leftRightArrows[0].disabled ? 'pointerEvents' : '';
             this.leftRightArrows[1].disabled = this.menuItem.HierarchyLevel == 2 && this.deleteable ? true : false; 
+            this.leftRightArrows[1].classNames = this.leftRightArrows[1].disabled ? 'pointerEvents' : '';
     }
 
     openFlowPickerDialog(){
+
+        if(this.menuItem?.Items?.length > 0){
+            return false
+        }
         const flow = this.menuItem?.Flow || null;
 
         this.dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
