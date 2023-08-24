@@ -57,6 +57,7 @@
             "NAME_LABEL": "Display name"
         },
         "ACTION":{
+            "TITLE": "Action",
             "CHOOSE_FLOW": "Choose flow",
             "ADD_MENU_ITEM": "Add an item",
             "ADD_SUB_MENU_ITEM": "Add a sub item"

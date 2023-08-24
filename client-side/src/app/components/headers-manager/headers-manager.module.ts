@@ -28,7 +28,8 @@ const pepIcons = [
     pepIconSystemClose,
     pepIconSystemBin,
     pepIconArrowLeftAlt,
-    pepIconNumberPlus
+    pepIconNumberPlus,
+    pepIconSystemBin
 ];
 
 export const routes: Routes = [
