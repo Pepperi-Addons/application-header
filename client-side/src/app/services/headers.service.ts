@@ -2,8 +2,8 @@ import { Injectable, ɵɵresolveBody } from "@angular/core";
 //import { Params } from "@angular/router";
 import jwt from 'jwt-decode';
 import { TranslateService } from "@ngx-translate/core";
-import { PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
-import { Observable, firstValueFrom } from 'rxjs';
+import { IPepOption, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
+import { BehaviorSubject, distinctUntilChanged, Observable, firstValueFrom } from "rxjs";
 import { NavigationService } from "./navigation.service";
 import { PUBLISHED_HEADERS_TABLE_NAME, HeaderTemplateRowProjection } from '../components/application-header.model';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
@@ -12,8 +12,9 @@ import { config } from '../app.config';
 import * as _ from 'lodash';
 import { PepSelectionData } from "@pepperi-addons/ngx-lib/list";
 //import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
-import { MenuDataView, PapiClient } from "@pepperi-addons/papi-sdk";
+import { MenuDataView, PapiClient, SchemeFieldType } from "@pepperi-addons/papi-sdk";
 import { APIHeaderButton, APIMenuItem } from "shared";
+
 //import { coerceNumberProperty } from "@angular/cdk/coercion";
 // import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, AppHeaderClientEventResult } from 'shared';
 interface IHeaderProj {
@@ -82,10 +83,6 @@ export class AppHeadersService {
         }
     }
 
-    private getCurrentResourceName() {
-        return PUBLISHED_HEADERS_TABLE_NAME;
-    }
-
     private showErrorDialog(err: string = ''): MatDialogRef<any> {
         const title = this.translate.instant('MESSAGES.TITLE_NOTICE');
         const dataMsg = new PepDialogData({title, actionsType: "close", content: err || this.translate.instant('MESSAGES.FAILED_TO_GET_SURVEY_VIEW_ERROR')});
@@ -93,7 +90,21 @@ export class AppHeadersService {
         return this.dialog.openDefaultDialog(dataMsg);
     }
 
-    
+    /******************************** FLOW SERVICES *****************************************/
+
+       // This subject is for load page parameter options on the filter editor (Usage only in edit mode).
+       private _pageParameterOptionsSubject: BehaviorSubject<Array<IPepOption>> = new BehaviorSubject<Array<IPepOption>>([]);
+       get pageParameterOptionsSubject$(): Observable<Array<IPepOption>> {
+           return this._pageParameterOptionsSubject.asObservable().pipe(distinctUntilChanged());
+       }
+   
+       // This subjects is for dynamic parameters in Options source flow (Usage only in edit mode).
+       private _flowDynamicParameters = new Map<string, SchemeFieldType>();
+       get flowDynamicParameters(): ReadonlyMap<string, SchemeFieldType> {
+           return this._flowDynamicParameters;
+       }
+
+
     /*                            CPI & Server side calls.
     /**************************************************************************************/
 

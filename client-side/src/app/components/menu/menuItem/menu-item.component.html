@@ -3,10 +3,12 @@
     <pep-textbox [label]="'MENU.ITEM.NAME_LABEL' | translate" [value]="menuItem?.Title" (valueChange)="menuItemChange($event,menuItem)" [maxFieldCharacters]="menuItemLabelMaxCharacters">
     </pep-textbox>
     <div>
-    <label class="body-xs normal ellipsis flow-label">{{'MENU.ACTION.TITLE' | translate}}</label>
+    <!-- <label class="body-xs normal ellipsis flow-label">{{'MENU.ACTION.TITLE' | translate}}</label>
     <pep-button class="script-button" [title]="'MENU.ACTION.TITLE' | translate" [value]="(menuItem?.Flow?.FlowKey ? menuItem?.Flow?.FlowName : ('MENU.ACTION.CHOOSE_FLOW' | translate))" 
                 [disabled]="menuItem?.Items?.length > 0" [ngStyle]="{'pointer-events': menuItem?.Items?.length > 0 ? 'none' : 'unset'}"
-                (buttonClick)="openFlowPickerDialog();"></pep-button>
+                (buttonClick)="openFlowPickerDialog();"></pep-button> -->
+        <pep-field-title [label]="'MENU.ACTION.TITLE' | translate"></pep-field-title>
+        <pep-flow-picker-button [disabled]="menuItem?.Items?.length > 0" [flowHostObject]="flowHostObject" (flowChange)="onFlowChange($event)"></pep-flow-picker-button>
       </div>
     <pep-group-buttons-settings [groupType]="'custom'" [btnsArray]="leftRightArrows" [title]="' '" [subHeader]="null"
         pepResetConfigurationField="'group-buttons-test'" [dir]="'ltr'">

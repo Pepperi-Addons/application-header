@@ -92,6 +92,7 @@ export class HeaderService {
 
     //async getHeaders(options: FindOptions | undefined = undefined) {
     async getHeaders(options: any = undefined) {  
+ 
         let header; 
         let headerUUID = -1;
    
@@ -289,7 +290,7 @@ export class HeaderService {
         }
     }
 
-    async getConfigurationObj(schemeName = 'drafts', method = 'get', headerToUpsert: IHeaderData | undefined, uuid:string = ''){
+    async getConfigurationObj(schemeName = 'drafts', method = 'get', headerToUpsert: IHeaderData | undefined, uuid = ''){
         const configuration = {
             Key: uuid,
             ConfigurationSchemaName: 'AppHeaderConfiguration',
@@ -300,7 +301,10 @@ export class HeaderService {
             //     Age: 120,
             //     ID: "GeneralID"
             // },
-            Description: schemeName, 
+            Data: headerToUpsert || undefined,
+            Name: headerToUpsert?.Name || undefined,
+            Description: headerToUpsert?.Description || undefined, 
+            Hidden: headerToUpsert?.Hidden || false,
             Profiles: [
             // {
             //     "Key": "51c5c372-35e7-11ee-be56-0242ac120002", //key for rep profile
@@ -310,20 +314,21 @@ export class HeaderService {
             // }
             ]
         }
-        if(headerToUpsert){
-            configuration['Data'] = headerToUpsert;
-            configuration['Hidden'] = headerToUpsert.Hidden || false;
+
+        if(headerToUpsert?.Published){
+                // TODO - NEED TO WAIT FOR NEW PAPI SDK
+                //configuration.Publish.Description = new Date().toUTCString() || null;
         }
 
         let funcName;
 
-       if(method === 'get'){
-             funcName = !uuid || uuid == '' ? 'objects' : 'get_by_key';
+        if(method === 'get'){
+             funcName = uuid?.length ? 'get_by_key' : 'objects';
         }
         else{
              funcName = schemeName == 'drafts' ? 'objects' : 'publish';
         }  
-        return  await this.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func(funcName)[method]({ addonUUID: this.addonUUID, scheme: schemeName, name: 'AppHeaderConfiguration', key: uuid }, configuration);   
+        return  await this.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func(funcName)[method]({ addonUUID: this.addonUUID, scheme: schemeName, name: 'AppHeaderConfiguration', key: uuid}, configuration);   
     }
 
     async duplicateHeader(body){

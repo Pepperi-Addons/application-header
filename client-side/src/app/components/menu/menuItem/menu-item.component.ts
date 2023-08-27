@@ -23,6 +23,7 @@ export class MenuItemComponent implements OnInit {
     public leftRightArrows : Array<PepButton> = [];
     public menuItemLabelMaxCharacters = 20;
     public isGrabbing = false;
+    public flowHostObject;
 
     private dialogRef: MatDialogRef<any>;
     
@@ -39,6 +40,7 @@ export class MenuItemComponent implements OnInit {
         ];
 
         this.setArrowsState();
+        this.prepareFlowHostObject();
     }
 
     deleteMenuItem(event, menuItem: MenuItem){
@@ -66,29 +68,28 @@ export class MenuItemComponent implements OnInit {
             this.leftRightArrows[1].classNames = this.leftRightArrows[1].disabled ? 'pointerEvents' : '';
     }
 
-    openFlowPickerDialog(){
+    private prepareFlowHostObject() {
+        this.flowHostObject = {};
+    
+        const runFlowData = this.menuItem?.Flow || null;
 
-        if(this.menuItem?.Items?.length > 0){
-            return false
+        const fields = {};
+
+        if (runFlowData) {
+            /*this..flowDynamicParameters.forEach((value, key) => {
+                fields[key] = {
+                    Type: value || 'String'
+                };
+            });*/
         }
-        const flow = this.menuItem?.Flow || null;
+        
+        this.flowHostObject['runFlowData'] = runFlowData?.FlowKey ? runFlowData : undefined;
+        this.flowHostObject['fields'] = fields;
+    }
 
-        this.dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
-            container: this.viewContainerRef,
-            name: 'FlowPicker',
-            size: 'large',
-            hostObject: {
-                'runFlowData': flow
-            },
-            hostEventsCallback: (event) => {
-                if (event.action === 'on-done') {
-                        this.menuItem.Flow = event.data;
-                        this.onMenuItemChange.emit(this.menuItem); 
-                        this.dialogRef.close();
-                } else if (event.action === 'on-cancel') {
-                        this.dialogRef.close();
-                }
-            }
-        })
+    onFlowChange(flowData: any) {
+        this.menuItem.Flow = flowData;
+        this.onMenuItemChange.emit(this.menuItem); 
+        this.dialogRef.close();
     }
 }

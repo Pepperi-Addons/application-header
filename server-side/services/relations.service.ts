@@ -83,10 +83,9 @@ export class RelationsService {
                     }
             },
             //if this configurations should be synced or not.
-            Sync: {
-                //Sync: true
-                SyncData: true
-            } as any 
+            SyncData:{
+                Sync: true
+            }   
         }
     
         return await this.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('objects').post({addonUUID: this.client.AddonUUID, scheme: 'configuration_schemes', name: 'AppHeaderConfiguration'}, configurationScheme) as ConfigurationScheme

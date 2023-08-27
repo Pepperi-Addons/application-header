@@ -8,6 +8,9 @@ import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepDialogModule } from '@pepperi-addons/ngx-lib/dialog';
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepGroupButtonsSettingsModule } from '@pepperi-addons/ngx-composite-lib/group-buttons-settings';
+import { PepFlowPickerButtonModule } from '@pepperi-addons/ngx-composite-lib/flow-picker-button';
+import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
+
 @NgModule({
     declarations: [
         MenuItemComponent
@@ -15,7 +18,8 @@ import { PepGroupButtonsSettingsModule } from '@pepperi-addons/ngx-composite-lib
     imports: [
         CommonModule,
         TranslateModule.forChild(),
-
+        PepFlowPickerButtonModule,
+        PepFieldTitleModule,
         PepTextboxModule,
         PepTopBarModule,
         PepButtonModule,
