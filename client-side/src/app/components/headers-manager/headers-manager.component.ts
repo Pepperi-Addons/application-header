@@ -1,17 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild } from "@angular/core";
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router'
 import { first, Subscription, firstValueFrom } from 'rxjs';
 import { DIMXService } from "../../services/dimx.service";
 import { PepAddonService, PepLayoutService, PepScreenSizeType, PepUtilitiesService } from '@pepperi-addons/ngx-lib';
 import { TranslateService } from '@ngx-translate/core';
-import { IPepGenericListDataSource, IPepGenericListPager, IPepGenericListActions, IPepGenericListInitData, PepGenericListService } from "@pepperi-addons/ngx-composite-lib/generic-list";
+import { IPepGenericListDataSource, IPepGenericListPager, IPepGenericListActions, IPepGenericListInitData, PepGenericListService, IPepGenericListEmptyState } from "@pepperi-addons/ngx-composite-lib/generic-list";
 import { DataViewFieldType, GridDataViewField, MenuDataView, Page } from '@pepperi-addons/papi-sdk';
 import { PepSelectionData } from '@pepperi-addons/ngx-lib/list';
 import { NavigationService } from "../../services/navigation.service";
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { PepAddonBlockLoaderService } from "@pepperi-addons/ngx-lib/remote-loader";
 import { coerceNumberProperty } from "@angular/cdk/coercion";
-
+import { ConfigurationSchemaName } from "shared";
 import { IPepProfileDataViewsCard, IPepProfile, IPepProfileDataViewClickEvent, IPepProfileDataView } from '@pepperi-addons/ngx-lib/profile-data-views-list';
 import { HeaderTemplateRowProjection } from "../application-header.model";
 import { AppHeadersService } from "../../services/headers.service";
@@ -39,6 +39,11 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
     headers: HeaderTemplateRowProjection[];
 
     private _subscriptions: Subscription[] = [];
+    protected configurationHostObject: any = null;
+    protected remoteEntry = ''; //'http://localhost:4401/file_84c999c3-84b7-454e-9a86-71b7abc96554.js';
+    emptyState: IPepGenericListEmptyState = {
+        show: true
+    };
 
      // Mapping tab variables
      //private pagesMap = new Map<string, string>();
@@ -52,256 +57,58 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         public activatedRoute: ActivatedRoute,
-        private dimxService: DIMXService,
         public layoutService: PepLayoutService,
         private pepAddonService: PepAddonService,
         public translate: TranslateService,
         private _navigationService: NavigationService,        
-        private appHeadersService: AppHeadersService,
-        private dialog: PepDialogService,
-        private utilitiesService: PepUtilitiesService,
-        private pepAddonBlockLoader: PepAddonBlockLoaderService,
-        private viewContainerRef: ViewContainerRef
-    ) {
-        
-
+        private appHeadersService: AppHeadersService
+    ) { 
+        this.translate.get(['HEADERS_MANAGER.NO_PAGES_MSG', 'HEADERS_MANAGER.PAGES_HEADER']).subscribe(res => {
+            
+            this.emptyState = {
+                show: true,
+                description: res?.length > 0 ? res[0] : this.translate.instant('HEADERS_MANAGER.NO_PAGES_MSG'),
+                title: res?.length > 1 ? res[1] : this.translate.instant('HEADERS_MANAGER.PAGES_HEADER'),
+            }
+        })
         this.pepAddonService.setShellRouterData({ showSidebar: true, addPadding: true});
-        this.dimxService.register(this.viewContainerRef, this.onDIMXProcessDone.bind(this));
-        
         this._subscriptions.push(this.layoutService.onResize$.subscribe(size => {
             this.screenSize = size;
         }));
-        
-        // Get the available profiles
-        // this.appHeadersService.profilesChange$.subscribe(profiles => {
-        //     this._allProfiles = profiles;
-
-        //     // After the profiles loaded the defaultProfileId is already loaded too.
-        //     this.defaultProfileId = this.appHeadersService.defaultProfileId;
-        // });
-
-        // Fill the data views.
-        // this.appHeadersService.dataViewsMapChange$.subscribe((dataViewsMap: ReadonlyMap<string, MenuDataView>) => {
-        //     this.dataViewsMap = new Map<string, MenuDataView>();
-        //     this.profileDataViewsList = [];
-
-        //     dataViewsMap.forEach(dv => {
-        //         this.createNewProfileDataViewCard(dv);
-        //     });
-
-        //     this.availableProfiles = this._allProfiles.filter(p => this.profileDataViewsList.findIndex(pdv => pdv.profileId === p.id) === -1);
-        // });
     }
 
     async ngOnInit() {
         // checking if new sync is installed , if not --> lock the appHeader editor
             this.isSyncInstalled =  await this.appHeadersService.cheakIfSyncInstalled();
-         
+            
+            this.translate.get('HEADERS_MANAGER.LIST_HEADER').subscribe(title => {
+                this.configurationHostObject = {
+                    addonUUID: this._navigationService.addonUUID,
+                    configurationSchemaName: ConfigurationSchemaName,
+                    title: title,
+                    emptyState: this.emptyState
+                    // lineMenu: ConfigurationLineMenuItem[],
+                    // menu: ConfigurationMenuItem[],
+                };
+            });
+
             const index = coerceNumberProperty(this.activatedRoute.snapshot.queryParamMap.get('tabIndex'), 0);
             this.setCurrentTabIndex(index);  
     }
 
-    onDIMXProcessDone(event:any) {
-        const process = event?.ProcessedFiles[0] || undefined;
-        // TODO need to remove the export - there is a bug on dimx import
-        if((process.Action.toLowerCase() === 'import' || process.Action.toLowerCase() === 'export') && process.Status.toLowerCase() === 'done'){
-            this.setDataSource();
-        }
-    }
-
-    setDataSource() {
-        this.dataSource = {
-            init: async (params) => {
-             
-                let options = 'order_by=';
-                
-                if (params.sorting) {
-                    options += `${params.sorting.sortBy} ${params.sorting?.isAsc ? 'ASC' : 'DESC'}`;
-                } else {
-                    options += 'Name ASC';
-                }
-                if (params.searchString?.length > 0) {
-                     options += `&where=${params.searchString}`;
-                }
-
-                // TODO - FIX THE OPTION , need indexed data
-                this.headers = await this.appHeadersService.getHeaders(); // encodeURI(options)
-
-                if (params?.searchString) {
-                    this.headers = this.headers.filter((header: any) =>  header.Name.toLowerCase().indexOf(params.searchString.toLowerCase()) > -1  );
-                }
-
-                this.totalHeaders = this.headers?.length || 0;
-                const items = this.headers.map(header => { return header['Data'] });
-        
-                return {
-                    items: items,
-                    totalCount: this.totalHeaders,
-                    dataView: {
-                        Context: {
-                            Name: '',
-                            Profile: { InternalID: 0 },
-                            ScreenSize: 'Landscape'
-                        },
-                        Type: 'Grid',
-                        Title: '',
-                        Fields: [
-                            this.getRegularReadOnlyColumn('Name', 'Link',),
-                            this.getRegularReadOnlyColumn('Description'),
-                            this.getRegularReadOnlyColumn('Draft', 'Boolean'),
-                            this.getRegularReadOnlyColumn('Published', 'Boolean'),
-                        ],
-                        Columns: [
-                            { Width: 25 },
-                            { Width: 45 },
-                            { Width: 15 },
-                            { Width: 15 },
-                        
-                        ],
-                        FrozenColumnsCount: 0,
-                        MinimumColumnWidth: 0
-                    }
-                } as IPepGenericListInitData;
+    onConfigurationHostEvent(event: any) {
+        if (event.name === 'onListLoad') {
+            //this.totalPages = event.data?.totalCount || 0;
+        } else if (event.name === 'onListFieldClick') {
+            this._navigationService.navigateToHeader(event.data?.id);
+        } else if (event.name === 'onMenuItemClick') {
+            if (event.action === 'add') {
+                this._navigationService.navigateToHeader(event.data?.id);
+                //this.addNewPage();
+            } else if (event.action === 'edit') {
+                this._navigationService.navigateToHeader(event.data?.id);
             }
         }
-    }
-
-    actions: IPepGenericListActions = {        
-        get: async (data: PepSelectionData) => {
-            if (data?.rows.length === 1 ) {
-                return [{
-                            title: this.translate.instant("HEADERS_MANAGER.ACTION.EDIT"),
-                            handler: async (data: PepSelectionData) => {
-                                this._navigationService.navigateToHeader(data?.rows[0]);
-                            },    
-                        },
-                        {
-                            title: this.translate.instant("HEADERS_MANAGER.ACTION.DUPLICATE"),
-                            handler: async (data: PepSelectionData) => {
-                                const res = await this.appHeadersService.duplicateHeader(data?.rows[0]);
-                                this.setDataSource();
-                            },    
-                        },
-                        {
-                            title: this.translate.instant("HEADERS_MANAGER.ACTION.EXPORT"),
-                            handler: async (data: PepSelectionData) => {
-                                this.dimxService.export(data?.rows[0],'avner');
-                            },    
-                        },
-                        {
-                        title: this.translate.instant("HEADERS_MANAGER.ACTION.DELETE"),
-                        handler: async (data: PepSelectionData) => {
-                            if (data?.rows.length > 0) {
-                                this.deleteHeader(data?.rows[0]);
-                            }
-                        }
-                    }
-                ]
-            } 
-            else {
-                return [];
-            }
-        }
-    }
-
-    private getRegularReadOnlyColumn(columnId: string, columnType: DataViewFieldType = 'TextBox'): GridDataViewField {
-        return {
-            FieldID: columnId,
-            Type: columnType,
-            Title: this.translate.instant(`HEADERS_MANAGER.GRID_HEADER.${columnId.toUpperCase()}`),
-            Mandatory: false,
-            ReadOnly: true
-        }
-    }
-
-    onHeaderClicked(event) {
-        this._navigationService.navigateToHeader(event.id);
-    }
-
-    deleteHeader(headerID: string) {
-        const content = this.translate.instant('HEADERS_MANAGER.DELETE_HEADER.MSG');
-        const title = this.translate.instant('HEADERS_MANAGER.DELETE_HEADER.TITLE');
-        const dataMsg = new PepDialogData({title, actionsType: "cancel-delete", content});
-
-        this.dialog.openDefaultDialog(dataMsg).afterClosed().pipe(first()).subscribe(async (isDeletePressed) => {
-            if (isDeletePressed) {
-                const res = await this.appHeadersService.deleteHeader(headerID);
-                this.setDataSource();
-            }
-        });
-    }
-
-    async onMenuItemClicked(event: IPepMenuItemClickEvent = null) {
-        const menuItem = event.source;
-        switch(menuItem.key) {
-            case this.IMPORT_KEY: {
-             this.dimxService.import();
-             break;
-            }
-        }
-    }
-
-    // onDataViewEditClicked(event: IPepProfileDataViewClickEvent): void {
-    //     // console.log(`edit on ${event.dataViewId} was clicked`);
-    //     this.navigateToManageHeadersDataView(event.dataViewId);
-    // }
-
-    // onDataViewDeleteClicked(event: IPepProfileDataViewClickEvent): void {
-    //     // console.log(`delete on ${event.dataViewId} was clicked`);
-        
-    //     this.dialog.openDefaultDialog(new PepDialogData({
-    //         title: this.translate.instant('MESSAGES.DIALOG_DELETE_TITLE'),
-    //         content: this.translate.instant('MESSAGES.DELETE_DIALOG_CONTENT'),
-    //         actionsType: 'cancel-delete'
-    //     })).afterClosed().subscribe(isDeleteClicked => {
-    //         if (isDeleteClicked) {
-    //             const dataView = this.dataViewsMap.get(event.dataViewId);
-    //             if (dataView) {
-    //                 this.appHeadersService.deleteHeadersDataView(dataView).then(res => {
-    //                     this.dialog.openDefaultDialog(new PepDialogData({
-    //                         title: this.translate.instant('MESSAGES.DIALOG_INFO_TITLE'),
-    //                         content: this.translate.instant('MESSAGES.OPERATION_SUCCESS_CONTENT')
-    //                     }));
-    //                 });
-    //             }
-    //         }
-    //     });
-    // }
-
-    // onSaveNewProfileClicked(event: string): void {
-    //     // console.log(`save new profile was clicked for id - ${event} `);
-    //     const profileId: number = coerceNumberProperty(event);
-    //     if (profileId > 0) {
-    //         this.appHeadersService.createNewHeadersDataView(profileId);
-    //     }
-    // }
-
-
-
-    // private createNewProfileDataViewCard(dataView: MenuDataView) {
-    //     this.dataViewsMap.set(dataView.InternalID.toString(), dataView);
-
-    //     const profileDataView: IPepProfileDataViewsCard = {
-    //         title: dataView.Context?.Profile?.Name, // dataView.Title,
-    //         profileId: dataView.Context?.Profile?.InternalID.toString(),
-    //         dataViews: [{
-    //             dataViewId: dataView.InternalID.toString(),
-    //             viewType: dataView.Context?.ScreenSize,
-    //             fields: dataView.Fields?.map(field => {
-    //                 return `${field.Title} - ${field.FieldID}`;
-    //             })
-    //         }]
-    //     };
-
-    //     this.profileDataViewsList.push(profileDataView);
-    // }
-
-    private navigateToManageHeadersDataView(dataViewId: string) {
-
-        this.router.navigate([`tabs/${dataViewId}`], {
-            relativeTo: this.activatedRoute,
-            queryParamsHandling: 'merge'
-        });
     }
 
     onTabChanged(tabChangeEvent: MatTabChangeEvent): void {
@@ -318,9 +125,9 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
         this.currentTabIndex = index;
 
         // Load the datasource only if not loaded already and the current tab is the first tab.
-        if (this.currentTabIndex === 0 && this.dataSource === null && this.isSyncInstalled) {
-            this.setDataSource();
-        }
+        // if (this.currentTabIndex === 0 && this.dataSource === null && this.isSyncInstalled) {
+        //     this.setDataSource();
+        // }
     }
     ngOnDestroy(): void {
         this._subscriptions.forEach(sub => sub.unsubscribe);

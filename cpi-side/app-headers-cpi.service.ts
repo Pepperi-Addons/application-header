@@ -12,13 +12,7 @@ class AppHeaderService {
     private async getAppHeader(headerKey: string): Promise<AppHeaderTemplate> {
        let header; 
         try{
-            //   header = (await pepperi.api.adal.get({
-            //                 addon: AddonUUID,
-            //                 table: PUBLISHED_HEADERS_TABLE_NAME,
-            //                 key: headerKey
-                            
-            //           })).object;
-           header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'configuration_objects', name: 'AppHeaderConfiguration', key: headerKey });   
+           header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
         }
            // header = this.papiClient.addons.api.uuid(this.configurationsAddonUUID).file('api').func('get_by_key').get({addonUUID: AddonUUID, scheme: 'configuration_objects', name: 'Test', key: 'asdasd'},)
         catch(err){
@@ -90,7 +84,7 @@ class AppHeaderService {
 
     async getHeaderData(client: IClient | undefined, headerKey: string): Promise<APIAppHeaderTemplate> {
         const header = await this.getAppHeader(headerKey);
-      
+     
         return await this.translateHeaderToAPIheader(header.Data, client?.context || undefined);
         //return header;
 

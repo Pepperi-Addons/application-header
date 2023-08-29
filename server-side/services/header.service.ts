@@ -124,8 +124,7 @@ export class HeaderService {
                     flowsArr = []; 
                 }
             }*/
-        return header;
-        
+        return header;   
     }
 
     private setMenuItemsName(items,flowsArr){

@@ -2,6 +2,8 @@
     "HEADER_TITLE": "Application Header Configuration",
 
     "HEADERS_MANAGER": {
+        "NO_PAGES_MSG": "Add new header by clicking the ‘Add new' button, or import an existing template through the adjacent Menu button",
+        "PAGES_HEADER": "You haven't add header yet",
         "MAIN_EXPLANATION": "Create custom headers for the Webapp and for the Native apps with our drag & drop builder that gives you total control of each detail of your page. You can configur a costume header for each role. You can read more about the App Header Configuration options and features in our docs in this link.",
         "LIST_HEADER": "Headers",
         "ADD_HEADER": "Add a new Header",

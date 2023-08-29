@@ -3,6 +3,9 @@
 
 :host {
     height: 100%;
+    .configuration-list {
+        height: 100%;
+    }
 }
 
 ::ng-deep .list-empty-state{

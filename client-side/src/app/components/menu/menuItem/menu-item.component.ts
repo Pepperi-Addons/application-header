@@ -4,6 +4,7 @@ import { PepButton } from '@pepperi-addons/ngx-lib/button';
 import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
 import { MenuItem } from '../../application-header.model';
 import { TranslateService } from '@ngx-translate/core';
+import { AppHeadersService } from 'src/app/services/headers.service';
 
 @Component({
     selector: 'menu-item',
@@ -29,6 +30,7 @@ export class MenuItemComponent implements OnInit {
     
     constructor(private viewContainerRef: ViewContainerRef,
                 private addonBlockLoaderService: PepAddonBlockLoaderService,
+                private appHeadersService: AppHeadersService,
                 public translate: TranslateService) {
        
     }
@@ -76,11 +78,11 @@ export class MenuItemComponent implements OnInit {
         const fields = {};
 
         if (runFlowData) {
-            /*this..flowDynamicParameters.forEach((value, key) => {
+            this.appHeadersService.flowDynamicParameters.forEach((value, key) => {
                 fields[key] = {
                     Type: value || 'String'
                 };
-            });*/
+            });
         }
         
         this.flowHostObject['runFlowData'] = runFlowData?.FlowKey ? runFlowData : undefined;
