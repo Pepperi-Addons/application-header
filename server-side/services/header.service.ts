@@ -230,11 +230,14 @@ export class HeaderService {
                         // add Key if need ( for create new )
                         headerToUpsert.Key = uuid();
 
-                        try { // upsert to draft table
-                            draftHeader = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
-                            // upsert to publish table if need to
+                        try { 
+                            // upsert publish
                             if(headerToUpsert.Published){
                                 publishHeader = await this.getConfigurationObj('publish','post',headerToUpsert,headerToUpsert.Key);
+                            }
+                            else{
+                                // upsert draft
+                                draftHeader = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
                             }
                         } catch (e) {
                             upsertExceptionMessage = e;
@@ -261,22 +264,25 @@ export class HeaderService {
                             return header.Data.Key == headerToUpsert.Key;
                         })[0];
                         
-                        // upsert to publish table if need to
+                        // upsert publish
                         if(headerToUpsert.Published){
                             try{
                                 publishHeader = await this.getConfigurationObj('publish','post',headerToUpsert,headerToUpsert.Key);
-                                currHeader.Data.Published = true;
                             }
                             catch(err){
 
                             }
                         }
-                       
-                        if(currHeader && !headerToUpsert.Published) {
-                            headerToUpsert.Published = currHeader.Data.Published;
+                        else{
+                               // upsert to draft table
+                               draftHeader = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
                         }
+                       
+                        // if(currHeader && !headerToUpsert.Published) {
+                        //     headerToUpsert.Published = currHeader.Data.Published;
+                        // }
                         // upsert to draft table
-                       draftHeader = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
+                        // draftHeader = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
                     } 
                 catch (e) {
                             upsertExceptionMessage = e;
