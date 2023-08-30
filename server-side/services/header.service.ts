@@ -233,6 +233,8 @@ export class HeaderService {
                         try { 
                             // upsert publish
                             if(headerToUpsert.Published){
+                                // create draft & publish
+                                draftHeader = await this.getConfigurationObj('drafts','post',headerToUpsert,headerToUpsert.Key);
                                 publishHeader = await this.getConfigurationObj('publish','post',headerToUpsert,headerToUpsert.Key);
                             }
                             else{
