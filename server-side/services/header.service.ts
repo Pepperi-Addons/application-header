@@ -148,16 +148,16 @@ export class HeaderService {
         return '';
     }
 
-    private getFlattenMenu = (members) => {
-        let children:any = [];
+    // private getFlattenMenu = (members) => {
+    //     let children:any = [];
       
-        return members.map(m => {
-          if (m.Items && m.Items.length) {
-            children = [...children, ...m.Items];
-          }
-          return m;
-        }).concat(children.length ? this.getFlattenMenu(children) : children);
-      };
+    //     return members.map(m => {
+    //       if (m.Items && m.Items.length) {
+    //         children = [...children, ...m.Items];
+    //       }
+    //       return m;
+    //     }).concat(children.length ? this.getFlattenMenu(children) : children);
+    //   };
       
     async upsertHeader(body) {
         const headersList = await this.getHeaders();
