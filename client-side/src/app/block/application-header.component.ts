@@ -27,7 +27,6 @@ export class ApplicationHeaderComponent implements OnInit {
     async ngOnInit() {
        
         const headerKey =  this.route.snapshot.data['header_key'] || this.route?.snapshot?.params['header_key'] || '';
-  
         await this.appHeadersService.getHeaders(encodeURI(JSON.stringify({Key: headerKey}))).then(res => {
             this.headerData =  {
                 ...this.headerData,

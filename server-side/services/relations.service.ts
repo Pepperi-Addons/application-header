@@ -51,7 +51,7 @@ export class RelationsService {
         };
     }
 
-    async createConfigurationScheme(): Promise<ConfigurationScheme>{
+    async createConfigurationScheme(){
         const configurationScheme:ConfigurationScheme = {
             Name: 'AppHeaderConfiguration', //the name of the configuration scheme
             AddonUUID: this.client.AddonUUID, //the addonUUID of the addon that own this configuration
@@ -87,9 +87,8 @@ export class RelationsService {
                 Sync: true
             }   
         }
-    
-        return await this.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('objects').post({addonUUID: this.client.AddonUUID, scheme: 'configuration_schemes', name: 'AppHeaderConfiguration'}, configurationScheme) as ConfigurationScheme
-
+       
+        await this.papiClient.addons.configurations.schemes.upsert(configurationScheme);
     }
 
     async upsertRelations() {

@@ -13,6 +13,7 @@ class AppHeaderService {
        let header; 
         try{
            header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
+           //header =  await pepperi.papiClient.addons.configurations.addonUUID(AddonUUID).scheme('AppHeaderConfiguration').drafts.key(headerKey).get();
         }
            // header = this.papiClient.addons.api.uuid(this.configurationsAddonUUID).file('api').func('get_by_key').get({addonUUID: AddonUUID, scheme: 'configuration_objects', name: 'Test', key: 'asdasd'},)
         catch(err){
@@ -41,8 +42,8 @@ class AppHeaderService {
             const headerUUID = slug?.pageKey || ''; 
 
             const appHeader = await new AppHeaderService().getAppHeader(headerUUID);
-            
-            const flatMenu = this.getFlattenMenu(appHeader.Menu);
+         
+            const flatMenu = appHeader?.Menu ? this.getFlattenMenu(appHeader.Menu) : null;
             if(flatMenu){
                 const item = flatMenu?.filter(item => {
                     return item.Key === btnKey;
@@ -83,9 +84,10 @@ class AppHeaderService {
     /************************************************************************************************/
 
     async getHeaderData(client: IClient | undefined, headerKey: string): Promise<APIAppHeaderTemplate> {
-        const header = await this.getAppHeader(headerKey);
+        debugger;
+        const header = headerKey?.length ? await this.getAppHeader(headerKey) : undefined;
      
-        return await this.translateHeaderToAPIheader(header.Data, client?.context || undefined);
+        return await this.translateHeaderToAPIheader(header?.Data || undefined, client?.context || undefined);
         //return header;
 
     }
@@ -111,10 +113,11 @@ class AppHeaderService {
         return menuItems;
     }
 
-    async translateHeaderToAPIheader(header: AppHeaderTemplate, context: IContext | undefined){
+    async translateHeaderToAPIheader(header: AppHeaderTemplate | undefined, context: IContext | undefined){
 
         let buttons: Array<APIHeaderButton> = [];
         let menuItems: Array<APIMenuItem> = [];
+ 
         const isDefaultHeader = header === undefined;
         buttons = [
                 new APIHeaderButton('Settings', 'Settings', new Icon('system','settings'), true, true, null),

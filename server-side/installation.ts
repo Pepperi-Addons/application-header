@@ -19,7 +19,7 @@ export async function install(client: Client, request: Request): Promise<any> {
         const service = new RelationsService(client);
 
         //const TablesSchemes = await service.createTablesSchemes();
-        const configuration = service.createConfigurationScheme();
+        await service.createConfigurationScheme();
         await service.subscribeDeleteHeader(pnsKeyForHeader, pnsFunctionPathForHeader);
         await service.upsertRelations();
     } catch (err) {
@@ -42,7 +42,7 @@ export async function uninstall(client: Client, request: Request): Promise<any> 
 export async function upgrade(client: Client, request: Request): Promise<any> {
     try {
         const service = new RelationsService(client);
-        const configuration = service.createConfigurationScheme();
+        await service.createConfigurationScheme();
         await service.subscribeDeleteHeader(pnsKeyForHeader, pnsFunctionPathForHeader);
         await service.upsertRelations();
     } catch (err) {
