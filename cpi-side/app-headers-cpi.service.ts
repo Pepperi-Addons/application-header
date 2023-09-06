@@ -11,11 +11,12 @@ class AppHeaderService {
     
     private async getAppHeader(headerKey: string): Promise<AppHeaderTemplate> {
        let header; 
-        try{
-           header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
+        
+       try{
+        header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
+
            //header =  await pepperi.papiClient.addons.configurations.addonUUID(AddonUUID).scheme('AppHeaderConfiguration').drafts.key(headerKey).get();
         }
-           // header = this.papiClient.addons.api.uuid(this.configurationsAddonUUID).file('api').func('get_by_key').get({addonUUID: AddonUUID, scheme: 'configuration_objects', name: 'Test', key: 'asdasd'},)
         catch(err){
 
         }   
@@ -43,7 +44,7 @@ class AppHeaderService {
 
             const appHeader = await new AppHeaderService().getAppHeader(headerUUID);
          
-            const flatMenu = appHeader?.Menu ? this.getFlattenMenu(appHeader.Menu) : null;
+            const flatMenu = appHeader?.Data?.Menu ? this.getFlattenMenu(appHeader.Data.Menu) : null;
             if(flatMenu){
                 const item = flatMenu?.filter(item => {
                     return item.Key === btnKey;
@@ -84,11 +85,10 @@ class AppHeaderService {
     /************************************************************************************************/
 
     async getHeaderData(client: IClient | undefined, headerKey: string): Promise<APIAppHeaderTemplate> {
-        debugger;
         const header = headerKey?.length ? await this.getAppHeader(headerKey) : undefined;
      
-        return await this.translateHeaderToAPIheader(header?.Data || undefined, client?.context || undefined);
-        //return header;
+        const translatedHeader = await this.translateHeaderToAPIheader(header?.Data || undefined, client?.context || undefined);
+        return translatedHeader;
 
     }
     isDefaultHeader(headerUUID):boolean {

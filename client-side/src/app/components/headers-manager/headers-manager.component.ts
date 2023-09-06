@@ -103,10 +103,10 @@ export class HeadersManagerComponent implements OnInit, OnDestroy {
             this._navigationService.navigateToHeader(event.data?.id);
         } else if (event.name === 'onMenuItemClick') {
             if (event.action === 'add') {
-                this._navigationService.navigateToHeader(event.data?.id);
+                this._navigationService.navigateToHeader();
                 //this.addNewPage();
             } else if (event.action === 'edit') {
-                this._navigationService.navigateToHeader(event.data?.id);
+                this._navigationService.navigateToHeader(event.data?.key);
             }
         }
     }

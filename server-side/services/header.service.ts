@@ -92,32 +92,20 @@ export class HeaderService {
 
     //async getHeaders(options: FindOptions | undefined = undefined) {
     async getHeaders(options: any = undefined) {  
- 
-        /*let header = null; 
+        let header;
         let headerUUID = '-1';
    
         if(options && Object.keys(options).length){
             headerUUID = options.Key || (JSON.parse((Object.keys(options)[0]))['Key']);
-            if(headerUUID !== '-1'){
-                header = headerUUID.toString() === '-1' ? null : await this.papiClient.addons.configurations.addonUUID(this.addonUUID).scheme('AppHeaderConfiguration').drafts.key(headerUUID.toString()).get();
-            }
-        }*/
-
-         let header; 
-         let headerUUID = -1;
-
-    
-         if(options && Object.keys(options).length){
-             headerUUID = options.Key || (JSON.parse((Object.keys(options)[0]))['Key']);
-             if(headerUUID !== -1){
-                 header = headerUUID.toString() === '-1' ? null : await this.papiClient.addons.configurations.addonUUID(this.addonUUID).scheme('AppHeaderConfiguration').drafts.key(headerUUID.toString()).get();
-             }
-            /*if(headerUUID !== '-1'){
-                  header = headerUUID.toString() === '-1' ? null : await this.papiClient.addons.configurations.addonUUID(this.addonUUID).scheme('AppHeaderConfiguration').drafts.key(headerUUID.toString()).get();
-                        }*/
-         }
-
-
+        }
+        
+        if(headerUUID === '-1'){
+                header = await this.papiClient.addons.configurations.addonUUID(this.addonUUID).scheme('AppHeaderConfiguration').drafts.find();
+        }
+        else{
+                header =  await this.papiClient.addons.configurations.addonUUID(this.addonUUID).scheme('AppHeaderConfiguration').drafts.key(headerUUID.toString()).get();
+        }
+      
         return header;   
     }
 
@@ -189,9 +177,8 @@ export class HeaderService {
 
             // Add new header 
             if(headerToUpsert.Key === null){
-
                 // get list of headers & filter by name field
-                let tmpList: Array<IHeaderData> = headersList.filter((header: IHeaderData) => {
+               let tmpList: Array<IHeaderData> = headersList.filter((header: IHeaderData) => {
                     return header.Name == headerToUpsert.Name;
                 });
 

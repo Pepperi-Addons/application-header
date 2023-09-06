@@ -11,7 +11,6 @@ export async function load(configuration: any) {
     // Handle on application header load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD as any, {}, async (data): Promise<APIAppHeaderTemplate> => {
         const service = new AppHeaderService();
-
         // look for header UUID if null will return default header
         const slug = await pepperi.slugs.getPage('/application_header');
         const headerUUID = slug?.pageKey || ''; 
@@ -32,7 +31,6 @@ export async function load(configuration: any) {
 
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK as any, {}, async (data): Promise<APIAppHeaderTemplate> => { 
         let appHeader = await getAppHeader(data.client!);
-
         switch (data.Key) {
             case "Settings":
                 appHeader.Action['Type'] = 'NavigateToSettings';
