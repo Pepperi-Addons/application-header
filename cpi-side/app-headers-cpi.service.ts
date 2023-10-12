@@ -1,6 +1,7 @@
 import { Client, Context, IClient, IContext } from '@pepperi-addons/cpi-node/build/cpi-side/events';
 import { AppHeaderTemplate, PUBLISHED_HEADERS_TABLE_NAME, APIHeaderButton, APIMenuItem , APIAppHeaderTemplate, Icon, SYNC_BUTTIN_KEY } from 'shared';
 import { AddonUUID } from '../addon.config.json';
+import { FlowObject, RunFlowBody } from '@pepperi-addons/cpi-node';
 class AppHeaderService {
     
     constructor() {}
@@ -35,7 +36,51 @@ class AppHeaderService {
         }).concat(children.length ? this.getFlattenMenu(children) : children);
       };
 
-    public async runFlowData(btnKey, context){
+    // public async runFlowData(btnKey, context){
+    //     let res;
+        
+    //     try{
+    //         const slug = await pepperi.slugs.getPage('/application_header');
+    //         const headerUUID = slug?.pageKey || ''; 
+
+    //         const appHeader = await new AppHeaderService().getAppHeader(headerUUID);
+         
+    //         const flatMenu = appHeader?.Data?.Menu ? this.getFlattenMenu(appHeader.Data.Menu) : null;
+    //         if(flatMenu){
+    //             const item = flatMenu?.filter(item => {
+    //                 return item.Key === btnKey;
+    //             });
+
+    //             const flow = item?.length ? item[0].Flow : null;
+                
+    //             if(flow){
+    //                 res = await pepperi.flows.run({
+    //                     // The runFlow object
+    //                     RunFlow: flow,  
+    //                     // dynamic parameters that will be set to the flow data
+    //                     Data: {
+                           
+    //                     },
+    //                     // optional, but needed for executing client actions within flow
+    //                     // this is taken from the interceptor data
+    //                     context: context
+    //                 });
+
+    //             }
+    //         }        
+    //     }
+    //     catch(err){
+    //         res = {
+    //             success: false
+    //         }
+    //     }
+    //     finally{
+    //         return res;
+    //     }
+        
+    // }
+
+    public async getMenuItemFlow(btnKey){
         let res;
         
         try{
@@ -50,35 +95,66 @@ class AppHeaderService {
                     return item.Key === btnKey;
                 });
 
-                const flow = item?.length ? item[0].Flow : null;
-                
-                if(flow){
-                    res = await pepperi.flows.run({
-                        // The runFlow object
-                        RunFlow: flow,  
-                        // dynamic parameters that will be set to the flow data
-                        Data: {
-                           
-                        },
-                        // optional, but needed for executing client actions within flow
-                        // this is taken from the interceptor data
-                        context: context
-                    });
-
-                }
-            }        
-        }
-        catch(err){
-            res = {
-                success: false
+                res = item?.length ? item[0].Flow : null;
             }
         }
+        catch(err: any){}
         finally{
             return res;
         }
-        
+            
     }
+    public async getOptionsFromFlow(appHeader, btnKey, context: IContext | undefined, configuration = {}): Promise<any> {
+        
+        let flowData: FlowObject = {
+            FlowKey: '',
+            FlowParams: {}
+        }
+        //const slug = await pepperi.slugs.getPage('/application_header');
+        //const headerUUID = slug?.pageKey || ''; 
+        //const appHeader = await new AppHeaderService().getAppHeader(headerUUID);
+        //const flatMenu = appHeader?.Data?.Menu ? this.getFlattenMenu(appHeader.Data.Menu) : null;
+        const flatMenu = this.getFlattenMenu(appHeader.MenuButtonData.Items);
 
+        if(flatMenu){
+            const item = flatMenu?.filter(item => {
+                return item.Key === btnKey;
+            });
+
+            flowData = item?.length ? item[0].Flow : {};
+        }
+
+        if (flowData.FlowKey?.length > 0) {
+            const dynamicParamsData: any = {};
+            if (flowData.FlowParams) {
+                const dynamicParams: any = [];
+                // Get all dynamic parameters to set their value on the data property later.
+                const keysArr = Object.keys(flowData.FlowParams);
+                for (let index = 0; index < keysArr.length; index++) {
+                    const key = keysArr[index];
+                    if (flowData.FlowParams[key].Source === 'Dynamic') {
+                        dynamicParams.push(flowData.FlowParams[key].Value);
+                    }
+                }
+                // Set the dynamic parameters values on the dynamicParamsData property.
+                for (let index = 0; index < dynamicParams.length; index++) {
+                    const param = dynamicParams[index];
+                    dynamicParamsData[param] = param === 'configuration' ? appHeader : '';
+                }
+            }
+            const flowToRun: RunFlowBody = {
+                RunFlow: flowData,
+                Data: dynamicParamsData,
+                context: context
+            };
+            // Run the flow and return the options.
+            let flowRes = await pepperi.flows.run(flowToRun);
+            return flowRes.configuration || appHeader;
+        }
+        else {
+            return {};
+        }
+    }
 
      /***********************************************************************************************/
     //                              Public functions
@@ -102,7 +178,7 @@ class AppHeaderService {
             // check if menuItem have subMenu (Items) and set Type to group | button
             item.Type = item.Items?.length > 0 ? 'Group' : 'Button';
             //delete the Flow from the menu items if exit. we will run it from the cpi side by button key
-            delete item.Flow;
+            //delete item.Flow;
             
             // if has children build them too
             if(item.Items?.length){

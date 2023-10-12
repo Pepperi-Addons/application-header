@@ -31,6 +31,7 @@ export async function load(configuration: any) {
 
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK as any, {}, async (data): Promise<APIAppHeaderTemplate> => { 
         let appHeader = await getAppHeader(data.client!);
+        let state = data.client?.context;
         switch (data.Key) {
             case "Settings":
                 appHeader.Action['Type'] = 'NavigateToSettings';
@@ -55,8 +56,8 @@ export async function load(configuration: any) {
                     break;
 
             default:
-                const res  = await new AppHeaderService().runFlowData(data.Key, data);
-                console.log(`runFlowData res: ${JSON.stringify(res)}`);
+                const service = new AppHeaderService();
+                appHeader = await service.getOptionsFromFlow(appHeader,data.Key,state);
                 break;
         }
 
