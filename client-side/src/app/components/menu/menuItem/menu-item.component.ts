@@ -1,11 +1,10 @@
 import { Component, OnInit, Injectable, Input, Output, EventEmitter, Optional, Inject, ViewContainerRef } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { PepButton } from '@pepperi-addons/ngx-lib/button';
 import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
 import { MenuItem } from '../../application-header.model';
 import { TranslateService } from '@ngx-translate/core';
 import { AppHeadersService } from 'src/app/services/headers.service';
-
+import { FlowService } from 'src/app/services/flow.service';
 @Component({
     selector: 'menu-item',
     templateUrl: './menu-item.component.html',
@@ -26,12 +25,11 @@ export class MenuItemComponent implements OnInit {
     public isGrabbing = false;
     public flowHostObject;
 
-    private dialogRef: MatDialogRef<any>;
-    
     constructor(private viewContainerRef: ViewContainerRef,
                 private addonBlockLoaderService: PepAddonBlockLoaderService,
                 private appHeadersService: AppHeadersService,
-                public translate: TranslateService) {
+                public translate: TranslateService,
+                private flowService: FlowService) {
        
     }
     
@@ -42,7 +40,9 @@ export class MenuItemComponent implements OnInit {
         ];
 
         this.setArrowsState();
-        this.prepareFlowHostObject();
+        //prepare the flow host hobject
+        this.flowHostObject = this.flowService.prepareFlowHostObject((this.menuItem?.Flow || null)); 
+        //this.prepareFlowHostObject();
     }
 
     deleteMenuItem(event, menuItem: MenuItem){
@@ -70,28 +70,27 @@ export class MenuItemComponent implements OnInit {
             this.leftRightArrows[1].classNames = this.leftRightArrows[1].disabled ? 'pointerEvents' : '';
     }
 
-    private prepareFlowHostObject() {
-        this.flowHostObject = {};
+    // private prepareFlowHostObject() {
+    //     this.flowHostObject = {};
     
-        const runFlowData = this.menuItem?.Flow || null;
+    //     const runFlowData = this.menuItem?.Flow || null;
 
-        const fields = {};
+    //     const fields = {};
 
-        if (runFlowData) {
-            this.appHeadersService.flowDynamicParameters.forEach((value, key) => {
-                fields[key] = {
-                    Type: value || 'String'
-                };
-            });
-        }
+    //     if (runFlowData) {
+    //         this.appHeadersService.flowDynamicParameters.forEach((value, key) => {
+    //             fields[key] = {
+    //                 Type: value || 'String'
+    //             };
+    //         });
+    //     }
         
-        this.flowHostObject['runFlowData'] = runFlowData?.FlowKey ? runFlowData : undefined;
-        this.flowHostObject['fields'] = fields;
-    }
+    //     this.flowHostObject['runFlowData'] = runFlowData?.FlowKey ? runFlowData : undefined;
+    //     this.flowHostObject['fields'] = fields;
+    // }
 
     onFlowChange(flowData: any) {
         this.menuItem.Flow = flowData;
         this.onMenuItemChange.emit(this.menuItem); 
-        this.dialogRef.close();
     }
 }

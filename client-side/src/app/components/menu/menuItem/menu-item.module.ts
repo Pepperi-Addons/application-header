@@ -10,6 +10,7 @@ import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepGroupButtonsSettingsModule } from '@pepperi-addons/ngx-composite-lib/group-buttons-settings';
 import { PepFlowPickerButtonModule } from '@pepperi-addons/ngx-composite-lib/flow-picker-button';
 import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
+import { FlowService } from 'src/app/services/flow.service';
 
 @NgModule({
     declarations: [
@@ -27,6 +28,9 @@ import { PepFieldTitleModule } from '@pepperi-addons/ngx-lib/field-title';
         PepGroupButtonsSettingsModule,
         PepTextareaModule
     ],
-    exports: [MenuItemComponent]
+    exports: [MenuItemComponent],
+    providers: [
+        FlowService
+    ]
 })
 export class MenuItemModule { }
