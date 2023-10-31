@@ -1,6 +1,8 @@
 import { PapiClient, InstalledAddon, Relation, AddonDataScheme, Subscription, ConfigurationScheme } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
-import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from 'shared';
+import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from 'shared';
+
+export const JOURNEY_EVENTS_RELATION_NAME = 'JourneyEvent'
 
 export class RelationsService {
 
@@ -97,6 +99,29 @@ export class RelationsService {
         await this.upsertAddonBlockRelation();
         await this.upsertSettingsRelation();
         await this.upsertThemeTabsRelation();
+        await this.upsertJourneyEventsRelation();
+    }
+
+    async upsertJourneyEventsRelation() {
+        const promises = [
+            this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK, "Button click", [{"FieldID": "ButtonKey"}]),
+        ];
+        Promise.all(promises);
+    }
+
+    private async upsertEventsRelation(eventName, displayEventName, fields) {
+        const relation = {
+            Type: "AddonAPI",
+            AddonUUID: this.client.AddonUUID,
+            DisplayEventName: displayEventName,
+            RelationName: JOURNEY_EVENTS_RELATION_NAME,
+            Name: eventName,
+            Description: "",
+            AddonRelativeURL: `/event_filters/get_filter_by_event?event=${eventName}`,
+            Fields: fields,
+        };
+
+        await this.upsertRelation(relation);
     }
 
     private async upsertThemeTabsRelation() {
