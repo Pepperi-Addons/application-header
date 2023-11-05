@@ -9,7 +9,7 @@ export async function get_filter_by_event(client: Client, request: Request): Pro
 
         if (eventString === CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK) {
             fields.push({
-                FieldID: "ButtonKey",
+                FieldID: "Key",
                 FieldType: "String",
                 Title: "Button key",
             });
