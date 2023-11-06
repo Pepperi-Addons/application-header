@@ -190,7 +190,6 @@ class AppHeaderService {
     }
 
     async translateHeaderToAPIheader(header: AppHeaderTemplate | undefined, context: IContext | undefined){
-
         let buttons: Array<APIHeaderButton> = [];
         let menuItems: Array<APIMenuItem> = [];
  
@@ -284,15 +283,15 @@ class AppHeaderService {
             const logoKey = 'logoAssetKey';
             const faviconKey = 'faviconAssetsKey'; 
 
-           // if (!themeVariables.hasOwnProperty(logoKey)) {
+           if (themeVariables.hasOwnProperty(logoKey)) {
                 const logo = await pepperi.addons.pfs.uuid("ad909780-0c23-401e-8e8e-f514cc4f6aa2").schema("Assets").key(themeVariables.logoAssetKey).get();
                 themeVariables[logoKey] = logo.URL; 
-           // }
+           }
                 
-            //if (!themeVariables.hasOwnProperty(faviconKey)) {
+            if (themeVariables.hasOwnProperty(faviconKey)) {
                 const favIcon = await pepperi.addons.pfs.uuid("ad909780-0c23-401e-8e8e-f514cc4f6aa2").schema("Assets").key(themeVariables.faviconAssetKey).get();
-                themeVariables[faviconKey] = favIcon.URL;
-           // }
+                themeVariables[faviconKey] = favIcon.URL;    
+           }
 
             mergedTheme = {
                 'BottomBorder': {
@@ -310,8 +309,8 @@ class AppHeaderService {
                     'Size': theme?.shadow?.size || 'md',
                     'Use': theme.shadow.use || false,
                 },
-                'FaviconURL': themeVariables[faviconKey],
-                'BrandingLogoURL': themeVariables[logoKey]
+                'FaviconURL': themeVariables[faviconKey] || '',
+                'BrandingLogoURL': themeVariables[logoKey] || ''
             }
             }
             catch(err){

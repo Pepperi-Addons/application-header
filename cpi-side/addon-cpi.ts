@@ -13,6 +13,7 @@ export async function load(configuration: any) {
         const service = new AppHeaderService();
         // look for header UUID if null will return default header
         const slug = await pepperi.slugs.getPage('/application_header');
+
         const headerUUID = slug?.pageKey || ''; 
         let appHeader:  APIAppHeaderTemplate = await service.getHeaderData(data.client, headerUUID);
 
