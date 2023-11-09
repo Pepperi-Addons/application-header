@@ -233,6 +233,7 @@ export class HeaderService {
                         // upsert publish
                         if(headerToUpsert.Published){
                             try{
+                                await this.upsertDraft(headerToUpsert);
                                 publishHeader = await this.publishDraft(headerToUpsert);
                             }
                             catch(err){
