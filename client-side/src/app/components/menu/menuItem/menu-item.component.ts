@@ -15,12 +15,15 @@ import { FlowService } from 'src/app/services/flow.service';
 export class MenuItemComponent implements OnInit {
     
     @Input() menuItem: MenuItem;
-    @Input() deleteable = true;
+    @Input() itemIndex;
+    @Input() numOfMenus: number = 0;
+    @Input() disableArrows = false;
 
     @Output() onDeleteMenuItem: EventEmitter<MenuItem> = new EventEmitter<MenuItem>();
     @Output() onMenuItemChange: EventEmitter<MenuItem> = new EventEmitter<MenuItem>();
     
-    public leftRightArrows : Array<PepButton> = [];
+    public deleteable: boolean;
+    public leftRightArrows: Array<PepButton> = [];
     public menuItemLabelMaxCharacters = 20;
     public isGrabbing = false;
     public flowHostObject;
@@ -35,14 +38,18 @@ export class MenuItemComponent implements OnInit {
     
     ngOnInit(): void {
         this.leftRightArrows =  [
-            { key: 'left', iconName: 'arrow_left_alt', callback: (event: any) => this.onItemHierarchyLevelChange(event,this) },
-            { key: 'right', iconName: 'arrow_right_alt', callback: (event: any) => this.onItemHierarchyLevelChange(event,this) }
+            { key: 'left', iconName: 'arrow_left_alt', callback: (event: any) => this.onItemHierarchyLevelChange(event,this)},
+            { key: 'right', iconName: 'arrow_right_alt', callback: (event: any) => this.onItemHierarchyLevelChange(event,this)}
         ];
 
         this.setArrowsState();
         //prepare the flow host hobject
         this.flowHostObject = this.flowService.prepareFlowHostObject((this.menuItem?.Flow || null)); 
         //this.prepareFlowHostObject();
+    }
+
+    ngOnChanges(e: any): void {
+        this.setArrowsState();
     }
 
     deleteMenuItem(event, menuItem: MenuItem){
@@ -64,10 +71,24 @@ export class MenuItemComponent implements OnInit {
     }
 
     setArrowsState(){
-            this.leftRightArrows[0].disabled = this.menuItem.HierarchyLevel == 0 ? true : false;
-            this.leftRightArrows[0].classNames = this.leftRightArrows[0].disabled ? 'pointerEvents' : '';
-            this.leftRightArrows[1].disabled = this.menuItem.HierarchyLevel == 2 && this.deleteable ? true : false; 
-            this.leftRightArrows[1].classNames = this.leftRightArrows[1].disabled ? 'pointerEvents' : '';
+        this.deleteable = (this.itemIndex == 0 && this.menuItem.Items.length == 0) || (this.itemIndex !== 0 && this.menuItem.Items.length == 0) ? true : false;
+        if(this.itemIndex == 0 && this.menuItem.HierarchyLevel != 0){
+            this.menuItem.HierarchyLevel = 0;
+        }
+        if(this.leftRightArrows.length){
+            if(this.itemIndex == 0 || this.menuItem.Items.length){
+                this.leftRightArrows[0].disabled = true;
+                this.leftRightArrows[0].classNames = 'pointerEvents';
+                this.leftRightArrows[1].disabled = true;
+                this.leftRightArrows[1].classNames = 'pointerEvents';
+            }
+            else{
+                this.leftRightArrows[0].disabled = this.menuItem.HierarchyLevel == 0 || this.itemIndex == 0 ? true : false;
+                this.leftRightArrows[0].classNames = this.leftRightArrows[0].disabled ? 'pointerEvents' : '';
+                this.leftRightArrows[1].disabled = this.menuItem.HierarchyLevel == 2  || !this.deleteable ? true : false; 
+                this.leftRightArrows[1].classNames = this.leftRightArrows[1].disabled ? 'pointerEvents' : '';
+            }
+        }
     }
 
     // private prepareFlowHostObject() {

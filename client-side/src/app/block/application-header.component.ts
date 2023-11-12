@@ -78,6 +78,7 @@ export class ApplicationHeaderComponent implements OnInit {
 
         for(let i=index; i< this.menuView.length; i++){
             let menuItem = this.menuView[i];
+                menuItem.Items.length = 0;
             
             //checking if reached to a new menu.
             if(menuItem.HierarchyLevel < hierachyLevel){
@@ -98,7 +99,6 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     onAddNewMenuItem(menuItem,isSubMenu){
-       
         // check if comes from click on menu item or from ad new item button on the header
         const hierachy = isSubMenu && menuItem ? (menuItem.HierarchyLevel + 1) : 0;
 
@@ -137,16 +137,22 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     async onMenuItemChange(menuItem){
+      
         try{
+            if(menuItem.menuItem){
+                this.menuView[menuItem.menuItem.Key] = menuItem.menuItem;
+            }
             // get flow name and display it to menu button
-            const res = await this.appHeadersService.getFlowNameByFlowKey(menuItem.Flow.FlowKey);
-            menuItem.Flow.FlowName = res.Name || this.translate.instant("MENU.ACTION.CHOOSE_FLOW");
+            // if(menuItem?.Flow?.FlowKey){
+            //     const res = await this.appHeadersService.getFlowNameByFlowKey(menuItem.Flow.FlowKey);
+            //     menuItem.Flow.FlowName = res.Name || this.translate.instant("MENU.ACTION.CHOOSE_FLOW");
+            // }
         }
         catch(err){
             menuItem.Flow.FlowName = this.translate.instant("MENU.ACTION.CHOOSE_FLOW");
         }
         finally{
-            this.menuView[menuItem.ID] = menuItem;
+            this.setMenuItemsObj();
         }
     }
 
