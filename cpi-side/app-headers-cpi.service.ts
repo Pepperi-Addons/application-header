@@ -4,19 +4,25 @@ import { AddonUUID } from '../addon.config.json';
 import { FlowObject, RunFlowBody } from '@pepperi-addons/cpi-node';
 class AppHeaderService {
     
+    private headerUUID: string = '';
+    private appHeader;
+
     constructor() {}
 
     /***********************************************************************************************/
     //                              Private functions
     /************************************************************************************************/
-    
+    public async reloadAppHeader(client: IClient | undefined){
+        this.appHeader = null;
+        this.appHeader = await this.getHeaderData(client);
+        return this.appHeader;
+    }
+
     private async getAppHeader(headerKey: string): Promise<AppHeaderTemplate> {
        let header; 
         
        try{
-        header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
-
-           //header =  await pepperi.papiClient.addons.configurations.addonUUID(AddonUUID).scheme('AppHeaderConfiguration').drafts.key(headerKey).get();
+            header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
         }
         catch(err){
 
@@ -36,50 +42,7 @@ class AppHeaderService {
         }).concat(children.length ? this.getFlattenMenu(children) : children);
       };
 
-    // public async runFlowData(btnKey, context){
-    //     let res;
-        
-    //     try{
-    //         const slug = await pepperi.slugs.getPage('/application_header');
-    //         const headerUUID = slug?.pageKey || ''; 
-
-    //         const appHeader = await new AppHeaderService().getAppHeader(headerUUID);
-         
-    //         const flatMenu = appHeader?.Data?.Menu ? this.getFlattenMenu(appHeader.Data.Menu) : null;
-    //         if(flatMenu){
-    //             const item = flatMenu?.filter(item => {
-    //                 return item.Key === btnKey;
-    //             });
-
-    //             const flow = item?.length ? item[0].Flow : null;
-                
-    //             if(flow){
-    //                 res = await pepperi.flows.run({
-    //                     // The runFlow object
-    //                     RunFlow: flow,  
-    //                     // dynamic parameters that will be set to the flow data
-    //                     Data: {
-                           
-    //                     },
-    //                     // optional, but needed for executing client actions within flow
-    //                     // this is taken from the interceptor data
-    //                     context: context
-    //                 });
-
-    //             }
-    //         }        
-    //     }
-    //     catch(err){
-    //         res = {
-    //             success: false
-    //         }
-    //     }
-    //     finally{
-    //         return res;
-    //     }
-        
-    // }
-
+  
     public async getMenuItemFlow(btnKey){
         let res;
         
@@ -110,10 +73,6 @@ class AppHeaderService {
             FlowKey: '',
             FlowParams: {}
         }
-        //const slug = await pepperi.slugs.getPage('/application_header');
-        //const headerUUID = slug?.pageKey || ''; 
-        //const appHeader = await new AppHeaderService().getAppHeader(headerUUID);
-        //const flatMenu = appHeader?.Data?.Menu ? this.getFlattenMenu(appHeader.Data.Menu) : null;
         const flatMenu = this.getFlattenMenu(appHeader.MenuButtonData.Items);
 
         if(flatMenu){
@@ -160,13 +119,19 @@ class AppHeaderService {
     //                              Public functions
     /************************************************************************************************/
 
-    async getHeaderData(client: IClient | undefined, headerKey: string): Promise<APIAppHeaderTemplate> {
-        const header = headerKey?.length ? await this.getAppHeader(headerKey) : undefined;
-     
-        const translatedHeader = await this.translateHeaderToAPIheader(header?.Data || undefined, client?.context || undefined);
-        return translatedHeader;
+    async getHeaderData(client: IClient | undefined): Promise<APIAppHeaderTemplate> {
+            if(!this.appHeader){
+                // look for header UUID if null will return default header
+                const slug = await pepperi.slugs.getPage('/application_header');
+                this.headerUUID = slug?.pageKey || ''; 
+                const header = this.headerUUID?.length ? await this.getAppHeader(this.headerUUID) : undefined;
+                this.appHeader = await this.translateHeaderToAPIheader(header?.Data || undefined, client?.context || undefined);
+            }
+
+            return this.appHeader;
 
     }
+
     isDefaultHeader(headerUUID):boolean {
         // default header is true when there is no mapping. 
         return headerUUID !== '' ? false : true;

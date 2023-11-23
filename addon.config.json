@@ -23,7 +23,7 @@
     ],
     "Dependencies": {
       "cpi_node_scripts": "0.0.87",
-      "cpi_node": "1.3.18",
+      "cpi_node": "1.5.38",
       "core": "0.6.41",
       "cpi_data": "0.6.11",
       "udc": "0.8.32",
