@@ -22,7 +22,9 @@ class AppHeaderService {
        let header; 
         
        try{
-            header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
+            //header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
+            //change to pepperi.addons... for offline working
+            header = await pepperi.addons.configurations.get(headerKey);
         }
         catch(err){
 
