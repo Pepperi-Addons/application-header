@@ -69,6 +69,7 @@ class AppHeaderService {
         }
             
     }
+
     public async getOptionsFromFlow(appHeader, btnKey, context: IContext | undefined, configuration = {}): Promise<any> {
         
         let flowData: FlowObject = {
@@ -116,6 +117,12 @@ class AppHeaderService {
             return {};
         }
     }
+
+    public async getSyncHeaderData(client: IClient): Promise<APIAppHeaderTemplate> {
+        let header = await this.getHeaderData(client);
+        header.SyncButtonData = await this.getSyncButtonData();
+        return header;
+}
 
      /***********************************************************************************************/
     //                              Public functions
@@ -188,7 +195,7 @@ class AppHeaderService {
         let mergedTheme = await this.getMergedTheme(isDefaultHeader, context);
 
         return {
-            SyncButtonData:  await this.getSyncButtonData(context!),
+            SyncButtonData:  await this.getSyncButtonData(),
             
             Buttons: buttons || [],
             
@@ -304,7 +311,7 @@ class AppHeaderService {
 
  
 
-    async getSyncButtonData(context: IContext): Promise<any> {
+    async getSyncButtonData(): Promise<any> {
         const stateInfo = await pepperi.application.sync.stateInfo();
 
         const obj = {  

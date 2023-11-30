@@ -36,8 +36,7 @@ export async function load(configuration: any) {
         // start sync
         await sync(data.client!);
         // get header data
-        return await getAppHeader(data.client!);
-
+        return await appHeaderService.getSyncHeaderData(data.client!);
     });
 
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK as any, {}, async (data): Promise<APIAppHeaderTemplate> => { 
