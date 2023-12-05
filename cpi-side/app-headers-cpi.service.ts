@@ -120,7 +120,6 @@ class AppHeaderService {
 
     public async getSyncHeaderData(client: IClient): Promise<APIAppHeaderTemplate> {
         let header = await this.getHeaderData(client);
-        header.SyncButtonData = await this.getSyncButtonData();
         return header;
 }
 
@@ -136,7 +135,7 @@ class AppHeaderService {
                 const header = this.headerUUID?.length ? await this.getAppHeader(this.headerUUID) : undefined;
                 this.appHeader = await this.translateHeaderToAPIheader(header?.Data || undefined, client?.context || undefined);
             }
-
+            this.appHeader.SyncButtonData = await this.getSyncButtonData();
             return this.appHeader;
 
     }
