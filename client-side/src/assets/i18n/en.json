@@ -1,21 +1,19 @@
 {
     "HEADER_TITLE": "Application Header Configuration",
-
     "HEADERS_MANAGER": {
         "NO_PAGES_MSG": "Add new header by clicking the ‘Add new' button, or import an existing template through the adjacent Menu button",
         "PAGES_HEADER": "You haven't add header yet",
-        "MAIN_EXPLANATION": "Create custom headers for the Webapp and for the Native apps with our drag & drop builder that gives you total control of each detail of your page. You can configur a costume header for each role. You can read more about the App Header Configuration options and features in our docs in this link.",
+        "MAIN_EXPLANATION": "Create custom headers for the Web app and mobile app with our drag & drop builder that gives you total control of the header menu and button options. You can configure a different header for each profile. Read more about the App Header Configuration options and features in our docs in this link.",
         "LIST_HEADER": "Headers",
         "ADD_HEADER": "Add a new Header",
         "SYNC_ADDON_MISSING": "Sync addon not installed",
-        "DELETE_HEADER":{
-            "TITLE": "Delete header",
-            "MSG": "Are you sure you want to delete this header? "
+        "DELETE_HEADER": {
+            "TITLE": "Delete Header",
+            "MSG": "Are you sure you want to delete this Header? "
         },
         "TABS": {
             "HEADERS": "Headers"
         },
-
         "GRID_HEADER": {
             "NAME": "Name",
             "NAME_NO_SET": "No name set",
@@ -23,8 +21,7 @@
             "DRAFT": "Draft",
             "PUBLISHED": "Published"
         },
-
-        "ACTION":{
+        "ACTION": {
             "EDIT": "Edit",
             "DUPLICATE": "Duplicate",
             "EXPORT": "Export",
@@ -32,68 +29,62 @@
             "DELETE": "Delete"
         }
     },
-
     "TABS": {
         "GENERAL": "General",
         "DESIGN": "Design",
         "MENU": "Menu",
         "BUTTONS": "Buttons"
     },
-
     "ACTION": {
         "SAVE": "Save",
         "CANCEL": "Cancel",
         "PUBLISH": "Publish"
     },
-
-    "GENERAL":{
-        "DESCRIPTION": "Customize your app’s header, web and native by choosing from a variety of design options. With the custom header, you can quickly adjust the size, position, and color of the header, giving your app a unique look and feel.",
+    "GENERAL": {
+        "DESCRIPTION": "Customize your app’s header, on both web and mobile apps by choosing from a variety of design options. With the custom header, you can quickly adjust the size, position, and color of the header, giving your app a unique look and feel.",
         "HEADER_NAME": "Header Name",
         "HEADER_DESCRIPTION": "Description"
     },
-
     "MENU": {
-       "DESCRIPTION": "Short text about links ligroups and the design options like that the menu item can be a link or a group, and that the group can hold links or other groups, and lastly that we allow for three level deep group hierarchy", 
+        "DESCRIPTION": "Create a menu with links to other areas of the app, deepvlinks to transactions, lists or activities. A menu can contain sub-menu items up to 3 levels deep.",
         "TITLE": "Structure",
-        "ITEM":{
+        "ITEM": {
             "NAME_LABEL": "Display name"
         },
-        "ACTION":{
+        "ACTION": {
             "TITLE": "Action",
             "CHOOSE_FLOW": "Choose flow",
             "ADD_MENU_ITEM": "Add an item",
             "ADD_SUB_MENU_ITEM": "Add a sub item"
         }
     },
-
     "BUTTONS": {
-       "DESCRIPTION": "Short text about button configuration", 
+        "DESCRIPTION": "Add buttons to the header for quick and easy access to different areas of the app.",
         "TITLE": "Buttons",
         "AVAILABLE_BUTTONS": "Avilable buttons",
         "BUTTON_KEY": "Button key",
         "BUTTON_NAME": "Button name"
     },
-
     "THEME": {
         "TITLE": "Here you can set the apps header look & feel",
         "LOGO": {
             "TITLE": "Logo",
-            "SUB_TITLE": "Upload your company logo, prefearably transparent background",
+            "SUB_TITLE": "Upload your company logo, preferably transparent background",
             "SUB_TITLE2": "PNG or SVG works best",
             "OPEN_ASSETS_MANAGER": "Assets Manager"
         },
         "COLOR": {
             "TITLE": "Color",
-            "SUB_TITLE": "You can change the quantity selector styling to that allow customers to add several products to theirs cart at once.",
-            "APP_COLOR": "Select app color",
+            "SUB_TITLE": "You can change the quantity selector styling to allow users to add several products to the cart at once.",
+            "APP_COLOR": "Select App color",
             "COLOR_STYLE": "Select color style",
-            "TYPE":{
+            "TYPE": {
                 "SYSTEM": "System",
                 "SYSTEM_INVERT": "System invert",
                 "PRIMARY": "Primary",
                 "SECONDARY": "Secondary"
             },
-            "STYLE":{
+            "STYLE": {
                 "STRONG": "Strong",
                 "REGULAR": "Regular",
                 "WEAK": "Weak"
@@ -105,13 +96,13 @@
             "PADDING": "Padding",
             "LEFT_RIGHT_SIDE": "Left & Right side",
             "HEIGHT": "Height",
-            "SELECT_HEADER_HEIGHT": "Select header eight",
+            "SELECT_HEADER_HEIGHT": "Select header height",
             "MAX_WIDTH": "Max width"
         },
         "SHADOW": {
-            "TITLE": "Shadow (web obly)",
+            "TITLE": "Shadow (web only)",
             "USE": "Use",
-            "SUB_TITLE": "Control the size and intensity of the apps header box shadow property or remove it altogether",
+            "SUB_TITLE": "Control the size and intensity of the app header box shadow property or remove it altogether",
             "SHADOW_SIZE": "Shadow size",
             "SHADOW_INTENSITY": "Shadow intensity",
             "INTENSITY": {
@@ -123,12 +114,10 @@
         "BOTTOM_BORDER": {
             "TITLE": "Bottom border (web only)",
             "USE": "Use",
-            "SUB_TITLE": "Here you can add or remove a botton border line",
+            "SUB_TITLE": "Add or remove a button border",
             "SELECT_COLOR": "Select color",
             "COLOR_OPACITY": "Color opacity"
-           
         }
-
     }
 }
 
