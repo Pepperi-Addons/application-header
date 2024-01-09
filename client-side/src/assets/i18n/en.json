@@ -1,8 +1,8 @@
 {
     "HEADER_TITLE": "Application Header Configuration",
     "HEADERS_MANAGER": {
-        "NO_PAGES_MSG": "Add new header by clicking the ‘Add new' button, or import an existing template through the adjacent Menu button",
-        "PAGES_HEADER": "You haven't add header yet",
+        "NO_PAGES_MSG": "Add new header by clicking ‘Add new', or import an existing template through the Menu.",
+        "PAGES_HEADER": "You haven't added a header yet",
         "MAIN_EXPLANATION": "Create custom headers for the Web app and mobile app with our drag & drop builder that gives you total control of the header menu and button options. You can configure a different header for each profile. Read more about the App Header Configuration options and features in our docs in this link.",
         "LIST_HEADER": "Headers",
         "ADD_HEADER": "Add a new Header",
@@ -46,7 +46,7 @@
         "HEADER_DESCRIPTION": "Description"
     },
     "MENU": {
-        "DESCRIPTION": "Create a menu with links to other areas of the app, deepvlinks to transactions, lists or activities. A menu can contain sub-menu items up to 3 levels deep.",
+        "DESCRIPTION": "Create a menu with links to other areas of the app, deep links to transactions, lists or activities. A menu can contain sub-menu items up to 3 levels deep.",
         "TITLE": "Structure",
         "ITEM": {
             "NAME_LABEL": "Display name"

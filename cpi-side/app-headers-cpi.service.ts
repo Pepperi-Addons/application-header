@@ -270,10 +270,10 @@ class AppHeaderService {
                 'BottomBorder': {
                     'Opacity': theme.bottomBorder.opacity || 1,
                     'Use': theme.bottomBorder.use || false,
-                    'Value': theme.bottomBorder.value || 'system'
+                    'Value': theme.bottomBorder.value || 'system-primary'
                 },
                 'Color': {
-                    'ColorName': theme?.color?.color || 'system_invert',
+                    'ColorName': theme?.color?.color || 'system-primary-invert',
                     'ColorValue': theme?.color?.colorValue || 'rgba(255,255,255,0)',
                     'Style': theme?.color?.style || 'weak'
                 },

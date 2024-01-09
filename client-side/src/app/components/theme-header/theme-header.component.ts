@@ -49,7 +49,6 @@ export class ThemeheaderComponent implements OnInit {
     async ngOnInit(): Promise<void> {
 
         const system = await this.translate.get('THEME.COLOR.TYPE.SYSTEM').toPromise();
-
         this.headerColor = [  
             { key: 'system-primary', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM') },
             { key: 'system-primary-invert', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM_INVERT') },
@@ -87,9 +86,8 @@ export class ThemeheaderComponent implements OnInit {
  
        const value = event && event.source && event.source.key ? event.source.key : event && event.source && event.source.value ? event.source.value :  event;
        
-       this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.color);
-       this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.style);
-
+      // this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.color);
+       //this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.style);
         if(key.indexOf('.') > -1){``
             let keyObj = key.split('.');
             this.hostObject[keyObj[0]][keyObj[1]] = value;
