@@ -168,7 +168,7 @@ class AppHeaderService {
  
         const isDefaultHeader = header === undefined;
         buttons = [
-                new APIHeaderButton('Settings', 'systemSettings', new Icon('system','settings'), true, true, null),
+                new APIHeaderButton('Settings', 'Settings', new Icon('system','settings'), true, true, null),
                 new APIHeaderButton('Systemavatar', 'SystemAvatar', new Icon('system','avatar'), true, true, null),
                 new APIHeaderButton('Support', 'Support', new Icon('system','question'), true, true, null),
                 new APIHeaderButton('Announcekit', 'Announcekit', new Icon('system','megaphone'), true, true, null)  
