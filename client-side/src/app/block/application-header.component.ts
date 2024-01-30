@@ -61,7 +61,6 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     async saveHeader(event, isPublish: boolean = false){
- 
         //check if click on save or publish
         this.headerData.Published = isPublish;
         
