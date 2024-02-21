@@ -150,4 +150,10 @@ export class AppHeadersService {
             return sync;
        }
     }
+
+    async getThemes(){
+        return  await this.httpService.getWapiApiCall('Service1.svc/v1/addons/api/95501678-6687-4fb3-92ab-1155f47f839e/addon-cpi/themes').toPromise();
+        //const theme = await this.papiClient.get('/addons/api/95501678-6687-4fb3-92ab-1155f47f839e/api/themes');
+        //const theme = await this.papiClient.addons.uuid().get();
+    }
 }

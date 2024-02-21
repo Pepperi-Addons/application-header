@@ -79,6 +79,7 @@
             "APP_COLOR": "Select App color",
             "COLOR_STYLE": "Select color style",
             "TYPE": {
+                "LEGACY": "Legacy",
                 "SYSTEM": "System",
                 "SYSTEM_INVERT": "System invert",
                 "PRIMARY": "Primary",

@@ -82,7 +82,7 @@ export async function load(configuration: any) {
     async function sync(client: IClient) {
         const syncOptions = {    
             "allowContinueInBackground": true,
-            "abortExisting": true,
+            "abortExisting": false,
             "showHUD": false
         };
 

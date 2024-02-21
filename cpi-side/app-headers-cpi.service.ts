@@ -20,7 +20,6 @@ class AppHeaderService {
 
     private async getAppHeader(headerKey: string): Promise<AppHeaderTemplate> {
        let header; 
-        
        try{
             //header = await pepperi.papiClient.addons.api.uuid('84c999c3-84b7-454e-9a86-71b7abc96554').file('api').func('get_by_key').get({ addonUUID: AddonUUID, scheme: 'drafts', name: 'AppHeaderConfiguration', key: headerKey });   
             //change to pepperi.addons... for offline working
@@ -137,7 +136,6 @@ class AppHeaderService {
             }
             this.appHeader.SyncButtonData = await this.getSyncButtonData();
             return this.appHeader;
-
     }
 
     isDefaultHeader(headerUUID):boolean {
@@ -190,7 +188,7 @@ class AppHeaderService {
                 buttons.push(new APIHeaderButton('Notification', 'Notification', new Icon('system','bell'), true, true, null));
             }
         }
-
+        //get Themes data
         let mergedTheme = await this.getMergedTheme(isDefaultHeader, context);
 
         return {
@@ -225,66 +223,81 @@ class AppHeaderService {
         if(isWebApp || (!isDefaultHeader && !isWebApp)){
             // Get the theme object from theme addon api (on the CPI side).
             const themeAddonUUID = '95501678-6687-4fb3-92ab-1155f47f839e';
-            
             const themePromises: Promise<any>[] = [];
-            
+
             // Get the app headers tab object
             themePromises.push(
                 pepperi.addons.api.uuid(themeAddonUUID).get({
-                // url: `/addon-cpi/themes/${AddonUUID}`,
-                url: `/addon-cpi/themes/ApplicationHeader`,
+                url: `/addon-cpi/themes`,
                     context: context
                 })
             );
-            
-            // Get the branding tab
-            themePromises.push(
-                pepperi.addons.api.uuid(themeAddonUUID).get({
-                url: `/addon-cpi/themes/branding`,
-                    context: context
-                })
-            );
-            
+
             try{
-            // wait for results and return them as object.
-            const themeArr = await Promise.all(themePromises).then(res => res);
+                // wait for results and return them as object.
+                const themes = await Promise.all(themePromises).then(res => res);
+                const theme = themes[0].ApplicationHeader;
+                const branding = themes[0].branding;
 
-            const theme = themeArr[0];
-            const themeVariables = themeArr[1];
+                // Set the default values for the logo's if needed.
+                const logoKey = 'logoAssetKey';
+                const faviconKey = 'faviconAssetsKey'; 
 
-            // Set the default values for the logo's if needed.
-            const logoKey = 'logoAssetKey';
-            const faviconKey = 'faviconAssetsKey'; 
-
-           if (themeVariables.hasOwnProperty(logoKey)) {
-                const logo = await pepperi.addons.pfs.uuid("ad909780-0c23-401e-8e8e-f514cc4f6aa2").schema("Assets").key(themeVariables.logoAssetKey).get();
-                themeVariables[logoKey] = logo.URL; 
-           }
+                try{
+                    if (branding.hasOwnProperty(logoKey)) {
+                        //const logo = await pepperi.papiClient.get(`/pfs/ad909780-0c23-401e-8e8e-f514cc4f6aa2/Assets?Key=${themeVariables.logoAssetKey}`);
+                        const logo = await pepperi.addons.pfs.uuid("ad909780-0c23-401e-8e8e-f514cc4f6aa2").schema("Assets").key(branding.logoAssetKey).get();
+                        branding[logoKey] = logo.URL; 
+                    }
+                }
+                catch(err){
+                    branding[logoKey] = '';
+                }  
                 
-            if (themeVariables.hasOwnProperty(faviconKey)) {
-                const favIcon = await pepperi.addons.pfs.uuid("ad909780-0c23-401e-8e8e-f514cc4f6aa2").schema("Assets").key(themeVariables.faviconAssetKey).get();
-                themeVariables[faviconKey] = favIcon.URL;    
-           }
+                try{
+                    if (branding.hasOwnProperty(faviconKey)) {
+                        const favIcon = await pepperi.addons.pfs.uuid("ad909780-0c23-401e-8e8e-f514cc4f6aa2").schema("Assets").key(branding.faviconAssetKey).get();
+                        branding[faviconKey] = favIcon.URL;    
+                    } 
+                }
+                catch(err){
+                    branding[faviconKey] = '';
+                }
 
-            mergedTheme = {
-                'BottomBorder': {
-                    'Opacity': theme.bottomBorder.opacity || 1,
-                    'Use': theme.bottomBorder.use || false,
-                    'Value': theme.bottomBorder.value || 'system-primary'
-                },
-                'Color': {
-                    'ColorName': theme?.color?.color || 'system-primary-invert',
-                    'ColorValue': theme?.color?.colorValue || 'rgba(255,255,255,0)',
-                    'Style': theme?.color?.style || 'weak'
-                },
-                'Shadow': {
-                    'Intensity': theme?.shadow?.intensity || 'hard',
-                    'Size': theme?.shadow?.size || 'md',
-                    'Use': theme.shadow.use || false,
-                },
-                'FaviconURL': themeVariables[faviconKey] || '',
-                'BrandingLogoURL': themeVariables[logoKey] || ''
-            }
+                // change legacy color To RGBA
+                if(theme?.color?.color === 'legacy' && themes[0]?.header?.userLegacyColor){
+                    const legacyColor = themes[0].header.userLegacyColor;
+                    // check if legacy color formatted as hsl
+                    if(legacyColor?.hue != undefined){
+                        const h = legacyColor.hue;
+                        const s = parseFloat(legacyColor.saturation.replace('%',''));
+                        const l = parseFloat(legacyColor.lightness.replace('%',''));
+                        theme.color.colorValue = this.hslToRGBA(h, s, l);
+                    }
+                    else if(typeof legacyColor === 'string' && legacyColor.indexOf('#') > -1){
+                        theme.color.colorValue = this.hexToRGBA(legacyColor);
+                    }
+                }
+
+                mergedTheme = {
+                        'BottomBorder': {
+                            'Opacity': theme.bottomBorder.opacity || 1,
+                            'Use': theme.bottomBorder.use || false,
+                            'Value': theme.bottomBorder.value || 'system-primary'
+                        },
+                        'Color': {
+                            'ColorName': theme?.color?.color || 'system-primary-invert',
+                            'ColorValue': theme?.color?.colorValue || 'rgba(255,255,255,0)',
+                            'Style': theme?.color?.style || 'weak'
+                        },
+                        'Shadow': {
+                            'Intensity': theme?.shadow?.intensity || 'hard',
+                            'Size': theme?.shadow?.size || 'md',
+                            'Use': theme.shadow.use || false,
+                        },
+                        'FaviconURL': branding[faviconKey] || '',
+                        'BrandingLogoURL': branding[logoKey] || ''
+                }
             }
             catch(err){
                 mergedTheme = {
@@ -303,12 +316,75 @@ class AppHeaderService {
                 'BrandingLogoURL': '' // set empty logo image
             }
         }
+        
+        // take the branding main color from Branding UiControl.
+        //const legacyMainColor = await this.getLegacyUiControlMainColor() || null;
+        //mergedTheme['Color']['ColorValue'] = legacyMainColor ? legacyMainColor : mergedTheme['Color']['ColorValue'];
+        return mergedTheme;      
+    }
+    
+    async getLegacyUiControlMainColor(){
+        const uiControl = await pepperi.papiClient.get(`/uicontrols?where=Type='Branding'`);
+        const branding = JSON.parse(uiControl[0].UIControlData);
+        const brandingMainColor = branding.ControlFields?.filter(cf => {
+            return cf.ApiName === 'BrandingMainColor';
+        });
 
-        return mergedTheme;
-             
+        return this.hexToRGBA(brandingMainColor[0].DefaultValue) || null;
     }
 
- 
+    hslToRGBA(h,s,l) {
+        // Must be fractions of 1
+        s /= 100;
+        l /= 100;
+      
+        let c = (1 - Math.abs(2 * l - 1)) * s,
+            x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+            m = l - c/2,
+            r = 0,
+            g = 0,
+            b = 0;
+
+            if (0 <= h && h < 60) {
+                r = c; g = x; b = 0;  
+              } else if (60 <= h && h < 120) {
+                r = x; g = c; b = 0;
+              } else if (120 <= h && h < 180) {
+                r = 0; g = c; b = x;
+              } else if (180 <= h && h < 240) {
+                r = 0; g = x; b = c;
+              } else if (240 <= h && h < 300) {
+                r = x; g = 0; b = c;
+              } else if (300 <= h && h < 360) {
+                r = c; g = 0; b = x;
+              }
+              r = Math.round((r + m) * 255);
+              g = Math.round((g + m) * 255);
+              b = Math.round((b + m) * 255);
+            
+              var a = 1 - Math.min(r, Math.min(g, b)) / 255;
+       
+              return `rgba(${255 + (r - 255) / a},${255 + (g - 255) / a},${255 + (b - 255) / a},${a})`;
+    }
+
+    hexToRGBA = (hexCode, opacity = 1) => {  
+        let hex = hexCode.replace('#', '');
+        
+        if (hex.length === 3) {
+            hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+        }    
+        
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        /* Backward compatibility for whole number based opacity values. */
+        if (opacity > 1 && opacity <= 100) {
+            opacity = opacity / 100;   
+        }
+    
+        return `rgba(${r},${g},${b},${opacity})`;
+    };
 
     async getSyncButtonData(): Promise<any> {
         const stateInfo = await pepperi.application.sync.stateInfo();

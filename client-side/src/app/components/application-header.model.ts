@@ -97,7 +97,7 @@ export class themeColor{
     colorValue: string;
     style: PepStyleType;
 
-    constructor(color = 'system-primary-invert', style: PepStyleType = 'weak', colorvalue = 'rgba(255,255,255,0)'){
+    constructor(color = 'legacy', style: PepStyleType = 'weak', colorvalue = 'rgba(255,255,255,0)'){
         this.color = color;
         this.style = style;
         this.colorValue = colorvalue;

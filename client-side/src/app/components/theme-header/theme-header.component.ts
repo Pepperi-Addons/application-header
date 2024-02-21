@@ -4,6 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { appHeaderTheme } from '../application-header.model';
 import { firstValueFrom } from 'rxjs';
 import { PepButton } from '@pepperi-addons/ngx-lib/button';
+import { AppHeadersService } from '../../services/headers.service'
+import { PepCustomizationService } from '@pepperi-addons/ngx-lib';
 
 interface groupButtonArray {
     key: string; 
@@ -36,12 +38,15 @@ export class ThemeheaderComponent implements OnInit {
     @Output() hostEvents: EventEmitter<any> = new EventEmitter<any>();
 
     headerColor: Array<groupButtonArray> = [];
+    buttomBorderColor: Array<groupButtonArray> = [];
     headerStyle:  Array<groupButtonArray> = [];
     shadowIntensity:  Array<PepButton> = []; 
 
     constructor(private translate: TranslateService, 
                 private addonBlockLoaderService: PepAddonBlockLoaderService, 
+                private appHeadersService: AppHeadersService,
                 private viewContainerRef: ViewContainerRef, 
+                private customizationService: PepCustomizationService,
                 private renderer: Renderer2) {
        
     }
@@ -50,6 +55,14 @@ export class ThemeheaderComponent implements OnInit {
 
         const system = await this.translate.get('THEME.COLOR.TYPE.SYSTEM').toPromise();
         this.headerColor = [  
+            { key: 'legacy', value: this.translate.instant('THEME.COLOR.TYPE.LEGACY') },
+            { key: 'system-primary', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM') },
+            { key: 'system-primary-invert', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM_INVERT') },
+            { key: 'user-primary', value: this.translate.instant('THEME.COLOR.TYPE.PRIMARY') },
+            { key: 'user-secondary', value: this.translate.instant('THEME.COLOR.TYPE.SECONDARY') }
+        ];
+
+        this.buttomBorderColor = [  
             { key: 'system-primary', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM') },
             { key: 'system-primary-invert', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM_INVERT') },
             { key: 'user-primary', value: this.translate.instant('THEME.COLOR.TYPE.PRIMARY') },
@@ -70,17 +83,27 @@ export class ThemeheaderComponent implements OnInit {
         ];
     }
 
-    setColorValue(){
-        this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.color);
-        this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.style);
-
-        setTimeout(() => {
-            const elem = document.getElementById('colorExample'); // get element
-            if(elem){
-                this.hostObject.color.colorValue = getComputedStyle(this.colorExample.nativeElement).getPropertyValue('background-color');
+    async setColorValue(){
+        if(this.hostObject.color?.color !== 'legacy'){
+            this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.color);
+            this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.style);
+            
+            setTimeout(() => {
+                const elem = document.getElementById('colorExample'); // get element
+                if(elem){
+                    this.hostObject.color.colorValue = getComputedStyle(this.colorExample.nativeElement).getPropertyValue('background-color');
+                    this.updateHostObject();  
+                }
+            }, 100);
+        }
+        else{
+            //need to get legacy color
+            const theme = await this.appHeadersService.getThemes();
+            if(theme){
+                this.hostObject.color.colorValue = theme['header']?.userLegacyColor;
                 this.updateHostObject();  
             }
-        }, 100);
+        }
     }
     onHeaderFieldChange(key, event){
  
@@ -95,13 +118,47 @@ export class ThemeheaderComponent implements OnInit {
         else{
             this.hostObject[key] = value;
         }
-
+  
         if(key.indexOf('color') > -1){
             this.setColorValue();
         }
         else{
             this.updateHostObject();
         }
+
+         //set css varaiables for preview
+        const themeVariables = {};
+
+       if (this.hostObject.color.color == 'legacy') {
+            themeVariables[PepCustomizationService.COLOR_TOP_HEADER_KEY + '-h'] = '';
+            themeVariables[PepCustomizationService.COLOR_TOP_HEADER_KEY + '-s'] = '';
+            themeVariables[PepCustomizationService.COLOR_TOP_HEADER_KEY + '-l'] = '';
+        } else {
+            this.setStyleButtonColor(themeVariables, PepCustomizationService.COLOR_TOP_HEADER_KEY,
+                this.hostObject.color.color, true);
+        }
+
+        themeVariables[PepCustomizationService.STYLE_TOP_HEADER_KEY] = this.hostObject.color.style;
+
+        this.customizationService.setThemeVariables(themeVariables);
+    }
+
+    setStyleButtonColor(themeVariables, colorKey, wantedColor, useSecondaryColor) {
+        let referenceColorKey = PepCustomizationService.COLOR_SYSTEM_PRIMARY_KEY;
+
+        if (wantedColor === 'system-primary') {
+            referenceColorKey = PepCustomizationService.COLOR_SYSTEM_PRIMARY_KEY;
+        } else if (wantedColor === 'system-primary-invert') {
+            referenceColorKey = PepCustomizationService.COLOR_SYSTEM_PRIMARY_INVERT_KEY;
+        } else if (wantedColor === 'user-primary') {
+            referenceColorKey = PepCustomizationService.COLOR_USER_PRIMARY_KEY;
+        } else if (wantedColor === 'user-secondary') {
+            referenceColorKey = PepCustomizationService.COLOR_USER_SECONDARY_KEY;
+        }
+
+        themeVariables[colorKey + '-h'] = 'var(' + referenceColorKey + '-h)';
+        themeVariables[colorKey + '-s'] = 'var(' + referenceColorKey + '-s)';
+        themeVariables[colorKey + '-l'] = 'var(' + referenceColorKey + '-l)';
     }
 
     private updateHostObject() {

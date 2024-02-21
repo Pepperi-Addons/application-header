@@ -121,7 +121,7 @@ export class HeaderService {
             }
         })
     }
-    
+
     private getFlowNameByKey(flowsArr, flowKey){
         for(let i=0; i< flowsArr.length; i++)
             if(flowsArr[i].Key == flowKey){
@@ -129,17 +129,6 @@ export class HeaderService {
             }
         return '';
     }
-
-    // private getFlattenMenu = (members) => {
-    //     let children:any = [];
-      
-    //     return members.map(m => {
-    //       if (m.Items && m.Items.length) {
-    //         children = [...children, ...m.Items];
-    //       }
-    //       return m;
-    //     }).concat(children.length ? this.getFlattenMenu(children) : children);
-    //   };
       
     async upsertHeader(body) {
         const headersList = await this.getHeaders() || [];
