@@ -263,20 +263,25 @@ class AppHeaderService {
                 catch(err){
                     branding[faviconKey] = '';
                 }
-
-                // change legacy color To RGBA
-                if(theme?.color?.color === 'legacy' && themes[0]?.header?.userLegacyColor){
+                
+                let legacyCol = '';
+                
+                if(themes[0]?.header?.userLegacyColor){
                     const legacyColor = themes[0].header.userLegacyColor;
                     // check if legacy color formatted as hsl
                     if(legacyColor?.hue != undefined){
                         const h = legacyColor.hue;
                         const s = parseFloat(legacyColor.saturation.replace('%',''));
                         const l = parseFloat(legacyColor.lightness.replace('%',''));
-                        theme.color.colorValue = this.hslToRGBA(h, s, l);
+                        legacyCol = this.hslToRGBA(h, s, l);
                     }
                     else if(typeof legacyColor === 'string' && legacyColor.indexOf('#') > -1){
-                        theme.color.colorValue = this.hexToRGBA(legacyColor);
+                        legacyCol = this.hexToRGBA(legacyColor);
                     }
+                }
+                // change legacy color To RGBA
+                if(theme?.color?.color === 'legacy'){
+                    theme.color.colorValue = legacyCol;
                 }
 
                 mergedTheme = {
@@ -288,6 +293,7 @@ class AppHeaderService {
                         'Color': {
                             'ColorName': theme?.color?.color || 'system-primary-invert',
                             'ColorValue': theme?.color?.colorValue || 'rgba(255,255,255,0)',
+                            'LegacyColor': legacyCol,
                             'Style': theme?.color?.style || 'weak'
                         },
                         'Shadow': {
@@ -333,38 +339,39 @@ class AppHeaderService {
         return this.hexToRGBA(brandingMainColor[0].DefaultValue) || null;
     }
 
-    hslToRGBA(h,s,l) {
-        // Must be fractions of 1
-        s /= 100;
-        l /= 100;
-      
-        let c = (1 - Math.abs(2 * l - 1)) * s,
-            x = c * (1 - Math.abs((h / 60) % 2 - 1)),
-            m = l - c/2,
-            r = 0,
-            g = 0,
-            b = 0;
+    hslToRGBA(h, s, l, a = 1) {
+            s = s > 1 ? s / 100 : s;
+            l = l > 1 ? l / 100 : l;
+           // Ensure H, S, L are in the valid range [0, 1]
+            h = (h % 360 + 360) % 360 / 360;
+            s = Math.max(0, Math.min(1, s));
+            l = Math.max(0, Math.min(1, l));
 
-            if (0 <= h && h < 60) {
-                r = c; g = x; b = 0;  
-              } else if (60 <= h && h < 120) {
-                r = x; g = c; b = 0;
-              } else if (120 <= h && h < 180) {
-                r = 0; g = c; b = x;
-              } else if (180 <= h && h < 240) {
-                r = 0; g = x; b = c;
-              } else if (240 <= h && h < 300) {
-                r = x; g = 0; b = c;
-              } else if (300 <= h && h < 360) {
-                r = c; g = 0; b = x;
-              }
-              r = Math.round((r + m) * 255);
-              g = Math.round((g + m) * 255);
-              b = Math.round((b + m) * 255);
-            
-              var a = 1 - Math.min(r, Math.min(g, b)) / 255;
-       
-              return `rgba(${255 + (r - 255) / a},${255 + (g - 255) / a},${255 + (b - 255) / a},${a})`;
+            // If saturation is 0, the color is a shade of gray
+            if (s === 0) {
+                const grayValue = Math.round(l * 255);
+                return `rgba(${grayValue}, ${grayValue}, ${grayValue}, ${a})`;
+            }
+
+            // Calculate temporary values
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+
+            // Convert hue to RGB
+            const r = this.hueToRgb(p, q, h + 1/3);
+            const g = this.hueToRgb(p, q, h);
+            const b = this.hueToRgb(p, q, h - 1/3);
+
+            return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${a})`;
+    }
+
+    hueToRgb(p, q, t) {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
     }
 
     hexToRGBA = (hexCode, opacity = 1) => {  

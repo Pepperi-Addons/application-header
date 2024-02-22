@@ -55,7 +55,7 @@ export class ThemeheaderComponent implements OnInit {
 
         const system = await this.translate.get('THEME.COLOR.TYPE.SYSTEM').toPromise();
         this.headerColor = [  
-            { key: 'legacy', value: this.translate.instant('THEME.COLOR.TYPE.LEGACY') },
+            { key: 'legacy', value: this.translate.instant('THEME.COLOR.TYPE.HEADER') },
             { key: 'system-primary', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM') },
             { key: 'system-primary-invert', value: this.translate.instant('THEME.COLOR.TYPE.SYSTEM_INVERT') },
             { key: 'user-primary', value: this.translate.instant('THEME.COLOR.TYPE.PRIMARY') },
