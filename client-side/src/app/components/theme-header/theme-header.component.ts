@@ -129,7 +129,7 @@ export class ThemeheaderComponent implements OnInit {
          //set css varaiables for preview
         const themeVariables = {};
 
-       if (this.hostObject.color.color == 'legacy') {
+        if (this.hostObject.color.color == 'legacy') {
             themeVariables[PepCustomizationService.COLOR_TOP_HEADER_KEY + '-h'] = '';
             themeVariables[PepCustomizationService.COLOR_TOP_HEADER_KEY + '-s'] = '';
             themeVariables[PepCustomizationService.COLOR_TOP_HEADER_KEY + '-l'] = '';

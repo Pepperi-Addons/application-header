@@ -30,7 +30,8 @@
       "resource_list": "0.7.104",
       "generic_resource": "0.6.2",
       "scripts": "0.6.3",
-      "cpas": "17.20.1"
+      "cpas": "17.20.1",
+      "themes": "2.2.7"
     },
     "CPISide": [
       "addon-cpi.ts"

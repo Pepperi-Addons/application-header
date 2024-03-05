@@ -265,8 +265,8 @@ class AppHeaderService {
                 }
                 
                 let legacyCol = '';
-                
-                if(themes[0]?.header?.userLegacyColor){
+       
+                if(themes[0]?.header?.userLegacyColor && themes[0]?.header?.useTopHeaderColorLegacy){
                     const legacyColor = themes[0].header.userLegacyColor;
                     // check if legacy color formatted as hsl
                     if(legacyColor?.hue != undefined){
