@@ -13,7 +13,7 @@
           <pep-select [label]="'THEME.COLOR.APP_COLOR' | translate" [value]="hostObject?.color?.color" 
                       [options]="headerColor" (valueChange)="onHeaderFieldChange('color.color',$event)" [emptyOption]="false" 
                       styleType="regular"></pep-select>
-          <pep-select [label]="'THEME.COLOR.COLOR_STYLE' | translate" [value]="hostObject?.color?.style" 
+          <pep-select [label]="'THEME.COLOR.COLOR_STYLE' | translate" [value]="hostObject?.color?.style" [disabled]="hostObject?.color?.color == 'legacy'"
                       [options]="headerStyle" (valueChange)="onHeaderFieldChange('color.style',$event)" [emptyOption]="false" 
                       styleType="weak">
         </pep-select>
