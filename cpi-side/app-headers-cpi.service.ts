@@ -132,6 +132,7 @@ class AppHeaderService {
                 const slug = await pepperi.slugs.getPage('/application_header');
                 this.headerUUID = slug?.pageKey || ''; 
                 const header = this.headerUUID?.length ? await this.getAppHeader(this.headerUUID) : undefined;
+
                 this.appHeader = await this.translateHeaderToAPIheader(header?.Data || undefined, client?.context || undefined);
             }
             this.appHeader.SyncButtonData = await this.getSyncButtonData();
@@ -266,7 +267,7 @@ class AppHeaderService {
                 
                 let legacyCol = '';
        
-                if(themes[0]?.header?.userLegacyColor && themes[0]?.header?.useTopHeaderColorLegacy){
+                if(themes[0]?.header?.userLegacyColor){
                     const legacyColor = themes[0].header.userLegacyColor;
                     // check if legacy color formatted as hsl
                     if(legacyColor?.hue != undefined){
