@@ -104,7 +104,7 @@ export class RelationsService {
 
     async upsertJourneyEventsRelation() {
         const promises = [
-            this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK, "Application header button click", [{"FieldID": "Key"}]),
+            this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK, "Application header button click", [{"FieldID": "ButtonKey"}]),
         ];
         Promise.all(promises);
     }
