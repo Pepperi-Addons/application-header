@@ -26,7 +26,7 @@ class AppHeaderService {
             header = await pepperi.addons.configurations.get(headerKey);
         }
         catch(err){
-
+            console.error(`Error getting application - header: ${err}`);
         }   
         return header as any;
     }
