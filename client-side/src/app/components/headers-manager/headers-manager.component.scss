@@ -3,6 +3,9 @@
 
 :host {
     height: 100%;
+    .configuration-list {
+        height: 100%;
+    }
 }
 
 ::ng-deep .list-empty-state{
@@ -22,26 +25,26 @@
     padding-top: variables.$spacing-lg;
 }
 
-mat-tab-group{
-    max-width: 56rem;
-    height: 100%;
+// mat-tab-group{
+//     max-width: 56rem;
+//     height: 100%;
     
-    ::ng-deep {
-        .mat-tab-header{
-            position: sticky;
-            top: 0;
-            background: #fff;
-            z-index: 2;
-        }
-        .mat-tab-body-wrapper{
-            height: 100%;
+//     ::ng-deep {
+//         .mat-tab-header{
+//             position: sticky;
+//             top: 0;
+//             background: #fff;
+//             z-index: 2;
+//         }
+//         .mat-tab-body-wrapper{
+//             height: 100%;
         
-            .mat-tab-body-content{
-                padding: unset !important;
-            }
-        }
-    }
-}
+//             .mat-tab-body-content{
+//                 padding: unset !important;
+//             }
+//         }
+//     }
+// }
 
 .msgContainer{
     display: flex;

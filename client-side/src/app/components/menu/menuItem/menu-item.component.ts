@@ -1,10 +1,10 @@
 import { Component, OnInit, Injectable, Input, Output, EventEmitter, Optional, Inject, ViewContainerRef } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { PepButton } from '@pepperi-addons/ngx-lib/button';
 import { PepAddonBlockLoaderService } from '@pepperi-addons/ngx-lib/remote-loader';
 import { MenuItem } from '../../application-header.model';
 import { TranslateService } from '@ngx-translate/core';
-
+import { AppHeadersService } from 'src/app/services/headers.service';
+import { FlowService } from 'src/app/services/flow.service';
 @Component({
     selector: 'menu-item',
     templateUrl: './menu-item.component.html',
@@ -15,29 +15,40 @@ import { TranslateService } from '@ngx-translate/core';
 export class MenuItemComponent implements OnInit {
     
     @Input() menuItem: MenuItem;
-    @Input() deleteable = true;
+    @Input() itemIndex;
+    @Input() numOfMenus: number = 0;
+    @Input() disableArrows = false;
 
     @Output() onDeleteMenuItem: EventEmitter<MenuItem> = new EventEmitter<MenuItem>();
     @Output() onMenuItemChange: EventEmitter<MenuItem> = new EventEmitter<MenuItem>();
     
-    public leftRightArrows : Array<PepButton> = [];
+    public deleteable: boolean;
+    public leftRightArrows: Array<PepButton> = [];
     public menuItemLabelMaxCharacters = 20;
     public isGrabbing = false;
+    public flowHostObject;
 
-    private dialogRef: MatDialogRef<any>;
-    
     constructor(private viewContainerRef: ViewContainerRef,
                 private addonBlockLoaderService: PepAddonBlockLoaderService,
-                public translate: TranslateService) {
+                private appHeadersService: AppHeadersService,
+                public translate: TranslateService,
+                private flowService: FlowService) {
        
     }
     
     ngOnInit(): void {
         this.leftRightArrows =  [
-            { key: 'left', iconName: 'arrow_left_alt', callback: (event: any) => this.onItemHierarchyLevelChange(event,this) },
-            { key: 'right', iconName: 'arrow_right_alt', callback: (event: any) => this.onItemHierarchyLevelChange(event,this) }
+            { key: 'left', iconName: 'arrow_left_alt', callback: (event: any) => this.onItemHierarchyLevelChange(event,this)},
+            { key: 'right', iconName: 'arrow_right_alt', callback: (event: any) => this.onItemHierarchyLevelChange(event,this)}
         ];
 
+        this.setArrowsState();
+        //prepare the flow host hobject
+        this.flowHostObject = this.flowService.prepareFlowHostObject((this.menuItem?.Flow || null)); 
+        //this.prepareFlowHostObject();
+    }
+
+    ngOnChanges(e: any): void {
         this.setArrowsState();
     }
 
@@ -60,29 +71,47 @@ export class MenuItemComponent implements OnInit {
     }
 
     setArrowsState(){
-            this.leftRightArrows[0].disabled = this.menuItem.HierarchyLevel == 0 ? true : false;
-            this.leftRightArrows[1].disabled = this.menuItem.HierarchyLevel == 2 && this.deleteable ? true : false; 
+        this.deleteable = (this.itemIndex == 0 && this.menuItem.Items.length == 0) || (this.itemIndex !== 0 && this.menuItem.Items.length == 0) ? true : false;
+        if(this.itemIndex == 0 && this.menuItem.HierarchyLevel != 0){
+            this.menuItem.HierarchyLevel = 0;
+        }
+        if(this.leftRightArrows.length){
+            if(this.itemIndex == 0 || this.menuItem.Items.length){
+                this.leftRightArrows[0].disabled = true;
+                this.leftRightArrows[0].classNames = 'pointerEvents';
+                this.leftRightArrows[1].disabled = true;
+                this.leftRightArrows[1].classNames = 'pointerEvents';
+            }
+            else{
+                this.leftRightArrows[0].disabled = this.menuItem.HierarchyLevel == 0 || this.itemIndex == 0 ? true : false;
+                this.leftRightArrows[0].classNames = this.leftRightArrows[0].disabled ? 'pointerEvents' : '';
+                this.leftRightArrows[1].disabled = this.menuItem.HierarchyLevel == 2  || !this.deleteable ? true : false; 
+                this.leftRightArrows[1].classNames = this.leftRightArrows[1].disabled ? 'pointerEvents' : '';
+            }
+        }
     }
 
-    openFlowPickerDialog(){
-        const flow = this.menuItem?.Flow || null;
+    // private prepareFlowHostObject() {
+    //     this.flowHostObject = {};
+    
+    //     const runFlowData = this.menuItem?.Flow || null;
 
-        this.dialogRef = this.addonBlockLoaderService.loadAddonBlockInDialog({
-            container: this.viewContainerRef,
-            name: 'FlowPicker',
-            size: 'large',
-            hostObject: {
-                'runFlowData': flow
-            },
-            hostEventsCallback: (event) => {
-                if (event.action === 'on-done') {
-                        this.menuItem.Flow = event.data;
-                        this.onMenuItemChange.emit(this.menuItem); 
-                        this.dialogRef.close();
-                } else if (event.action === 'on-cancel') {
-                        this.dialogRef.close();
-                }
-            }
-        })
+    //     const fields = {};
+
+    //     if (runFlowData) {
+    //         this.appHeadersService.flowDynamicParameters.forEach((value, key) => {
+    //             fields[key] = {
+    //                 Type: value || 'String'
+    //             };
+    //         });
+    //     }
+        
+    //     this.flowHostObject['runFlowData'] = runFlowData?.FlowKey ? runFlowData : undefined;
+    //     this.flowHostObject['fields'] = fields;
+    // }
+
+    onFlowChange(flowData: any) {
+        this.menuItem.Flow = flowData;
+        this.onMenuItemChange.emit(this.menuItem); 
     }
 }

@@ -1,7 +1,7 @@
 import { Injectable, ViewContainerRef } from "@angular/core";
 import { NavigationService } from "./navigation.service";
 import { PepDIMXHelperService } from "@pepperi-addons/ngx-composite-lib";
-import { PUBLISHED_HEADERS_TABLE_NAME, DRAFTS_HEADERS_TABLE_NAME} from '../components/application-header.model'
+import { DRAFTS_HEADERS_TABLE_NAME} from '../components/application-header.model'
 
 @Injectable()
 export class DIMXService {

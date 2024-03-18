@@ -97,7 +97,7 @@ export class themeColor{
     colorValue: string;
     style: PepStyleType;
 
-    constructor(color = 'system_invert', style: PepStyleType = 'weak', colorvalue = 'rgba(255,255,255,0)'){
+    constructor(color = 'legacy', style: PepStyleType = 'weak', colorvalue = 'rgba(255,255,255,0)'){
         this.color = color;
         this.style = style;
         this.colorValue = colorvalue;
@@ -122,5 +122,5 @@ export class appHeaderTheme {
     color: themeColor = new themeColor();  
     // dimensions: themeDimensions = new themeDimensions();
     shadow: PepShadowSettings = new PepShadowSettings(false,'md','hard');
-    bottomBorder: PepColorSettings = new PepColorSettings(false,'system',1);
+    bottomBorder: PepColorSettings = new PepColorSettings(false,'system-primary',1);
 }

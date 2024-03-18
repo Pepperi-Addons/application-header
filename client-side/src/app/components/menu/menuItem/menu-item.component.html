@@ -3,12 +3,12 @@
     <pep-textbox [label]="'MENU.ITEM.NAME_LABEL' | translate" [value]="menuItem?.Title" (valueChange)="menuItemChange($event,menuItem)" [maxFieldCharacters]="menuItemLabelMaxCharacters">
     </pep-textbox>
     <div>
-      <label class="body-xs normal ellipsis">Action</label>
-    <pep-button class="script-button" [title]="'Action'" [value]="(menuItem?.Flow?.FlowKey ? menuItem?.Flow?.FlowName : ('MENU.ACTION.CHOOSE_FLOW' | translate))" [disabled]="menuItem?.Items?.length > 0" (buttonClick)="openFlowPickerDialog();"></pep-button>
+        <pep-field-title [label]="'MENU.ACTION.TITLE' | translate"></pep-field-title>
+        <pep-flow-picker-button [disabled]="menuItem?.Items?.length > 0" [flowHostObject]="flowHostObject" (flowChange)="onFlowChange($event)"></pep-flow-picker-button>
       </div>
-    <pep-group-buttons-settings [groupType]="'custom'" [btnsArray]="leftRightArrows" [title]="' '" [subHeader]="null"
+    <pep-group-buttons-settings [groupType]="'custom'" [btnsArray]="leftRightArrows" [title]="" [subHeader]="null"
         pepResetConfigurationField="'group-buttons-test'" [dir]="'ltr'">
   </pep-group-buttons-settings>
-    <pep-button class="center-button" [disabled]="!deleteable" iconName="system_bin" [title]="'Delete'" (buttonClick)="deleteMenuItem($event, menuItem)"></pep-button>
+    <pep-button class="center-button" [disabled]="!deleteable" iconName="system_bin" [title]="'HEADERS_MANAGER.ACTION.DELETE' | translate" (buttonClick)="deleteMenuItem($event, menuItem)"></pep-button>
 </div>
 </div>

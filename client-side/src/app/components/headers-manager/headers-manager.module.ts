@@ -6,14 +6,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { PepGenericListModule } from '@pepperi-addons/ngx-composite-lib/generic-list';
+
+// import { PepGenericListModule } from '@pepperi-addons/ngx-composite-lib/generic-list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PepNgxLibModule, PepAddonService } from '@pepperi-addons/ngx-lib';
 import { PepTopBarModule } from '@pepperi-addons/ngx-lib/top-bar';
 import { PepSideBarModule } from '@pepperi-addons/ngx-lib/side-bar';
 import { PepSizeDetectorModule } from '@pepperi-addons/ngx-lib/size-detector';
 import { PepPageLayoutModule } from '@pepperi-addons/ngx-lib/page-layout';
-import { PepIconModule, PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus } from '@pepperi-addons/ngx-lib/icon';
+import { PepIconModule, PepIconRegistry, pepIconSystemClose, pepIconArrowLeftAlt, pepIconNumberPlus, pepIconSystemBin } from '@pepperi-addons/ngx-lib/icon';
 import { PepButtonModule } from '@pepperi-addons/ngx-lib/button';
 import { PepTextboxModule } from '@pepperi-addons/ngx-lib/textbox';
 import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items';
@@ -21,13 +22,15 @@ import { PepDraggableItemsModule } from '@pepperi-addons/ngx-lib/draggable-items
 import { PepTextareaModule } from '@pepperi-addons/ngx-lib/textarea';
 import { PepSelectModule } from '@pepperi-addons/ngx-lib/select';
 import { PepMenuModule } from '@pepperi-addons/ngx-lib/menu';
-
 import { HeadersManagerComponent } from './headers-manager.component';
+import { PepRemoteLoaderModule } from '@pepperi-addons/ngx-lib/remote-loader';
 
 const pepIcons = [
     pepIconSystemClose,
+    pepIconSystemBin,
     pepIconArrowLeftAlt,
-    pepIconNumberPlus
+    pepIconNumberPlus,
+    pepIconSystemBin
 ];
 
 export const routes: Routes = [
@@ -46,7 +49,8 @@ export const routes: Routes = [
         HttpClientModule,
         MatIconModule,        
         PepNgxLibModule,
-        PepGenericListModule,
+        PepRemoteLoaderModule,
+        //PepGenericListModule,
         PepIconModule,
         PepSizeDetectorModule,
         PepTopBarModule,

@@ -27,25 +27,26 @@ export class ApplicationHeaderComponent implements OnInit {
     async ngOnInit() {
        
         const headerKey =  this.route.snapshot.data['header_key'] || this.route?.snapshot?.params['header_key'] || '';
-        let options = `where=Key="${headerKey}"`; 
-        const res = (await this.appHeadersService.getHeaders(encodeURI(options)))[0] || {};
- 
-        this.headerData =  {
-            ...this.headerData,
-            ...res
-        };
-
-        if(this.headerData){
-            if(this.headerData.Menu?.length){
-                this.setMenuView(this.headerData.Menu);
-                this.setMenuItemsObj();
+        await this.appHeadersService.getHeaders(encodeURI(JSON.stringify({Key: headerKey}))).then(res => {
+            this.headerData =  {
+                ...this.headerData,
+                ...res.Data
+            };
+    
+            if(this.headerData){
+                if(this.headerData.Menu?.length){
+                    this.setMenuView(this.headerData.Menu);
+                    this.setMenuItemsObj();
+                }
+                // if(this.headerData?.buttons?.length){
+                //     this.removeSystemButtons()
+                // }
+    
+                this.generalData = { name: this.headerData.Name || '' , description: this.headerData.Description || '' };
             }
-            // if(this.headerData?.buttons?.length){
-            //     this.removeSystemButtons()
-            // }
 
-            this.generalData = { name: this.headerData.Name || '' , description: this.headerData.Description || '' };
-        }
+        })
+       
 
         //this.appHeadersService.loadHeader(headerKey);
     }
@@ -60,7 +61,6 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     async saveHeader(event, isPublish: boolean = false){
- 
         //check if click on save or publish
         this.headerData.Published = isPublish;
         
@@ -77,6 +77,7 @@ export class ApplicationHeaderComponent implements OnInit {
 
         for(let i=index; i< this.menuView.length; i++){
             let menuItem = this.menuView[i];
+                menuItem.Items.length = 0;
             
             //checking if reached to a new menu.
             if(menuItem.HierarchyLevel < hierachyLevel){
@@ -97,7 +98,6 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     onAddNewMenuItem(menuItem,isSubMenu){
-       
         // check if comes from click on menu item or from ad new item button on the header
         const hierachy = isSubMenu && menuItem ? (menuItem.HierarchyLevel + 1) : 0;
 
@@ -136,16 +136,22 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     async onMenuItemChange(menuItem){
+      
         try{
+            if(menuItem.menuItem){
+                this.menuView[menuItem.menuItem.Key] = menuItem.menuItem;
+            }
             // get flow name and display it to menu button
-            const res = await this.appHeadersService.getFlowNameByFlowKey(menuItem.Flow.FlowKey);
-            menuItem.Flow.FlowName = res.Name || this.translate.instant("MENU.ACTION.CHOOSE_FLOW");
+            // if(menuItem?.Flow?.FlowKey){
+            //     const res = await this.appHeadersService.getFlowNameByFlowKey(menuItem.Flow.FlowKey);
+            //     menuItem.Flow.FlowName = res.Name || this.translate.instant("MENU.ACTION.CHOOSE_FLOW");
+            // }
         }
         catch(err){
             menuItem.Flow.FlowName = this.translate.instant("MENU.ACTION.CHOOSE_FLOW");
         }
         finally{
-            this.menuView[menuItem.ID] = menuItem;
+            this.setMenuItemsObj();
         }
     }
 

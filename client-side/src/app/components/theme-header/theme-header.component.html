@@ -13,7 +13,7 @@
           <pep-select [label]="'THEME.COLOR.APP_COLOR' | translate" [value]="hostObject?.color?.color" 
                       [options]="headerColor" (valueChange)="onHeaderFieldChange('color.color',$event)" [emptyOption]="false" 
                       styleType="regular"></pep-select>
-          <pep-select [label]="'THEME.COLOR.COLOR_STYLE' | translate" [value]="hostObject?.color?.style" 
+          <pep-select [label]="'THEME.COLOR.COLOR_STYLE' | translate" [value]="hostObject?.color?.style" [disabled]="hostObject?.color?.color == 'legacy' || hostObject?.color?.color == 'system-primary-invert'"
                       [options]="headerStyle" (valueChange)="onHeaderFieldChange('color.style',$event)" [emptyOption]="false" 
                       styleType="weak">
         </pep-select>
@@ -33,7 +33,7 @@
             <div>
               <pep-group-buttons-settings 
                   [groupType]="'sizes'" [subHeader]="'THEME.SHADOW.SHADOW_SIZE' | translate" 
-                  [btnKey]="hostObject?.shadow?.size" [excludeKeys]="['lg','xl']"
+                  [btnKey]="hostObject?.shadow?.size" [excludeKeys]="['lg','xl','2xl']"
                   (btnkeyChange)="onHeaderFieldChange('shadow.size',$event)">
               </pep-group-buttons-settings>
             </div>
@@ -57,7 +57,7 @@
       <div class="dimenstionCont">
         <div>
             <pep-select [label]="'THEME.BOTTOM_BORDER.SELECT_COLOR' | translate" [value]="hostObject?.bottomBorder?.value" 
-            [options]="headerColor" (valueChange)="onHeaderFieldChange('bottomBorder.value',$event)" [emptyOption]="false" 
+            [options]="buttomBorderColor" (valueChange)="onHeaderFieldChange('bottomBorder.value',$event)" [emptyOption]="false" 
             styleType="regular"></pep-select>
         </div>
         <div>

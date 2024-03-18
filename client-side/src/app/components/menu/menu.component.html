@@ -7,10 +7,15 @@
             [value]="'MENU.ACTION.ADD_MENU_ITEM' | translate" (buttonClick)="addMenuItem()"></pep-button>
   </div>
   <div  cdkDropList [cdkDropListData]="menuItems" (cdkDropListDropped)="onDropField($event)">
-    <ng-container *ngFor="let menuField of menuItems; let i = index" >
-          <menu-item [menuItem]="menuField" [deleteable]="(menuItems?.length > 1 && menuField?.ID !== 0) || (menuItems?.length == 1 && menuField?.ID === 0)" 
-            (onDeleteMenuItem)="deleteMenuItem($event)" (onMenuItemChange)="menuItemChange($event)" cdkDrag (cdkDragStarted)="onDragStart($event)" 
-            (cdkDragEnded)="onDragEnd($event)">
+    <ng-container *ngFor="let menuField of menuItems; let itemIndex = index" >
+          <menu-item [menuItem]="menuField" 
+                     [itemIndex]="itemIndex"
+                     [numOfMenus]="menuItems.length"
+                     [disableArrows]="itemIndex == 0 || menuField?.Items?.length > 0"
+                     (onDeleteMenuItem)="deleteMenuItem($event)" 
+                     (onMenuItemChange)="menuItemChange($event)" 
+                     cdkDrag (cdkDragStarted)="onDragStart($event)" 
+                     (cdkDragEnded)="onDragEnd($event)">
           </menu-item>
       <div *ngIf="!isGrabbing" class="add-separator-container">
           <pep-button class="add-separator" styleType="regular" sizeType="sm" iconName="number_plus" 

@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.APIMenuItem = exports.APIHeaderButton = exports.Icon = exports.Badge = exports.APIAppHeaderTemplate = exports.SYNC_BUTTIN_KEY = exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK = exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = exports.DRAFTS_HEADERS_TABLE_NAME = exports.PUBLISHED_HEADERS_TABLE_NAME = void 0;
+exports.APIMenuItem = exports.APIHeaderButton = exports.Icon = exports.Badge = exports.APIAppHeaderTemplate = exports.SYNC_BUTTIN_KEY = exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK = exports.CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD = exports.ConfigurationSchemaName = exports.DRAFTS_HEADERS_TABLE_NAME = exports.PUBLISHED_HEADERS_TABLE_NAME = void 0;
 exports.PUBLISHED_HEADERS_TABLE_NAME = 'appHeaders';
 exports.DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
+exports.ConfigurationSchemaName = 'AppHeaderConfiguration';
 // **********************************************************************************************
 //                          Client & User events const
 // **********************************************************************************************

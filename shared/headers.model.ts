@@ -2,6 +2,7 @@ import { AddonData } from "@pepperi-addons/papi-sdk";
 
 export const PUBLISHED_HEADERS_TABLE_NAME = 'appHeaders';
 export const DRAFTS_HEADERS_TABLE_NAME = 'appHeadersDrafts';
+export const ConfigurationSchemaName = 'AppHeaderConfiguration';
 // **********************************************************************************************
 //                          Client & User events const
 // **********************************************************************************************
