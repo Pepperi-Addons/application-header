@@ -85,8 +85,11 @@ export class ThemeheaderComponent implements OnInit {
 
     async setColorValue(){
         if(this.hostObject.color?.color !== 'legacy'){
+            
             this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.color);
-            this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.style);
+            if(this.hostObject.color.color != 'system-primary-invert'){
+                this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.style);
+            }
             
             setTimeout(() => {
                 const elem = document.getElementById('colorExample'); // get element
@@ -105,12 +108,13 @@ export class ThemeheaderComponent implements OnInit {
             }
         }
     }
-    onHeaderFieldChange(key, event){
+    async onHeaderFieldChange(key, event){
  
        const value = event && event.source && event.source.key ? event.source.key : event && event.source && event.source.value ? event.source.value :  event;
        
-      // this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.color);
-       //this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.style);
+        this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.color);
+        this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.style);
+
         if(key.indexOf('.') > -1){``
             let keyObj = key.split('.');
             this.hostObject[keyObj[0]][keyObj[1]] = value;
@@ -119,13 +123,6 @@ export class ThemeheaderComponent implements OnInit {
             this.hostObject[key] = value;
         }
   
-        if(key.indexOf('color') > -1){
-            this.setColorValue();
-        }
-        else{
-            this.updateHostObject();
-        }
-
          //set css varaiables for preview
         const themeVariables = {};
 
@@ -141,6 +138,13 @@ export class ThemeheaderComponent implements OnInit {
         themeVariables[PepCustomizationService.STYLE_TOP_HEADER_KEY] = this.hostObject.color.style;
 
         this.customizationService.setThemeVariables(themeVariables);
+
+        if(key.indexOf('color') > -1){
+             this.setColorValue();
+        }
+        else{
+            this.updateHostObject();
+        }
     }
 
     setStyleButtonColor(themeVariables, colorKey, wantedColor, useSecondaryColor) {
