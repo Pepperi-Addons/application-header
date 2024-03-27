@@ -77,7 +77,7 @@ export class ApplicationHeaderComponent implements OnInit {
 
         for(let i=index; i< this.menuView.length; i++){
             let menuItem = this.menuView[i];
-                menuItem.Items.length = 0;
+                //menuItem.Items.length = 0;
             
             //checking if reached to a new menu.
             if(menuItem.HierarchyLevel < hierachyLevel){
