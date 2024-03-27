@@ -136,10 +136,12 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     async onMenuItemChange(menuItem){
-      
+        
         try{
-            if(menuItem.menuItem){
-                this.menuView[menuItem.menuItem.Key] = menuItem.menuItem;
+            if(menuItem){
+                const index = this.menuView.findIndex(i => i.Key == menuItem.Key);
+                this.menuView[index] = menuItem;
+                //this.menuView[menuItem.Key] = menuItem;
             }
             // get flow name and display it to menu button
             // if(menuItem?.Flow?.FlowKey){
