@@ -77,7 +77,7 @@ export class ApplicationHeaderComponent implements OnInit {
 
         for(let i=index; i< this.menuView.length; i++){
             let menuItem = this.menuView[i];
-                menuItem.Items.length = 0;
+                //menuItem.Items.length = 0;
             
             //checking if reached to a new menu.
             if(menuItem.HierarchyLevel < hierachyLevel){
@@ -136,10 +136,12 @@ export class ApplicationHeaderComponent implements OnInit {
     }
 
     async onMenuItemChange(menuItem){
-      
+        
         try{
-            if(menuItem.menuItem){
-                this.menuView[menuItem.menuItem.Key] = menuItem.menuItem;
+            if(menuItem){
+                const index = this.menuView.findIndex(i => i.Key == menuItem.Key);
+                this.menuView[index] = menuItem;
+                //this.menuView[menuItem.Key] = menuItem;
             }
             // get flow name and display it to menu button
             // if(menuItem?.Flow?.FlowKey){
