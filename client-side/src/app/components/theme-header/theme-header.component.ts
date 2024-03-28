@@ -21,7 +21,7 @@ interface groupButtonArray {
 @Injectable()
 export class ThemeheaderComponent implements OnInit {
     
-    @ViewChild('colorExample') colorExample: ElementRef;
+    //@ViewChild('colorExample') colorExample: ElementRef;
     private _hostObject: appHeaderTheme = new appHeaderTheme();
     @Input() 
     set hostObject(value: appHeaderTheme) {
@@ -83,37 +83,38 @@ export class ThemeheaderComponent implements OnInit {
         ];
     }
 
-    async setColorValue(){
-        if(this.hostObject.color?.color !== 'legacy'){
+    // async setColorValue(){
+    //     if(this.hostObject.color?.color !== 'legacy'){
             
-            this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.color);
-            if(this.hostObject.color.color != 'system-primary-invert'){
-                this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.style);
-            }
+    //         this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.color);
+    //         if(this.hostObject.color.color != 'system-primary-invert'){
+    //             this.renderer.addClass(this.colorExample.nativeElement,this.hostObject.color.style);
+    //         }
             
-            setTimeout(() => {
-                const elem = document.getElementById('colorExample'); // get element
-                if(elem){
-                    this.hostObject.color.colorValue = getComputedStyle(this.colorExample.nativeElement).getPropertyValue('background-color');
-                    this.updateHostObject();  
-                }
-            }, 100);
-        }
-        else{
-            //need to get legacy color
-            const theme = await this.appHeadersService.getThemes();
-            if(theme){
-                this.hostObject.color.colorValue = theme['header']?.userLegacyColor;
-                this.updateHostObject();  
-            }
-        }
-    }
+    //         setTimeout(() => {
+    //             const elem = document.getElementById('colorExample'); // get element
+    //             if(elem){
+    //                 this.hostObject.color.colorValue = getComputedStyle(this.colorExample.nativeElement).getPropertyValue('background-color');
+    //                 this.updateHostObject();  
+    //             }
+    //         }, 100);
+    //     }
+    //     else{
+    //         //need to get legacy color
+    //         const theme = await this.appHeadersService.getThemes();
+    //         if(theme){
+    //             this.hostObject.color.colorValue = theme['header']?.userLegacyColor;
+    //             this.updateHostObject();  
+    //         }
+    //     }
+    // }
+
     async onHeaderFieldChange(key, event){
  
        const value = event && event.source && event.source.key ? event.source.key : event && event.source && event.source.value ? event.source.value :  event;
        
-        this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.color);
-        this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.style);
+        //this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.color);
+        //this.renderer.removeClass(this.colorExample.nativeElement,this.hostObject.color.style);
 
         if(key.indexOf('.') > -1){``
             let keyObj = key.split('.');
@@ -139,12 +140,12 @@ export class ThemeheaderComponent implements OnInit {
 
         this.customizationService.setThemeVariables(themeVariables);
 
-        if(key.indexOf('color') > -1){
-             this.setColorValue();
-        }
-        else{
-            this.updateHostObject();
-        }
+        // if(key.indexOf('color') > -1){
+        //      this.setColorValue();
+        // }
+        // else{
+        this.updateHostObject();
+       // }
     }
 
     setStyleButtonColor(themeVariables, colorKey, wantedColor, useSecondaryColor) {
