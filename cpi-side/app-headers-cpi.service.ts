@@ -239,7 +239,6 @@ class AppHeaderService {
                 const themes = await Promise.all(themePromises).then(res => res);
                 const theme = themes[0].ApplicationHeader;
                 const branding = themes[0].branding;
-
                 // Set the default values for the logo's if needed.
                 const logoKey = 'logoAssetKey';
                 const faviconKey = 'faviconAssetsKey'; 
@@ -280,8 +279,35 @@ class AppHeaderService {
                         legacyCol = this.hexToRGBA(legacyColor);
                     }
                 }
-                // change legacy color To RGBA
-                if(theme?.color?.color === 'legacy'){
+               
+                const headerColor = theme.color.color;
+                const style = theme.color.style;
+                const alpha = style == 'weak' ? 0.12 : 1;
+                if(headerColor !== 'legacy'){
+                    let str = '';
+                    switch(headerColor){
+                        case 'user-primary':{
+                            str = '--pep-color-user-primary-';
+                            break;
+                        }
+                        case 'user-secondary':{
+                            str = '--pep-color-user-secondary-';
+                            break;
+                        }
+                        case 'system-primary-invert':
+                        case 'system-primary':{
+                            str = '--pep-color-system-primary-';
+                            break;
+                        }
+                    }
+                        
+                    const h =themes[0].cssVariables[str+'h'];
+                    const s =  parseFloat(themes[0].cssVariables[str+'s'].replace('%',''));
+                    const l = style == 'regular' ? 98 : headerColor == 'system-primary-invert' ? 100 : parseFloat(themes[0].cssVariables[str + 'l'].replace('%', ''));
+
+                    theme.color.colorValue = this.hslToRGBA(h,s,l,alpha); 
+                }
+                else{
                     theme.color.colorValue = legacyCol;
                 }
 
