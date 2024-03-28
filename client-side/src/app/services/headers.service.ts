@@ -1,19 +1,21 @@
 import { Injectable, ɵɵresolveBody } from "@angular/core";
-import { Params } from "@angular/router";
+//import { Params } from "@angular/router";
 import jwt from 'jwt-decode';
 import { TranslateService } from "@ngx-translate/core";
-import { PepGuid, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
-import { Observable, BehaviorSubject, from, firstValueFrom } from 'rxjs';
+import { IPepOption, PepHttpService, PepSessionService } from "@pepperi-addons/ngx-lib";
+import { BehaviorSubject, distinctUntilChanged, Observable, firstValueFrom } from "rxjs";
 import { NavigationService } from "./navigation.service";
-import { PUBLISHED_HEADERS_TABLE_NAME, DRAFTS_HEADERS_TABLE_NAME, HeaderTemplateRowProjection } from '../components/application-header.model';
+import { PUBLISHED_HEADERS_TABLE_NAME, HeaderTemplateRowProjection } from '../components/application-header.model';
 import { PepDialogData, PepDialogService } from "@pepperi-addons/ngx-lib/dialog";
 import { MatDialogRef } from "@angular/material/dialog";
 import { config } from '../app.config';
 import * as _ from 'lodash';
 import { PepSelectionData } from "@pepperi-addons/ngx-lib/list";
-import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
-import { MenuDataView, PapiClient } from "@pepperi-addons/papi-sdk";
-import { coerceNumberProperty } from "@angular/cdk/coercion";
+//import { IPepProfile } from "@pepperi-addons/ngx-lib/profile-data-views-list";
+import { MenuDataView, PapiClient, SchemeFieldType } from "@pepperi-addons/papi-sdk";
+import { APIHeaderButton, APIMenuItem } from "shared";
+
+//import { coerceNumberProperty } from "@angular/cdk/coercion";
 // import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, AppHeaderClientEventResult } from 'shared';
 interface IHeaderProj {
     key: string, 
@@ -27,8 +29,8 @@ export interface IHeaderData {
     Hidden?: boolean;
     Draft: boolean;
     Published: boolean;
-    Menu: any; // TODO - SET THE TYPE
-    Buttons: any; // TODO - SET THE TYPE,
+    Menu: Array<APIMenuItem>;
+    Buttons: Array<APIHeaderButton>;
 }
 
 @Injectable({
@@ -76,12 +78,9 @@ export class AppHeadersService {
             return `http://localhost:4500/api`;
         } else {
             const baseUrl = this.sessionService.getPapiBaseUrl();
+            //return `${baseUrl}/addons/api/${addonUUID}/internal_api`;
             return `${baseUrl}/addons/api/${addonUUID}/api`;
         }
-    }
-
-    private getCurrentResourceName() {
-        return PUBLISHED_HEADERS_TABLE_NAME;
     }
 
     private showErrorDialog(err: string = ''): MatDialogRef<any> {
@@ -91,7 +90,21 @@ export class AppHeadersService {
         return this.dialog.openDefaultDialog(dataMsg);
     }
 
-    
+    /******************************** FLOW SERVICES *****************************************/
+
+       // This subject is for load page parameter options on the filter editor (Usage only in edit mode).
+       private _pageParameterOptionsSubject: BehaviorSubject<Array<IPepOption>> = new BehaviorSubject<Array<IPepOption>>([]);
+       get pageParameterOptionsSubject$(): Observable<Array<IPepOption>> {
+           return this._pageParameterOptionsSubject.asObservable().pipe(distinctUntilChanged());
+       }
+   
+       // This subjects is for dynamic parameters in Options source flow (Usage only in edit mode).
+       private _flowDynamicParameters = new Map<string, SchemeFieldType>();
+       get flowDynamicParameters(): ReadonlyMap<string, SchemeFieldType> {
+           return this._flowDynamicParameters;
+       }
+
+
     /*                            CPI & Server side calls.
     /**************************************************************************************/
 
@@ -116,13 +129,6 @@ export class AppHeadersService {
         return this.httpService.postHttpCall(`${baseUrl}/deleteHeader`,{headerUUID}).toPromise();
     }
 
-    // Get the surveys (distinct with the drafts)
-    getHeadersList(addonUUID: string, options: any): Observable<HeaderTemplateRowProjection[]> {
-        // Get the header list from the server.
-        const baseUrl = this.getBaseUrl(addonUUID);
-        return this.httpService.getHttpCall(`${baseUrl}/get_headers_list?resourceName=${this.getCurrentResourceName()}&${options}`);
-    }
-
     async getFlowNameByFlowKey(flowKey: string){
         const baseUrl = this.getBaseUrl(config.AddonUUID);
         return await this.papiClient.userDefinedFlows.key(flowKey).get();
@@ -143,5 +149,11 @@ export class AppHeadersService {
        finally{
             return sync;
        }
+    }
+
+    async getThemes(){
+        return  await this.httpService.getWapiApiCall('Service1.svc/v1/addons/api/95501678-6687-4fb3-92ab-1155f47f839e/addon-cpi/themes').toPromise();
+        //const theme = await this.papiClient.get('/addons/api/95501678-6687-4fb3-92ab-1155f47f839e/api/themes');
+        //const theme = await this.papiClient.addons.uuid().get();
     }
 }

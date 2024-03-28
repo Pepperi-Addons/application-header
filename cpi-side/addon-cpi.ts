@@ -2,23 +2,33 @@ import '@pepperi-addons/cpi-node';
 import AppHeaderService from './app-headers-cpi.service';
 import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD, CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK, AppHeaderClientEventResult, AppHeaderTemplate, SYNC_BUTTIN_KEY, APIAppHeaderTemplate } from 'shared';
 import { IClient } from '@pepperi-addons/cpi-node/build/cpi-side/events';
+import { Relation } from '@pepperi-addons/papi-sdk';
+import  config  from '../addon.config.json';
+
+const appHeaderService =  new AppHeaderService();
 
 export async function load(configuration: any) {
+
+    let relation: Relation = {
+        Type: "CPIAddonAPI",
+        AddonRelativeURL: "/addon-cpi/after_sync_registration",
+        AddonUUID: config.AddonUUID,
+        RelationName: "AfterSync",
+        Name: "events_after_sync_registration",
+    }
+
+    await pepperi.addons.data.relations.upsert(relation);
+    
      /***********************************************************************************************/
     //                              Client Events for application header
     /************************************************************************************************/
 
-    // Handle on survey load
+    // Handle on application header load
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_LOAD as any, {}, async (data): Promise<APIAppHeaderTemplate> => {
-        const service = new AppHeaderService();
-
-        // look for header UUID if null will return default header
-        const slug = await pepperi.slugs.getPage('/application_header');
-        const headerUUID = slug?.pageKey || ''; 
-        let appHeader:  APIAppHeaderTemplate = await service.getHeaderData(data.client, headerUUID);
-
+        let appHeader:  APIAppHeaderTemplate = await appHeaderService.getHeaderData(data.client);
         return appHeader;
     });
+
     /// sync button pressed
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK as any, {
         ButtonKey: SYNC_BUTTIN_KEY
@@ -26,13 +36,12 @@ export async function load(configuration: any) {
         // start sync
         await sync(data.client!);
         // get header data
-        return await getAppHeader(data.client!);
-
+        return await appHeaderService.getSyncHeaderData(data.client!);
     });
 
     pepperi.events.intercept(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK as any, {}, async (data): Promise<APIAppHeaderTemplate> => { 
         let appHeader = await getAppHeader(data.client!);
-
+        let state = data.client?.context;
         switch (data.Key) {
             case "Settings":
                 appHeader.Action['Type'] = 'NavigateToSettings';
@@ -57,8 +66,8 @@ export async function load(configuration: any) {
                     break;
 
             default:
-                const res  = await new AppHeaderService().runFlowData(data.Key, data);
-                console.log(`runFlowData res: ${JSON.stringify(res)}`);
+                //const service = new AppHeaderService();
+                appHeader = await appHeaderService.getOptionsFromFlow(appHeader,data.Key,state);
                 break;
         }
 
@@ -66,18 +75,14 @@ export async function load(configuration: any) {
     });
 
     async function getAppHeader(client: IClient): Promise<APIAppHeaderTemplate> {
-        const service = new AppHeaderService();
-        // look for header UUID if null will return default header
-        const slug = await pepperi.slugs.getPage('/application_header');
-        const headerUUID = slug?.pageKey || ''; 
-        const appHeader:  APIAppHeaderTemplate = await service.getHeaderData(client, headerUUID);
+        const appHeader:  APIAppHeaderTemplate = await appHeaderService.getHeaderData(client);
         return appHeader;
     }
 
     async function sync(client: IClient) {
         const syncOptions = {    
             "allowContinueInBackground": true,
-            "abortExisting": true,
+            "abortExisting": false,
             "showHUD": false
         };
 
@@ -86,8 +91,11 @@ export async function load(configuration: any) {
 }
 
 export const router = Router()
-router.get('/test', (req, res) => {
-    res.json({
-        hello: 'World'
-    })
-})
+
+router.post('/after_sync_registration', async (req, res, next) => {
+    appHeaderService.reloadAppHeader(req.body.client).then(header => {
+        res.json({
+            res: header
+        });
+    }).catch(next)
+});

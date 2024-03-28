@@ -77,14 +77,14 @@ export class ButtonsComponent implements OnInit {
     }
 
     onDataViewChange(event){
+        let tmpButtons: Array<Button> = [];
         if(event?.Fields?.length){
-            let tmpButtons: Array<Button> = [];
             event.Fields.forEach(btn => {
                 const icon = this.getBtnIcon(btn.FieldID);
                 tmpButtons.push(new Button(btn.Title,btn.FieldID,true, icon , btn.FieldID, btn.Title));
             });
-            this.onButtonsChange.emit(tmpButtons);
         }
+        this.onButtonsChange.emit(tmpButtons);
     }
 
     getBtnIcon(btnType){

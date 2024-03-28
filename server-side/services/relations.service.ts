@@ -1,6 +1,8 @@
-import { PapiClient, InstalledAddon, Relation, AddonDataScheme, Subscription } from '@pepperi-addons/papi-sdk'
+import { PapiClient, InstalledAddon, Relation, AddonDataScheme, Subscription, ConfigurationScheme } from '@pepperi-addons/papi-sdk'
 import { Client } from '@pepperi-addons/debug-server';
-import { DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from 'shared';
+import { CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK, DRAFTS_HEADERS_TABLE_NAME, PUBLISHED_HEADERS_TABLE_NAME } from 'shared';
+
+export const JOURNEY_EVENTS_RELATION_NAME = 'JourneyEvent'
 
 export class RelationsService {
 
@@ -50,50 +52,45 @@ export class RelationsService {
             ElementName: `${blockName.toLocaleLowerCase()}-element-${this.client.AddonUUID}`,
         };
     }
-    async createTablesSchemes(): Promise<AddonDataScheme[]> {
-        const promises: AddonDataScheme[] = [];
-        try {
-            const DIMXSchema = {
-                    Blocks: {
-                        Type: "Array",
-                        Items: {
-                            Type: "Object",
-                            Fields: {
-                                Configuration: {
-                                    Type: "Object"
-                                }
-                            }
-                        }
+
+    async createConfigurationScheme(){
+        const configurationScheme:ConfigurationScheme = {
+            Name: 'AppHeaderConfiguration', //the name of the configuration scheme
+            AddonUUID: this.client.AddonUUID, //the addonUUID of the addon that own this configuration
+            //the interface of the configurations object
+            Fields: {
+                    Key: {
+                        Type: "String"
                     },
-            };
-
-            // Create headers table
-            const createHeadersTable = await this.papiClient.addons.data.schemes.post({
-                Name: PUBLISHED_HEADERS_TABLE_NAME,
-                Type: 'data',
-                SyncData: {
-                    Sync: true
-                }
-            });
-
-            // Create headers draft table
-            const createHeadersDraftTable = await this.papiClient.addons.data.schemes.post({
-                Name: DRAFTS_HEADERS_TABLE_NAME,
-                Type: 'data',
-                SyncData: {
-                    Sync: true
-                },
-                Fields: DIMXSchema as any // Declare the schema for the import & export.
-            });
-        
-            promises.push(createHeadersTable);
-            promises.push(createHeadersDraftTable);
-            //promises.push(createPagesVariablesTable);
-            return Promise.all(promises);
-                
-        } catch (err) {
-            throw new Error(`Failed to create Headers ADAL Tables. error - ${err}`);
+                    Name: {
+                        Type: "String"
+                    },
+                    Description: {
+                        Type: "String"
+                    },
+                    Hidden: {
+                        Type: "Bool"
+                    },
+                    Draft: {
+                        Type: "Bool"
+                    },
+                    Published: {
+                        Type: "Bool"
+                    },
+                    Menu: {
+                        Type: "Array"
+                    },
+                    Buttons: {
+                        Type: "Array"
+                    }
+            },
+            //if this configurations should be synced or not.
+            SyncData:{
+                Sync: true
+            }   
         }
+       
+        await this.papiClient.addons.configurations.schemes.upsert(configurationScheme);
     }
 
     async upsertRelations() {
@@ -102,6 +99,29 @@ export class RelationsService {
         await this.upsertAddonBlockRelation();
         await this.upsertSettingsRelation();
         await this.upsertThemeTabsRelation();
+        await this.upsertJourneyEventsRelation();
+    }
+
+    async upsertJourneyEventsRelation() {
+        const promises = [
+            this.upsertEventsRelation(CLIENT_ACTION_ON_CLIENT_APP_HEADER_BUTTON_CLICK, "Application header button click", [{"FieldID": "Key"}]),
+        ];
+        Promise.all(promises);
+    }
+
+    private async upsertEventsRelation(eventName, displayEventName, fields) {
+        const relation = {
+            Type: "AddonAPI",
+            AddonUUID: this.client.AddonUUID,
+            DisplayEventName: displayEventName,
+            RelationName: JOURNEY_EVENTS_RELATION_NAME,
+            Name: eventName,
+            Description: "",
+            AddonRelativeURL: `/event_filters/get_filter_by_event?event=${eventName}`,
+            Fields: fields,
+        };
+
+        await this.upsertRelation(relation);
     }
 
     private async upsertThemeTabsRelation() {
@@ -151,7 +171,7 @@ export class RelationsService {
         const name = 'Application Header';
 
         const settingsBlockRelation: Relation = {
-            RelationName: "ApplicationHeader",
+            RelationName: "SettingsBlock",
             GroupName: 'Pages',
             SlugName: 'application_header',
             Name: name,

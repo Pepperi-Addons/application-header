@@ -77,17 +77,12 @@
         }
     }
 
-    // .add-separator-container {
-    //     @include data-view-builder.mapped-field-item-container();
-    //     height: ngx-variables.$content-margin;
-
-    //     .add-separator {
-    //         position: relative;
-    //         display: none;
-    //     }
-
-    //     &:hover .add-separator {
-    //         display: block;
-    //     }
-    // }
+    .flow-label{
+        margin: 5px 0 0;
+   }
 }
+
+::ng-deep .pointerEvents{
+            pointer-events: none !important;
+        }
+    

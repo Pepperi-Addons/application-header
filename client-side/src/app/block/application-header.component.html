@@ -1,4 +1,4 @@
-<pep-page-layout>
+<pep-page-layout [addPadding]="true">
     <ng-container pep-top-area>
         <pep-top-bar>
             <ng-container header-start-content>
@@ -16,9 +16,6 @@
                 <button class="mat-button pep-button weak md pep-spacing-element pull-right flip" (click)="saveHeader($event);">
                     {{ 'ACTION.SAVE' | translate }}
                 </button>
-                <div class="menu pep-spacing-element pull-right flip">
-                    <pep-menu [items]="[]"></pep-menu>
-                </div>
             </ng-container>
         </pep-top-bar>
     </ng-container>
